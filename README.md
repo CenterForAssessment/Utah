@@ -1,4 +1,4 @@
 Utah
-====
+========
 
-SGP Source Code and analyses associated with Utah
+SGP source code and documentation associated with Utah SGP analyses
