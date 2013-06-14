@@ -194,13 +194,7 @@ ALGEBRA_I_2011.config <- list(
 		sgp.panel.years=as.character(2010:2011),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=6),
-	ALGEBRA_I.2011 = list(
-		sgp.content.areas=c('ALGEBRA_I'),
-		sgp.panel.years=as.character(2010:2011),
-		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=7)
+		sgp.norm.group.preference=6)
 )
 
 GEOMETRY_2011.config <- list(
