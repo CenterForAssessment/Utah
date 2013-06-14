@@ -114,7 +114,38 @@ Utah_Data_LONG$BP <- NULL
 Utah_Data_LONG$ETHNICITY <- factor(Utah_Data_LONG$ETHNICITY)
 levels(Utah_Data_LONG$ETHNICITY) <- c("African American", "American Indian", "Asian", "Hispanic/Latino", "Multiple Races", "Pacific Islander", "Unknown", "White")
 
-save(Utah_Data_LONG, file="Utah_Data_LONG.Rdata", compress=TRUE)
+###
+###		Changes to UT_Data_LONG needed to run EOCT course specific progression analyses
+###
+###  Change CONTENT_AREA to reflect EOCT course info
+
+Utah_Data_LONG$CONTENT_AREA <- as.character(Utah_Data_LONG$CONTENT_AREA)
+
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Pre-Algebra'] <- 'PRE_ALGEBRA'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Algebra I'] <- 'ALGEBRA_I'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Algebra II'] <- 'ALGEBRA_II'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Geometry'] <- 'GEOMETRY'
+
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Biology'] <- 'BIOLOGY'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Chemistry'] <- 'CHEMISTRY'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Earth Systems Science'] <- 'EARTH_SCIENCE'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Physics'] <- 'PHYSICS'
+
+## Keep a copy of the actual grade since we'll be changing this again for 2012 analyses.
+Utah_Data_LONG$GRADE_REPORTED <- Utah_Data_LONG$GRADE
+
+###  Change values of GRADE to 'EOCT'
+Utah_Data_LONG$GRADE[!Utah_Data_LONG$CONTENT_AREA %in% c('ELA', 'MATHEMATICS', 'SCIENCE')] <- 'EOCT'
+
+###  Create Knots and Boundaries for EOCT Subjects:
+UT_EOCT_Knots_Bounds <- createKnotsBoundaries(Utah_Data_LONG)
+UT_EOCT_Knots_Bounds[names(UT_EOCT_Knots_Bounds) %in% c('ELA', 'MATHEMATICS', 'SCIENCE')] <- NULL
+
+###  Check results:
+table(Utah_Data_LONG$CONTENT_AREA, Utah_Data_LONG$YEAR)
+table(Utah_Data_LONG$CONTENT_AREA, Utah_Data_LONG$GRADE)
+
+save(Utah_Data_LONG, file="Utah_Data_LONG-EOCT_Explore.Rdata")
 
 
 
