@@ -11,19 +11,16 @@ setwd('/home/user1/Data')
 ### Load required libraries
 library(SGP)
 
-### Load Data - see Utah_Data_LONG for changes to Utah_Data_LONG (content area and grade) and creation of UT_EOCT_Knots_Bounds
-load("Utah_Data_LONG-EOCT_Explore.Rdata")
-
-load("UT_EOCT_Knots_Bounds.Rdata")
-load("SGP_CONFIG/UT_SGP_Norm_Group_Preference.Rdata") # assuming you have SGP_CONFIG directory in your working directory
+### Load Data and Specialized Functions:
+load("Utah_Data_LONG.Rdata")
 
 ###
 ###  Prepare SGP Object:
 ###
 
-Utah_EOCT_SGP <- prepareSGP(Utah_Data_LONG)
+Utah_SGP <- prepareSGP(Utah_Data_LONG)
 
-save(Utah_EOCT_SGP, file="Utah_EOCT_SGP.Rdata")
+save(Utah_SGP, file="Utah_SGP.Rdata")
 
 
 ##########################################################################
@@ -38,70 +35,25 @@ setwd('/home/user1/Data')
 ### Load required libraries
 library(SGP)
 
-load("Utah_EOCT_SGP.Rdata")
+load("Utah_SGP.Rdata")
 
 
-###
-###  Grade level tests as usual with content areas specified:
-###
+#  This call to analyzeSGP runs both percentiles and lagged projections.  Some times I run these separately 
+#  to ease memory use issues (set each one to TRUE individually and then re-run analyzeSGP).
 
-Utah_EOCT_SGP <- analyzeSGP(Utah_EOCT_SGP,
-						years=c('2011', '2012'),
-						content_areas=c("ELA", "MATHEMATICS", "SCIENCE"),
-						grades=3:11,
-						sgp.percentiles.baseline=FALSE,
-						sgp.projections.baseline= FALSE,
-						sgp.projections.lagged.baseline=FALSE,
-						simulate.sgps=FALSE,
-						parallel.config=list(
-							BACKEND="PARALLEL", 
-							WORKERS=list(PERCENTILES=6, PROJECTIONS=4, LAGGED_PROJECTIONS=4)))
-
-
-###
-###		EOCT Analyses specified analyses with MAX priors available
-###
-
-### Load and create 2011 and 2012 EOCT Configuration
-source("SGP_CONFIG/EOCT/2011/MATHEMATICS.R") # assuming you have SGP_CONFIG directory in your working directory
-source("SGP_CONFIG/EOCT/2011/SCIENCE.R")
-
-source("SGP_CONFIG/EOCT/2012/MATHEMATICS.R")
-source("SGP_CONFIG/EOCT/2012/SCIENCE.R")
-
-UT.config <- c( 
-		EARTH_SCIENCE_2011.config, 
-		BIOLOGY_2011.config, 
-		CHEMISTRY_2011.config, 
-		PHYSICS_2011.config,
-		PRE_ALGEBRA_2011.config,
-		ALGEBRA_I_2011.config, 
-		GEOMETRY_2011.config,
-		ALGEBRA_II_2011.config,
-		
-		EARTH_SCIENCE_2012.config, 
-		BIOLOGY_2012.config, 
-		CHEMISTRY_2012.config, 
-		PHYSICS_2012.config,
-		PRE_ALGEBRA_2012.config,
-		ALGEBRA_I_2012.config, 
-		GEOMETRY_2012.config,
-		ALGEBRA_II_2012.config)
-		
-###  Add in the EOCT Knots and Bounds
-
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]] <- c(SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]], UT_EOCT_Knots_Bounds)
-
-Utah_EOCT_SGP <- analyzeSGP(Utah_EOCT_SGP,
-						sgp.config=UT.config,
-						sgp.percentiles=TRUE,
-						sgp.projections=FALSE,
-						sgp.projections.lagged=FALSE,
-						sgp.percentiles.baseline=FALSE,
-						sgp.projections.baseline= FALSE,
-						sgp.projections.lagged.baseline=FALSE,
-						simulate.sgps=FALSE,
-						parallel.config=list(BACKEND="PARALLEL", WORKERS=list(PERCENTILES=12)))
+Utah_SGP <- analyzeSGP(Utah_SGP,
+                       state="UT",
+                       years=2010:2012,
+                       sgp.percentiles=TRUE,
+                       sgp.projections= TRUE,
+                       sgp.projections.lagged = TRUE, 
+                       sgp.percentiles.baseline=FALSE,
+                       sgp.projections.baseline = FALSE,
+                       sgp.projections.lagged.baseline= FALSE,
+                       simulate.sgps=FALSE,
+                       parallel.config=list(
+                           BACKEND="PARALLEL", #TYPE="SNOW", # SNOW works for Windows.
+                           WORKERS=list(PERCENTILES=6, PROJECTIONS=4, LAGGED_PROJECTIONS=3)))
 
 
 #############################################################################
@@ -110,11 +62,9 @@ Utah_EOCT_SGP <- analyzeSGP(Utah_EOCT_SGP,
 ##############################################################
 #############################################################################
 
-SGPstateData[["UT"]][["SGP_Norm_Group_Preference"]] <- UT_SGP_Norm_Group_Preference
-
-Utah_EOCT_SGP <- combineSGP(Utah_EOCT_SGP) 
+Utah_SGP <- combineSGP(Utah_SGP) 
 						
-save(Utah_EOCT_SGP, file="Data/Utah_EOCT_SGP.Rdata")
+save(Utah_SGP, file="Utah_SGP.Rdata")
 
 
 #############################################################################
@@ -123,9 +73,9 @@ save(Utah_EOCT_SGP, file="Data/Utah_EOCT_SGP.Rdata")
 ##############################################################
 #############################################################################
 
-Utah_EOCT_SGP <- summarizeSGP(Utah_EOCT_SGP, parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=8)))
+Utah_SGP <- summarizeSGP(Utah_SGP, parallel.config=list(BACKEND="PARALLEL", WORKERS=list(SUMMARY=8)))
 
-save(Utah_EOCT_SGP, file="Utah_EOCT_SGP.Rdata", compress="bzip2")
+save(Utah_SGP, file="Utah_SGP.Rdata", compress="bzip2")
 
 
 #############################################################################
@@ -133,19 +83,19 @@ save(Utah_EOCT_SGP, file="Utah_EOCT_SGP.Rdata", compress="bzip2")
 #############################################################################
 
 ###  Data and Results
-outputSGP(Utah_EOCT_SGP, output.type=c("LONG_Data", "WIDE_Data")
+outputSGP(Utah_SGP, output.type=c("LONG_Data", "WIDE_Data")
 
 ###  Summary Tables
 #  This series of code 1) eliminates NA's in the ACH_LEVEL_PRIOR field, 2) removes an unwanted field, 3) sorts/keys the table, & 4) saves it.
 
 #For All Students
-s <-Utah_EOCT_SGP@Summary$SCHOOL_NUMBER$SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__SCHOOL_ENROLLMENT_STATUS
+s <-Utah_SGP@Summary$SCHOOL_NUMBER$SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__SCHOOL_ENROLLMENT_STATUS
 s$PERCENT_AT_ABOVE_PROFICIENT_PRIOR_COUNT <- NULL
 setkeyv(s,c("SCHOOL_NUMBER", "CONTENT_AREA"))
 write.csv(s, file="SCHOOL_NUMBER__YEAR__CONTENT_AREA__EMH_LEVEL__SCHOOL_ENROLLMENT_STATUS.csv", row.names=FALSE)
 
 #For Below Proficient Students
-s <- Utah_EOCT_SGP@Summary$SCHOOL_NUMBER$SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEVEL_PRIOR__SCHOOL_ENROLLMENT_STATUS[!is.na(ACHIEVEMENT_LEVEL_PRIOR)]
+s <- Utah_SGP@Summary$SCHOOL_NUMBER$SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEVEL_PRIOR__SCHOOL_ENROLLMENT_STATUS[!is.na(ACHIEVEMENT_LEVEL_PRIOR)]
 s$PERCENT_AT_ABOVE_PROFICIENT_PRIOR_COUNT <- NULL
 setkeyv(s, c("SCHOOL_NUMBER", "CONTENT_AREA"))
 write.csv(s, file="SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEVEL_PRIOR__SCHOOL_ENROLLMENT_STATUS.csv", row.names=FALSE)
@@ -157,7 +107,7 @@ write.csv(s, file="SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEV
 ##############################################################
 #############################################################################
 
-visualizeSGP(Utah_EOCT_SGP,
+visualizeSGP(Utah_SGP,
 	state="UT",
 	plot.types="studentGrowthPlot",
 	sgPlot.demo.report=TRUE,
@@ -167,7 +117,7 @@ visualizeSGP(Utah_EOCT_SGP,
 	WORKERS=list(SG_PLOTS=6)))
 	
 
-visualizeSGP(Utah_EOCT_SGP,
+visualizeSGP(Utah_SGP,
 	state="UT",
 	plot.types="studentGrowthPlot",
 	sgPlot.schools=c(132,168),
