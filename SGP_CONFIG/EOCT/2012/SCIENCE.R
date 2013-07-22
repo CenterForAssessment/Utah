@@ -70,7 +70,6 @@ BIOLOGY_2012.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5),  
 
-
 	BIOLOGY.2012 = list(
 		sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY'), 
 		sgp.panel.years=as.character(2006:2012),
@@ -186,7 +185,7 @@ CHEMISTRY_2012.config <- list(
 		sgp.norm.group.preference=7),  
 
 	CHEMISTRY.2012 = list(
-		sgp.content.areas=c('PHYSICS', 'CHEMISTRY'),  #  Small cohort.  Only 1 prior but will run this. 
+		sgp.content.areas=c('PHYSICS', 'CHEMISTRY'), 
 		sgp.panel.years=as.character(2011:2012),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,
@@ -196,7 +195,7 @@ CHEMISTRY_2012.config <- list(
 
 PHYSICS_2012.config <- list(
 	PHYSICS.2012 = list(
-		sgp.content.areas=c('BIOLOGY', 'CHEMISTRY', 'PHYSICS'), # Could add on EARTH SCI and 8th Grade SCIENCE, but stretching #'s pretty thin (~2100)(not worth it).
+		sgp.content.areas=c('BIOLOGY', 'CHEMISTRY', 'PHYSICS'),
 		sgp.panel.years=as.character(2010:2012),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,
@@ -209,7 +208,7 @@ PHYSICS_2012.config <- list(
 		sgp.norm.group.preference=2),  
 
 	PHYSICS.2012 = list(
-		sgp.content.areas=c('BIOLOGY', 'PHYSICS'), # Could also add on EARTH SCI and 8th Grade SCIENCE here, still stretching #'s pretty thin (~2000)(not worth it).
+		sgp.content.areas=c('BIOLOGY', 'PHYSICS'),
 		sgp.panel.years=as.character(2011:2012),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,

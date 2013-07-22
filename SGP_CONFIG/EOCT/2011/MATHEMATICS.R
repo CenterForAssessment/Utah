@@ -8,7 +8,7 @@
 
 PRE_ALGEBRA_2011.config <- list(
 	PRE_ALGEBRA.2011 = list(
-		sgp.content.areas=c('PRE_ALGEBRA', 'PRE_ALGEBRA'),  #  Repeaters - this is a policy decision  
+		sgp.content.areas=c('PRE_ALGEBRA', 'PRE_ALGEBRA'),  #  Repeaters
 		sgp.panel.years=as.character(2010:2011),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,
@@ -71,10 +71,19 @@ PRE_ALGEBRA_2011.config <- list(
 		sgp.norm.group.preference=5)
 )
 
-	###  Alg I without pre-algebra was missing originally.  Added 5/31/13
-	
+
 ALGEBRA_I_2011.config <- list(
-# No pre-alg prior:
+
+### Repeaters.
+	ALGEBRA_I.2012 = list(
+		sgp.content.areas=c('ALGEBRA_I', 'ALGEBRA_I'),  #  Repeaters  
+		sgp.panel.years=as.character(2010:2011),
+		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=0),
+
+
+### No pre-alg prior:
 	ALGEBRA_I.2011 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 4), 'ALGEBRA_I'),
 		sgp.panel.years=as.character(2007:2011),
@@ -100,40 +109,40 @@ ALGEBRA_I_2011.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=4),
 
-##  Too few students (~500-700) with this progression in 2011
-	# ALGEBRA_I.2011 = list(
-		# sgp.content.areas=c(rep('MATHEMATICS', 5), 'ALGEBRA_I'),
-		# sgp.panel.years=as.character(2006:2011),
-		# sgp.grade.sequences=list(c(3:7, 'EOCT')),
-		# sgp.exact.grade.progression=TRUE,
-		# sgp.norm.group.preference=1),
-	# ALGEBRA_I.2011 = list(
-		# sgp.content.areas=c(rep('MATHEMATICS', 4), 'ALGEBRA_I'),
-		# sgp.panel.years=as.character(2007:2011),
-		# sgp.grade.sequences=list(c(4:7, 'EOCT')),
-		# sgp.exact.grade.progression=TRUE,
-		# sgp.norm.group.preference=2),
-	# ALGEBRA_I.2011 = list(
-		# sgp.content.areas=c(rep('MATHEMATICS', 3), 'ALGEBRA_I'),
-		# sgp.panel.years=as.character(2008:2011),
-		# sgp.grade.sequences=list(c(5:7, 'EOCT')),
-		# sgp.exact.grade.progression=TRUE,
-		# sgp.norm.group.preference=3),
-	# ALGEBRA_I.2011 = list(
-		# sgp.content.areas=c(rep('MATHEMATICS', 2), 'ALGEBRA_I'),
-		# sgp.panel.years=as.character(2009:2011),
-		# sgp.grade.sequences=list(c(6:7, 'EOCT')),
-		# sgp.exact.grade.progression=TRUE,
-		# sgp.norm.group.preference=4),
-	# ALGEBRA_I.2011 = list(
-		# sgp.content.areas=c('MATHEMATICS', 'ALGEBRA_I'),
-		# sgp.panel.years=as.character(2010:2011),
-		# sgp.grade.sequences=list(c(7, 'EOCT')),
-		# sgp.exact.grade.progression=TRUE,
-		# sgp.norm.group.preference=5),
+#  Too few students (~500-700) with this progression in 2011
+	ALGEBRA_I.2011 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 5), 'ALGEBRA_I'),
+		sgp.panel.years=as.character(2006:2011),
+		sgp.grade.sequences=list(c(3:7, 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=1),
+	ALGEBRA_I.2011 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 4), 'ALGEBRA_I'),
+		sgp.panel.years=as.character(2007:2011),
+		sgp.grade.sequences=list(c(4:7, 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=2),
+	ALGEBRA_I.2011 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 3), 'ALGEBRA_I'),
+		sgp.panel.years=as.character(2008:2011),
+		sgp.grade.sequences=list(c(5:7, 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=3),
+	ALGEBRA_I.2011 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 2), 'ALGEBRA_I'),
+		sgp.panel.years=as.character(2009:2011),
+		sgp.grade.sequences=list(c(6:7, 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=4),
+	ALGEBRA_I.2011 = list(
+		sgp.content.areas=c('MATHEMATICS', 'ALGEBRA_I'),
+		sgp.panel.years=as.character(2010:2011),
+		sgp.grade.sequences=list(c(7, 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=5),
 
 
-#  Pre-alg prior:
+### Pre-alg prior:
 	ALGEBRA_I.2011 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I'),
 		sgp.panel.years=as.character(2006:2011),
