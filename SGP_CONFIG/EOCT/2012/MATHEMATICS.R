@@ -71,13 +71,19 @@ PRE_ALGEBRA_2012.config <- list(
 		sgp.norm.group.preference=5)
 )
 
-	###  Alg I without pre-algebra was missing originally.  Added 5/31/13
 	
 ALGEBRA_I_2012.config <- list(
 	
-#  Add in repeaters.
+### Repeaters.
+	ALGEBRA_I.2012 = list(
+		sgp.content.areas=c('ALGEBRA_I', 'ALGEBRA_I'),  #  Repeaters - policy decision  
+		sgp.panel.years=as.character(2011:2012),
+		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=0),
+
 	
-# No pre-alg prior:
+### No pre-alg prior:
 	ALGEBRA_I.2012 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 4), 'ALGEBRA_I'),
 		sgp.panel.years=as.character(2008:2012),
@@ -135,7 +141,7 @@ ALGEBRA_I_2012.config <- list(
 		sgp.norm.group.preference=5),
 
 
-#  Pre-alg prior:
+### Pre-alg prior:
 	ALGEBRA_I.2012 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I'),
 		sgp.panel.years=as.character(2007:2012),
