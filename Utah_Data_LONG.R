@@ -12,14 +12,14 @@ library(foreign)
 # Set working directory
 setwd("C:/Utah_SGP_100512/Data")
 
-### Read in SPSS file (or load already save Utah_Data_LONG)
+### Read in SPSS file
 Utah_Data_LONG <- read.spss("C:/Utah_SGP_100512/Data/Utah_Data_LONG.sav", to.data.frame = TRUE, use.value.labels = TRUE)
 
 gc()
 
 Utah_Data_LONG=data.frame(Utah_Data_LONG)
 
-#Trim white space
+#Trim white space from SPSS
 
 trimWhiteSpace <- function(line) gsub("(^ +)|( +$)", "", line)
 
@@ -52,31 +52,10 @@ Utah_Data_LONG[['TEST_MEDIUM']] <- trimWhiteSpace(Utah_Data_LONG[['TEST_MEDIUM']
 
 ### Clean up the longfile - Specify classes
 
-Utah_Data_LONG$ID <-as.integer(Utah_Data_LONG$ID)
-
-Utah_Data_LONG$GRADE <- as.integer(Utah_Data_LONG$GRADE)
-
-Utah_Data_LONG$SCHOOL_NUMBER <- as.integer(Utah_Data_LONG$SCHOOL_NUMBER)
-
-Utah_Data_LONG$DISTRICT_NUMBER <- as.integer(Utah_Data_LONG$DISTRICT_NUMBER)
-
 Utah_Data_LONG$SCALE_SCORE <- as.integer(Utah_Data_LONG$SCALE_SCORE)
-
-Utah_Data_LONG$VALID_CASE <- factor(Utah_Data_LONG$VALID_CASE)
-
-Utah_Data_LONG$YEAR <- as.integer(Utah_Data_LONG$YEAR)
-
-Utah_Data_LONG$CONTENT_AREA <- recode(Utah_Data_LONG$CONTENT_AREA,
-"'MATHEMATICS'='MATHEMATICS';
-'ELA'='ELA';
-'SCIENCE'='SCIENCE'")
-
-Utah_Data_LONG$CONTENT_AREA <- factor(Utah_Data_LONG$CONTENT_AREA)
 
 Utah_Data_LONG$ACHIEVEMENT_LEVEL <- factor(Utah_Data_LONG$ACHIEVEMENT_LEVEL, levels=1:4, 
 	labels=c("Level 1", "Level 2", "Level 3", "Level 4"), ordered=TRUE)
-
-Utah_Data_LONG$EMH_LEVEL <- factor(Utah_Data_LONG$EMH_LEVEL)
 
 Utah_Data_LONG$STATE_ENROLLMENT_STATUS <- factor(Utah_Data_LONG$STATE_ENROLLMENT_STATUS)
 
@@ -105,7 +84,6 @@ levels(Utah_Data_LONG$GT_STATUS) <- c("No", "Yes")
 Utah_Data_LONG$ACHIEVEMENT_LEVEL_FULL <- Utah_Data_LONG$ACHIEVEMENT_LEVEL
 levels(Utah_Data_LONG$ACHIEVEMENT_LEVEL) <- c("BP", "BP", "P", "A")
 
-
 Utah_Data_LONG$TEST_MEDIUM <- factor(Utah_Data_LONG$TEST_MEDIUM)
 levels(Utah_Data_LONG$TEST_MEDIUM) <- c("CRT", "NWEA", "UAA")
 
@@ -114,10 +92,31 @@ Utah_Data_LONG$BP <- NULL
 Utah_Data_LONG$ETHNICITY <- factor(Utah_Data_LONG$ETHNICITY)
 levels(Utah_Data_LONG$ETHNICITY) <- c("African American", "American Indian", "Asian", "Hispanic/Latino", "Multiple Races", "Pacific Islander", "Unknown", "White")
 
-save(Utah_Data_LONG, file="Utah_Data_LONG.Rdata", compress=TRUE)
 
+###
+###		Changes to UT_Data_LONG needed to run EOCT course specific progression analyses
+###
 
+##  Change CONTENT_AREA to reflect EOCT course info
 
+Utah_Data_LONG$CONTENT_AREA <- as.character(Utah_Data_LONG$CONTENT_AREA)
 
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Pre-Algebra'] <- 'PRE_ALGEBRA'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Algebra I'] <- 'ALGEBRA_I'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Algebra II'] <- 'ALGEBRA_II'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Geometry'] <- 'GEOMETRY'
+
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Biology'] <- 'BIOLOGY'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Chemistry'] <- 'CHEMISTRY'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Earth Systems Science'] <- 'EARTH_SCIENCE'
+Utah_Data_LONG$CONTENT_AREA[Utah_Data_LONG$TEST_NAME == 'Physics'] <- 'PHYSICS'
+
+## Keep a copy of the actual grade since we'll be changing this again for 2012 analyses.
+Utah_Data_LONG$GRADE_REPORTED <- Utah_Data_LONG$GRADE
+
+###  Change values of GRADE to 'EOCT'
+Utah_Data_LONG$GRADE[!Utah_Data_LONG$CONTENT_AREA %in% c('ELA', 'MATHEMATICS', 'SCIENCE')] <- 'EOCT'
+
+save(Utah_Data_LONG, file="Utah_Data_LONG.Rdata")
 
 
