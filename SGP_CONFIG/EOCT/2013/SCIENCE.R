@@ -70,12 +70,12 @@ BIOLOGY_2013.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5),  
 
-	BIOLOGY.2013 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY'), 
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
+	# BIOLOGY.2013 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY'), 
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
 	BIOLOGY.2013 = list(
 		sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY'), 
 		sgp.panel.years=as.character(2008:2013),
@@ -110,12 +110,12 @@ BIOLOGY_2013.config <- list(
 
 
 CHEMISTRY_2013.config <- list(
-	CHEMISTRY.2013 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
+	# CHEMISTRY.2013 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
 	CHEMISTRY.2013 = list(
 		sgp.content.areas=c(rep('SCIENCE', 4), 'BIOLOGY', 'CHEMISTRY'), 
 		sgp.panel.years=as.character(2008:2013),
@@ -141,18 +141,18 @@ CHEMISTRY_2013.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5),  
 
-	CHEMISTRY.2013 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2006:2013),
-		sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
-	CHEMISTRY.2013 = list(
-		sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),  
+	# CHEMISTRY.2013 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2006:2013),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
+	# CHEMISTRY.2013 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),  
 	CHEMISTRY.2013 = list(
 		sgp.content.areas=c(rep('SCIENCE', 3), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
 		sgp.panel.years=as.character(2008:2013),
