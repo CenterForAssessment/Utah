@@ -167,12 +167,12 @@ ALGEBRA_I_2013.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=3),
 
-	ALGEBRA_I.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 5), 'PRE_ALGEBRA', 'ALGEBRA_I'),
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(3:7, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
+	# ALGEBRA_I.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 5), 'PRE_ALGEBRA', 'ALGEBRA_I'),
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(3:7, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
 	ALGEBRA_I.2013 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I'),
 		sgp.panel.years=as.character(2008:2013),
@@ -207,12 +207,12 @@ ALGEBRA_I_2013.config <- list(
 )
 
 GEOMETRY_2013.config <- list(
-	GEOMETRY.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(3:6, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
+	# GEOMETRY.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(3:6, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
 	GEOMETRY.2013 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
 		sgp.panel.years=as.character(2008:2013),
@@ -232,18 +232,18 @@ GEOMETRY_2013.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=4),
 
-	GEOMETRY.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 5), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
-		sgp.panel.years=as.character(2006:2013),
-		sgp.grade.sequences=list(c(3:7, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-	GEOMETRY.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(4:7, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
+	# GEOMETRY.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 5), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
+		# sgp.panel.years=as.character(2006:2013),
+		# sgp.grade.sequences=list(c(3:7, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
+	# GEOMETRY.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(4:7, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),
 	GEOMETRY.2013 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY'),
 		sgp.panel.years=as.character(2008:2013),
@@ -279,24 +279,24 @@ GEOMETRY_2013.config <- list(
 
 
 ALGEBRA_II_2013.config <- list(
-	ALGEBRA_II.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 5), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
-		sgp.panel.years=as.character(2006:2013),
-		sgp.grade.sequences=list(c(3:7, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-	ALGEBRA_II.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
-		sgp.panel.years=as.character(2006:2013),
-		sgp.grade.sequences=list(c(4:7, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
-	ALGEBRA_II.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(5:7, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=3),
+	# ALGEBRA_II.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 5), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
+		# sgp.panel.years=as.character(2005:2013),
+		# sgp.grade.sequences=list(c(3:7, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
+	# ALGEBRA_II.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
+		# sgp.panel.years=as.character(2006:2013),
+		# sgp.grade.sequences=list(c(4:7, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),
+	# ALGEBRA_II.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(5:7, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=3),
 	ALGEBRA_II.2013 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
 		sgp.panel.years=as.character(2008:2013),
@@ -310,18 +310,18 @@ ALGEBRA_II_2013.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5),
 
-	ALGEBRA_II.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
-		sgp.panel.years=as.character(2006:2013),
-		sgp.grade.sequences=list(c(3:6, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-	ALGEBRA_II.2013 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
-		sgp.panel.years=as.character(2007:2013),
-		sgp.grade.sequences=list(c(4:6, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
+	# ALGEBRA_II.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 4), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
+		# sgp.panel.years=as.character(2006:2013),
+		# sgp.grade.sequences=list(c(3:6, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
+	# ALGEBRA_II.2013 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
+		# sgp.panel.years=as.character(2007:2013),
+		# sgp.grade.sequences=list(c(4:6, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),
 	ALGEBRA_II.2013 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA', 'ALGEBRA_I', 'GEOMETRY', 'ALGEBRA_II'),
 		sgp.panel.years=as.character(2008:2013),
