@@ -6,12 +6,12 @@
 #####################################################################################
 
 EARTH_SCIENCE_2012.config <- list(
-	EARTH_SCIENCE.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE'), 
-		sgp.panel.years=as.character(2007:2012),
-		sgp.grade.sequences=list(c(4:8, 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
+	# EARTH_SCIENCE.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE'), 
+		# sgp.panel.years=as.character(2007:2012),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
 	EARTH_SCIENCE.2012 = list(
 		sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE'), 
 		sgp.panel.years=as.character(2008:2012),
@@ -39,12 +39,12 @@ EARTH_SCIENCE_2012.config <- list(
 )
 
 BIOLOGY_2012.config <- list(
-	BIOLOGY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'BIOLOGY'), 
-		sgp.panel.years=as.character(2007:2012),
-		sgp.grade.sequences=list(c(4:8, 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
+	# BIOLOGY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'BIOLOGY'), 
+		# sgp.panel.years=as.character(2007:2012),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
 	BIOLOGY.2012 = list(
 		sgp.content.areas=c(rep('SCIENCE', 4), 'BIOLOGY'), 
 		sgp.panel.years=as.character(2008:2012),
@@ -70,18 +70,18 @@ BIOLOGY_2012.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5),  
 
-	BIOLOGY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY'), 
-		sgp.panel.years=as.character(2006:2012),
-		sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
-	BIOLOGY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY'), 
-		sgp.panel.years=as.character(2007:2012),
-		sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),  
+	# BIOLOGY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY'), 
+		# sgp.panel.years=as.character(2006:2012),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
+	# BIOLOGY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY'), 
+		# sgp.panel.years=as.character(2007:2012),
+		# sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),  
 	BIOLOGY.2012 = list(
 		sgp.content.areas=c(rep('SCIENCE', 3), 'EARTH_SCIENCE', 'BIOLOGY'), 
 		sgp.panel.years=as.character(2008:2012),
@@ -110,18 +110,18 @@ BIOLOGY_2012.config <- list(
 
 
 CHEMISTRY_2012.config <- list(
-	CHEMISTRY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2006:2012),
-		sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
-	CHEMISTRY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 4), 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2007:2012),
-		sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),  
+	# CHEMISTRY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2006:2012),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
+	# CHEMISTRY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 4), 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2007:2012),
+		# sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),  
 	CHEMISTRY.2012 = list(
 		sgp.content.areas=c(rep('SCIENCE', 3), 'BIOLOGY', 'CHEMISTRY'), 
 		sgp.panel.years=as.character(2008:2012),
@@ -141,24 +141,24 @@ CHEMISTRY_2012.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5),  
 
-	CHEMISTRY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2005:2012),
-		sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),  
-	CHEMISTRY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2006:2012),
-		sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),  
-	CHEMISTRY.2012 = list(
-		sgp.content.areas=c(rep('SCIENCE', 3), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
-		sgp.panel.years=as.character(2007:2012),
-		sgp.grade.sequences=list(c(6:8, 'EOCT', 'EOCT', 'EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=3),  
+	# CHEMISTRY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2005:2012),
+		# sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),  
+	# CHEMISTRY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2006:2012),
+		# sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),  
+	# CHEMISTRY.2012 = list(
+		# sgp.content.areas=c(rep('SCIENCE', 3), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
+		# sgp.panel.years=as.character(2007:2012),
+		# sgp.grade.sequences=list(c(6:8, 'EOCT', 'EOCT', 'EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=3),  
 	CHEMISTRY.2012 = list(
 		sgp.content.areas=c(rep('SCIENCE', 2), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'), 
 		sgp.panel.years=as.character(2008:2012),
