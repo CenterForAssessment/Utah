@@ -10,14 +10,9 @@
 ### Load required libraries
 library(SGP)
 library(data.table)
-### Load Data - see Utah_Data_LONG.R for details
-load("Utah_Data_LONG.Rdata")
 
-## Convert 8th grade math to Pre-Algebra
-Utah_Data_LONG <- data.table(Utah_Data_LONG)
-Utah_Data_LONG[which(CONTENT_AREA == 'MATHEMATICS' & GRADE == 8 & YEAR == 2013), GRADE := 'EOCT']
-Utah_Data_LONG[which(CONTENT_AREA == 'MATHEMATICS' & GRADE == 'EOCT' & YEAR == 2013), CONTENT_AREA := 'PRE_ALGEBRA']
-table(Utah_Data_LONG$GRADE, Utah_Data_LONG$CONTENT_AREA, Utah_Data_LONG$YEAR, Utah_Data_LONG$VALID_CASE)
+### Load Data - see Utah_Data_LONG.R for details
+load("Utah_Data_LONG-2013_FINAL.Rdata")
 
 ###
 ###  Prepare SGP Object:
@@ -25,8 +20,8 @@ table(Utah_Data_LONG$GRADE, Utah_Data_LONG$CONTENT_AREA, Utah_Data_LONG$YEAR, Ut
 
 Utah_SGP <- prepareSGP(Utah_Data_LONG)
 
+###  Save data object.
 save(Utah_SGP, file="Utah_SGP.Rdata")
-
 
 ##########################################################################
 ##############################################################
