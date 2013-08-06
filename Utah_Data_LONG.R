@@ -14,10 +14,10 @@ load("Utah_Data_LONG.Rdata")
 
 ### Final cleaning needed for File Andrew uploaded 7/31/13
 
-## Convert 8th grade math to Pre-Algebra
+## Convert ALL 8th grade math to Pre-Algebra
 Utah_Data_LONG <- data.table(Utah_Data_LONG)
-Utah_Data_LONG[which(CONTENT_AREA == 'MATHEMATICS' & GRADE == 8 & YEAR == 2013), GRADE := 'EOCT']
-Utah_Data_LONG[which(CONTENT_AREA == 'MATHEMATICS' & GRADE == 'EOCT' & YEAR == 2013), CONTENT_AREA := 'PRE_ALGEBRA']
+Utah_Data_LONG[which(CONTENT_AREA == 'MATHEMATICS' & GRADE == 8), GRADE := 'EOCT']
+Utah_Data_LONG[which(CONTENT_AREA == 'MATHEMATICS' & GRADE == 'EOCT'), CONTENT_AREA := 'PRE_ALGEBRA']
 table(Utah_Data_LONG$GRADE, Utah_Data_LONG$CONTENT_AREA, Utah_Data_LONG$YEAR, Utah_Data_LONG$VALID_CASE)
 
 ##  All 0s appear to be Algebra II scores of 0.  All are INVALID CASES too
