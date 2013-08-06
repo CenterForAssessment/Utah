@@ -47,11 +47,12 @@ Utah_SGP <- analyzeSGP(Utah_SGP,
 
 
 ###
-###		EOCT Analyses specified analyses with MAX priors available
+###		EOCT Analyses specified analyses
 ###
 
-### Load and create 2011 and 2012 EOCT Configuration
-source("SGP_CONFIG/EOCT/2011/MATHEMATICS.R") # assuming you have SGP_CONFIG directory in your working directory
+### Load and create 2011, 2012 & 2013 EOCT Configuration
+
+source("SGP_CONFIG/EOCT/2011/MATHEMATICS.R")
 source("SGP_CONFIG/EOCT/2011/SCIENCE.R")
 
 source("SGP_CONFIG/EOCT/2012/MATHEMATICS.R")
@@ -125,24 +126,7 @@ save(Utah_SGP, file="Utah_SGP.Rdata")
 ##############################################################
 #############################################################################
 
-###  Data and Results
 outputSGP(Utah_SGP, output.type=c("LONG_Data", "WIDE_Data")
-
-###  Summary Tables
-#  This series of code 1) eliminates NA's in the ACH_LEVEL_PRIOR field, 2) removes an unwanted field, 3) sorts/keys the table, & 4) saves it.
-
-#For All Students
-s <-Utah_SGP@Summary$SCHOOL_NUMBER$SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__SCHOOL_ENROLLMENT_STATUS
-s$PERCENT_AT_ABOVE_PROFICIENT_PRIOR_COUNT <- NULL
-setkeyv(s,c("SCHOOL_NUMBER", "CONTENT_AREA"))
-write.csv(s, file="SCHOOL_NUMBER__YEAR__CONTENT_AREA__EMH_LEVEL__SCHOOL_ENROLLMENT_STATUS.csv", row.names=FALSE)
-
-#For Below Proficient Students
-s <- Utah_SGP@Summary$SCHOOL_NUMBER$SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEVEL_PRIOR__SCHOOL_ENROLLMENT_STATUS[!is.na(ACHIEVEMENT_LEVEL_PRIOR)]
-s$PERCENT_AT_ABOVE_PROFICIENT_PRIOR_COUNT <- NULL
-setkeyv(s, c("SCHOOL_NUMBER", "CONTENT_AREA"))
-write.csv(s, file="SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEVEL_PRIOR__SCHOOL_ENROLLMENT_STATUS.csv", row.names=FALSE)
-
 
 #############################################################################
 ##############################################################
@@ -150,11 +134,19 @@ write.csv(s, file="SCHOOL_NUMBER__EMH_LEVEL__CONTENT_AREA__YEAR__ACHIEVEMENT_LEV
 ##############################################################
 #############################################################################
 
+# visualizeSGP(Utah_SGP,
+	# plot.types="studentGrowthPlot",
+	# sgPlot.demo.report=TRUE,
+	# sgPlot.produce.plots=TRUE,
+	# parallel.config=list(
+	# BACKEND="PARALLEL", 
+	# WORKERS=list(SG_PLOTS=6)))
+
 visualizeSGP(Utah_SGP,
-	state="UT",
-	plot.types="studentGrowthPlot",
-	sgPlot.demo.report=TRUE,
-	sgPlot.produce.plots=TRUE,
+	plot.types="growthAchievementPlot",
+	gaPlot.content_areas=c("ELA", "MATHEMATICS", "SCIENCE"),
+	gaPlot.years=c("2011", "2012", "2013"),
+	gaPlot.format="presentation",
 	parallel.config=list(
-	BACKEND="PARALLEL", 
-	WORKERS=list(SG_PLOTS=6)))
+		BACKEND="PARALLEL", 
+		WORKERS=list(GA_PLOTS=6)))
