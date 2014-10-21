@@ -11,8 +11,8 @@
 library(SGP)
 library(data.table)
 
-### Load Data - see Utah_Data_LONG.R for details
-load("Utah_Data_LONG-2013_FINAL.Rdata")
+### Load Data
+load("Utah_Data_LONG.Rdata")
 
 ###
 ###  Prepare SGP Object:
