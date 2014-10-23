@@ -231,7 +231,7 @@ SEC_MATH_II_2014.config <- list(
 		sgp.norm.group.preference=5)
 )
 #############################################################
-SEC_MATH_III.config <- list(
+SEC_MATH_III_2014.config <- list(
 # REPEATER:
   SEC_MATH_III.2014 = list(
 		sgp.content.areas=c('ALGEBRA_II','SEC_MATH_III'),  

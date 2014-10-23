@@ -65,6 +65,9 @@ source("SGP_CONFIG/EOCT/2012/SCIENCE.R")
 source("SGP_CONFIG/EOCT/2013/MATHEMATICS.R")
 source("SGP_CONFIG/EOCT/2013/SCIENCE.R")
 
+source("SGP_CONFIG/EOCT/2014/MATHEMATICS.R")
+source("SGP_CONFIG/EOCT/2014/SCIENCE.R")
+
 UT_EOCT_2011.config <- c( 
 		EARTH_SCIENCE_2011.config, 
 		BIOLOGY_2011.config, 
@@ -95,29 +98,40 @@ UT_EOCT_2013.config <- c(
 		GEOMETRY_2013.config,
 		ALGEBRA_II_2013.config)
 		
+UT_EOCT_2014.config <- c(
+		EARTH_SCIENCE_2014.config, 
+		BIOLOGY_2014.config, 
+		CHEMISTRY_2014.config, 
+		PHYSICS_2014.config,
+
+		SEC_MATH_I_2014.config, 
+		SEC_MATH_II_2014.config,
+		SEC_MATH_III_2014.config)
 		
 ### Create configToNormGroup data.frame
 
 tmp.configToNormGroup <- lapply(UT_EOCT_2011.config, configToSGPNormGroup)
-
 UT_SGP_Norm_Group_Preference_2011 <- data.table(
 					YEAR="2011",
 					rbindlist(tmp.configToNormGroup))
 
 
 tmp.configToNormGroup <- lapply(UT_EOCT_2012.config, configToSGPNormGroup)
-
 UT_SGP_Norm_Group_Preference_2012 <- data.table(
 					YEAR="2012",
 					rbindlist(tmp.configToNormGroup))
 
 tmp.configToNormGroup <- lapply(UT_EOCT_2013.config, configToSGPNormGroup)
-
 UT_SGP_Norm_Group_Preference_2013 <- data.table(
 					YEAR="2013",
 					rbindlist(tmp.configToNormGroup))
 
-UT_SGP_Norm_Group_Preference <- rbind(UT_SGP_Norm_Group_Preference_2011, UT_SGP_Norm_Group_Preference_2012, UT_SGP_Norm_Group_Preference_2013)
+tmp.configToNormGroup <- lapply(UT_EOCT_2014.config, configToSGPNormGroup)
+UT_SGP_Norm_Group_Preference_2014 <- data.table(
+					YEAR="2014",
+					rbindlist(tmp.configToNormGroup))
+
+UT_SGP_Norm_Group_Preference <- rbind(UT_SGP_Norm_Group_Preference_2011, UT_SGP_Norm_Group_Preference_2012, UT_SGP_Norm_Group_Preference_2013, UT_SGP_Norm_Group_Preference_2014)
 
 UT_SGP_Norm_Group_Preference$SGP_NORM_GROUP <- as.factor(UT_SGP_Norm_Group_Preference$SGP_NORM_GROUP)
 
