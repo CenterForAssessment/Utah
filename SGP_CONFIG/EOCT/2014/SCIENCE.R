@@ -38,7 +38,7 @@ BIOLOGY_2014.config <- list(
 	BIOLOGY.2014 = list(
 		sgp.content.areas=c('BIOLOGY', 'BIOLOGY'), 
 		sgp.panel.years=as.character(2013:2014),
-		sgp.grade.sequences=list(c(EOCT'', 'EOCT')),
+		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=0),  
 # VIA GRADE 8
@@ -213,7 +213,7 @@ PHYSICS_2014.config <- list(
 		sgp.norm.group.preference=3),
 # VIA BIOLOGY
 	PHYSICS.2014 = list(
-		sgp.content.areas=c(rep('SCIENCE'),2), 'BIOLOGY', 'PHYSICS'),
+		sgp.content.areas=c(rep('SCIENCE',2), 'BIOLOGY', 'PHYSICS'),
 		sgp.panel.years=as.character(2011:2014),
 		sgp.grade.sequences=list(c(7:8,'EOCT','EOCT')),
 		sgp.exact.grade.progression=TRUE,
