@@ -1,21 +1,22 @@
 # EOCT CONFIGURATION FILE - SECONDARY MATHEMATICS
 #############################################################
 SEC_MATH_I_2014.config <- list(
-# REPEATER
-	SEC_MATH_I.2014 = list(
-		sgp.content.areas=c('PRE_ALGEBRA','ALGEBRA_I','SEC_MATH_I'),
-		sgp.panel.years=as.character(2012:2014),
-		sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=0),
-	SEC_MATH_I.2014 = list(
-		sgp.content.areas=c('ALGEBRA_I','SEC_MATH_I'),
-		sgp.panel.years=as.character(2013:2014),
-		sgp.grade.sequences=list(c('EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-# AVI - The Math 8 to SEC Math I sequence will not come into play until 2015 when it is SAGE Math 8.
-# 	    All CRT Math 8 was labeled as Pre-Algebra, so there will be no kids with CRT Grade 8 math to SEC Math I
+## REPEATER
+## NO ALGEBRA_I/REPEATER PROGRESSIONS CONTAIN MORE THAN THE MINIMUM N OF 3,000 (1,500 - 2100)
+	# SEC_MATH_I.2014 = list(
+		# sgp.content.areas=c('PRE_ALGEBRA','ALGEBRA_I','SEC_MATH_I'),
+		# sgp.panel.years=as.character(2012:2014),
+		# sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=0),
+	# SEC_MATH_I.2014 = list(
+		# sgp.content.areas=c('ALGEBRA_I','SEC_MATH_I'),
+		# sgp.panel.years=as.character(2013:2014),
+		# sgp.grade.sequences=list(c('EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
+## AVI - The Math 8 to SEC Math I sequence will not come into play until 2015 when it is SAGE Math 8.
+# 	     All CRT Math 8 was labeled as Pre-Algebra, so there will be no kids with CRT Grade 8 math to SEC Math I
 # MATH 8 SEQUENCES (NEW NORM)
 	# SEC_MATH_I.2014 = list(
 		# sgp.content.areas=c(rep('MATHEMATICS', 5), 'SEC_MATH_I'),
@@ -96,21 +97,21 @@ SEC_MATH_I_2014.config <- list(
 # ONLY PRE-ALGEBRA
 	SEC_MATH_I.2014 = list(
 		sgp.content.areas=c('PRE_ALGEBRA', 'SEC_MATH_I'),
-		sgp.panel.years=as.character(2012:2014),
+		sgp.panel.years=as.character(2013:2014),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5)
 )
 #############################################################
 SEC_MATH_II_2014.config <- list(
-# RETREATER
+# RETREATER ## NO
 	  SEC_MATH_II_2014 = list(
 		sgp.content.areas=c('ALGEBRA_II', 'SEC_MATH_II'),  
-		sgp.panel.years=as.character(2013:2014),
+		sgp.panel.years=as.character(c(2012, 2014)),
 		sgp.grade.sequences=list(c('EOCT','EOCT')),
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=0),
-# REPEATER
+# REPEATER # NO
   SEC_MATH_II_2014 = list(
 		sgp.content.areas=c('GEOMETRY', 'SEC_MATH_II'),  
 		sgp.panel.years=as.character(2013:2014),
@@ -118,44 +119,58 @@ SEC_MATH_II_2014.config <- list(
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=0),
 # PRE-ALGEBRA SEQUENCES
+	SEC_MATH_II_2014 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'SEC_MATH_II'),
+		sgp.panel.years=c(2009:2012, "2014"),
+		sgp.grade.sequences=list(c(5:7, 'EOCT', 'EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=1),
+	SEC_MATH_II_2014 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA', 'SEC_MATH_II'),
+		sgp.panel.years=c(2010:2012, "2014"),
+		sgp.grade.sequences=list(c(6:7, 'EOCT', 'EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=2),
+	SEC_MATH_II_2014 = list(
+		sgp.content.areas=c('MATHEMATICS', 'PRE_ALGEBRA', 'SEC_MATH_II'),
+		sgp.panel.years=c(2011:2012, "2014"),
+		sgp.grade.sequences=list(c(7, 'EOCT', 'EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=3),
+	SEC_MATH_II_2014 = list(
+		sgp.content.areas=c('PRE_ALGEBRA', 'SEC_MATH_II'),
+		sgp.panel.years=c("2012", "2014"),
+		sgp.grade.sequences=list(c('EOCT', 'EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=4),
+
+# ALGEBRA I SEQUENCES
 # EXCLUDING MATH 7
 	SEC_MATH_II_2014 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2009:2014),
-		sgp.grade.sequences=list(c(4:6, 'EOCT', 'EOCT', 'EOCT')),  
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-	SEC_MATH_II_2014 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2010:2014),
+		sgp.panel.years=c(2009:2012, "2014"),
 		sgp.grade.sequences=list(c(5:6, 'EOCT', 'EOCT', 'EOCT')),  
 		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
+		sgp.norm.group.preference=1),
 	SEC_MATH_II_2014 = list(
 		sgp.content.areas=c('MATHEMATICS', 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2011:2014),
+		sgp.panel.years=c(2010:2012, "2014"),
 		sgp.grade.sequences=list(c(6, 'EOCT', 'EOCT', 'EOCT')),  
 		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=3),
+		sgp.norm.group.preference=2),
 # INCLUDING MATH 7
 	SEC_MATH_II_2014 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 3), 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2009:2014),
-		sgp.grade.sequences=list(c(5:7, 'EOCT', 'EOCT', 'EOCT')),  
+		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
+		sgp.panel.years=c(2009:2012, "2014"),
+		sgp.grade.sequences=list(c(6:7, 'EOCT', 'EOCT', 'EOCT')),  
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=1),
 	SEC_MATH_II_2014 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2010:2014),
-		sgp.grade.sequences=list(c(6:7, 'EOCT', 'EOCT', 'EOCT')),  
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
-	SEC_MATH_II_2014 = list(
 		sgp.content.areas=c('MATHEMATICS', 'PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2011:2014),
+		sgp.panel.years=c(2010:2012, "2014"),
 		sgp.grade.sequences=list(c(7, 'EOCT', 'EOCT', 'EOCT')),  
 		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=3),
+		sgp.norm.group.preference=2),
 # INCLUDING MATH 8 BUT EXCLUDING MATH 7
 # AVI - again, no grade 8 Math, so this progression is not feasible.
 	# SEC_MATH_II_2014 = list(
@@ -183,10 +198,10 @@ SEC_MATH_II_2014.config <- list(
 		# sgp.grade.sequences=list(c(7, 'EOCT', 8, 'EOCT', 'EOCT')),  
 		# sgp.exact.grade.progression=TRUE,
 		# sgp.norm.group.preference=2),
-# ONLY PRE-ALGEBRA
+# ONLY PRE-ALGEBRA, ALGEBRA_I - NO GRADE LEVEL MATH
 	SEC_MATH_II_2014 = list(
 		sgp.content.areas=c('PRE_ALGEBRA', 'ALGEBRA_I', 'SEC_MATH_II'),
-		sgp.panel.years=as.character(2012:2014),
+		sgp.panel.years=c(2011:2012, "2014"),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT', 'EOCT')),  
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=3),
@@ -225,63 +240,78 @@ SEC_MATH_II_2014.config <- list(
 # ONLY ALGEBRA I
 	SEC_MATH_II_2014 = list(
 		sgp.content.areas=c('ALGEBRA_I','SEC_MATH_II'),
-		sgp.panel.years=as.character(2013:2014),
+		sgp.panel.years=c("2012", "2014"),
 		sgp.grade.sequences=list(c('EOCT', 'EOCT')),  
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=5)
 )
 #############################################################
 SEC_MATH_III_2014.config <- list(
-# REPEATER:
+# NO Skip Year:
   SEC_MATH_III.2014 = list(
-		sgp.content.areas=c('ALGEBRA_II','SEC_MATH_III'),  
+		sgp.content.areas=c('ALGEBRA_I','SEC_MATH_III'),  
 		sgp.panel.years=as.character(2013:2014),
 		sgp.grade.sequences=list(c('EOCT','EOCT')),
 		sgp.exact.grade.progression=TRUE,
 		sgp.norm.group.preference=0),
-# VIA MATH 6, SKIPPING MATH 7 (MATH 8 IS NOT APPLICABLE BECAUSE IT DID NOT BECOME AVAILABLE UNTIL 2012)
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c(rep('MATHEMATICS', 2),'PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2009:2014),
-		sgp.grade.sequences=list(c(5:6,'EOCT','EOCT','EOCT','EOCT')),
+# Skip Year:
+  SEC_MATH_III.2014 = list(
+		sgp.content.areas=c('ALGEBRA_I','SEC_MATH_III'),  
+		sgp.panel.years=c("2012", "2014"),
+		sgp.grade.sequences=list(c('EOCT','EOCT')),
 		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c('MATHEMATICS','PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2010:2014),
-		sgp.grade.sequences=list(c(6,'EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
-# VIA MATH 7
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c(rep('MATHEMATICS',2),'PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2009:2014),
-		sgp.grade.sequences=list(c(6:7,'EOCT','EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=1),
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c('MATHEMATICS','PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2010:2014),
-		sgp.grade.sequences=list(c(7,'EOCT','EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=2),
-#
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c('PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2011:2014),
-		sgp.grade.sequences=list(c('EOCT','EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=3),
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c('ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2012:2014),
-		sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=4),
-	SEC_MATH_III.2014 = list(
-		sgp.content.areas=c('GEOMETRY','SEC_MATH_III'),
-		sgp.panel.years=as.character(2013:2014),
-		sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
-		sgp.exact.grade.progression=TRUE,
-		sgp.norm.group.preference=5)	
+		sgp.norm.group.preference=1)#,
+### NO OTHER PROGRESSIONS CONTAIN MORE THAN THE MIN N OF 3,000
+## REPEATER:
+  # SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c('ALGEBRA_II','SEC_MATH_III'),  
+		# sgp.panel.years=as.character(2013:2014),
+		# sgp.grade.sequences=list(c('EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=0),
+# # VIA MATH 6, SKIPPING MATH 7 (MATH 8 IS NOT APPLICABLE BECAUSE IT DID NOT BECOME AVAILABLE UNTIL 2012)
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS', 2),'PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2009:2014),
+		# sgp.grade.sequences=list(c(5:6,'EOCT','EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c('MATHEMATICS','PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2010:2014),
+		# sgp.grade.sequences=list(c(6,'EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),
+# # VIA MATH 7
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c(rep('MATHEMATICS',2),'PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2009:2014),
+		# sgp.grade.sequences=list(c(6:7,'EOCT','EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=1),
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c('MATHEMATICS','PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2010:2014),
+		# sgp.grade.sequences=list(c(7,'EOCT','EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=2),
+# #
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c('PRE_ALGEBRA','ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2011:2014),
+		# sgp.grade.sequences=list(c('EOCT','EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=3),
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c('ALGEBRA_I','GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2012:2014),
+		# sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=4),
+	# SEC_MATH_III.2014 = list(
+		# sgp.content.areas=c('GEOMETRY','SEC_MATH_III'),
+		# sgp.panel.years=as.character(2013:2014),
+		# sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
+		# sgp.exact.grade.progression=TRUE,
+		# sgp.norm.group.preference=5)	
 )

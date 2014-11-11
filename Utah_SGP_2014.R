@@ -63,14 +63,16 @@ Utah_SGP <- updateSGP(
 		years='2014',
 		grades=3:11,
 		steps = c("prepareSGP", "analyzeSGP"),
-		save.intermediate.results=FALSE,
-		simulate.sgps=FALSE,
+		sgp.percentiles = TRUE,
 		sgp.projections = FALSE,
 		sgp.projections.lagged = FALSE,
 		sgp.percentiles.baseline = FALSE,
 		sgp.projections.baseline = FALSE,
 		sgp.projections.lagged.baseline = FALSE,
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PERCENTILES=22)))
+		simulate.sgps=FALSE,
+		save.intermediate.results=FALSE,
+		goodness.of.fit.print="GROB",
+		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PERCENTILES=12)))
 
 # 8. LOAD 2014 EOCT FILES CONFIGURATION:
 source("MATHEMATICS.R")
@@ -82,9 +84,9 @@ EARTH_SCIENCE_2014.config,
 BIOLOGY_2014.config, 
 CHEMISTRY_2014.config, 
 PHYSICS_2014.config,
-SECONDARY_MATH_I_2014.config,
-SECONDARY_MATH_II_2014.config,
-SECONDARY_MATH_III_2014.config)
+SEC_MATH_I_2014.config,
+SEC_MATH_II_2014.config,
+SEC_MATH_III_2014.config)
 
 # 10. PRODUCE SGP FOR COURSE-BASED TESTS
 Utah_SGP <- analyzeSGP(
@@ -96,7 +98,7 @@ sgp.projections.lagged = FALSE,
 sgp.percentiles.baseline = FALSE,
 sgp.projections.baseline = FALSE,
 sgp.projections.lagged.baseline = FALSE,
-parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PERCENTILES=20)))
+parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PERCENTILES=12)))
 
 save(Utah_SGP, file="Utah_SGP.Rdata")
 
@@ -104,8 +106,13 @@ save(Utah_SGP, file="Utah_SGP.Rdata")
 Utah_SGP <- combineSGP(
 Utah_SGP,
 years='2014',
+sgp.projections = FALSE,
+sgp.projections.lagged = FALSE,
+sgp.percentiles.baseline = FALSE,
+sgp.projections.baseline = FALSE,
+sgp.projections.lagged.baseline = FALSE)
 # max.sgp.target.years.forward=3) # There are no lagged projections due to assessment program change
-parallel.config=NULL # Parallel configuration only used when sgp.target.scale.scores is set to TRUE
+# parallel.config=NULL # Parallel configuration only used when sgp.target.scale.scores is set to TRUE
 save(Utah_SGP, file="Utah_SGP.Rdata")
 
 # 12. CALCULATE SUMMARY STATISTICS TO BE STORED IN DATA OBJECT AND USED ELSEWHERE IN APPLICATION
@@ -117,7 +124,7 @@ save(Utah_SGP, file="Utah_SGP.Rdata")
 # 13. EXPORT DATA FROM SGP OBJECT @Data SLOT AS PIPE-DELIMITED FILE IN VARIOUS FORMATS
 outputSGP(
 Utah_SGP,
-output.type = c("LONG_Data", "WIDE_Data", "SchoolView"),
+output.type = c("LONG_Data", "WIDE_Data"),
 outputSGP.directory = "Data")
 
 # 14. LOAD SGP OUTPUT INTO DATA WAREHOUSE
