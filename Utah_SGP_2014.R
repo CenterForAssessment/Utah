@@ -46,15 +46,12 @@ dbhandle <- odbcDriverConnect('driver={SQL Server}; server=acsdbstage; database=
 Utah_Data_LONG_2014 <- sqlQuery(dbhandle, 'SELECT * FROM v_sgp_longfile')
 Utah_Data_LONG_2014 <- data.frame(Utah_Data_LONG_2014) # This step may be redundant?  Check the class first to see if it is already a data.frame:  class(Utah_Data_LONG_2014)
 
-# 6. TRANSFORM PROFICIENCY LEVEL VARIABLES TO R FACTORS
-Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL <- factor(Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL, levels=1:4, labels=c("Level 1", "Level 2", "Level 3", "Level 4"), ordered=TRUE)
-Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL_FULL <- Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL 
-levels(Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL) <- c("BP", "BP", "P", "A")
-
-save(Utah_Data_LONG_2014, file="Utah_Data_LONG_2014.Rdata")
+# 6. DATA CLEANING AND PREP
+#    SEE THE R SCRIPT Utah_Data_LONG_2014.R FOR DETAILS.
 
 # 7. USE updateSGP FUNCTION TO A) ADD 2014 LONG DATA TO THE EXISTING SGP (S4) DATA OBJECT (prepareSGP step) and B) PRODUCE SGP FOR GRADE-BASED TESTS (analyzeSGP step):
-load("Utah_SGP.Rdata") # This is the SGP object Andrew produced in Fall 2013
+load("Utah_SGP.Rdata") # This is the SGP object Andrew produced in Fall 2013 and cleaned in Utah_Data_LONG_2014.R
+load("Utah_Data_LONG_2014.Rdata") # This is the 2014 data object produced in Utah_Data_LONG_2014.R
 
 Utah_SGP <- updateSGP(
 		what_sgp_object = Utah_SGP,

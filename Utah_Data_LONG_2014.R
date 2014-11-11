@@ -11,9 +11,9 @@ library(data.table)
 ### Read in USOE .csv file
 Utah_Data_LONG_2014 <- fread("~/Dropbox/SGP/Utah/Data/Base_Files/SGP_Longfile_2.csv", colClasses=rep("character", 27))
 
-### Final cleaning needed for File Randy uploaded 10/31/14
+### Final cleaning needed for File Randy uploaded 11/09/14
 
-##  All 0s appear to be Algebra II scores of 0.  All are INVALID CASES too
+# TRANSFORM PROFICIENCY LEVEL VARIABLES TO R FACTORS
 Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL <- factor(Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL, levels=0:4, 
 	labels=c(NA, "Level 1", "Level 2", "Level 3", "Level 4"), ordered=TRUE)
 
@@ -24,6 +24,7 @@ levels(Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL) <- c(NA, "BP", "BP", "P", "A")
 table(Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL, exclude=NULL)
 table(Utah_Data_LONG_2014$ACHIEVEMENT_LEVEL_FULL, exclude=NULL)
 
+# Make all values of GT_STATUS NA (character values 'NULL' in data provided)
 Utah_Data_LONG_2014$GT_STATUS <- NA
 
 ###  Save data object.
