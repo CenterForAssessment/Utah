@@ -45,6 +45,7 @@ require(RODBC)
 dbhandle <- odbcDriverConnect('driver={SQL Server}; server=acsdbstage; database=be_upass;')
 Utah_Data_LONG_2014 <- sqlQuery(dbhandle, 'SELECT * FROM v_sgp_longfile')
 Utah_Data_LONG_2014 <- data.frame(Utah_Data_LONG_2014) # This step may be redundant?  Check the class first to see if it is already a data.frame:  class(Utah_Data_LONG_2014)
+write.csv(Utah_Data_LONG_2014, file='SGP_Longfile_2.csv', row.names=FALSE)
 
 # 6. DATA CLEANING AND PREP
 #    SEE THE R SCRIPT Utah_Data_LONG_2014.R FOR DETAILS.
@@ -121,8 +122,7 @@ save(Utah_SGP, file="Utah_SGP.Rdata")
 # 13. EXPORT DATA FROM SGP OBJECT @Data SLOT AS PIPE-DELIMITED FILE IN VARIOUS FORMATS
 outputSGP(
 Utah_SGP,
-output.type = c("LONG_Data", "WIDE_Data"),
-outputSGP.directory = "Data")
+output.type = c("LONG_Data", "WIDE_Data"))
 
 # 14. LOAD SGP OUTPUT INTO DATA WAREHOUSE
 # SGP/Data/Utah_SGP_LONG_Data.txt -> be_upass.acsdbstage.sgp_raw
