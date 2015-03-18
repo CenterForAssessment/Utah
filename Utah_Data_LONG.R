@@ -36,5 +36,3 @@ levels(Utah_Data_LONG$ETHNICITY) <- c("African American", "African American", "A
 
 ###  Save data object.
 save(Utah_Data_LONG, file="Utah_Data_LONG-2013_FINAL.Rdata")
-
-
