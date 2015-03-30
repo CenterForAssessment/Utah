@@ -114,9 +114,8 @@ sgp.projections.lagged.baseline = FALSE)
 save(Utah_SGP, file="Utah_SGP.Rdata")
 
 # 12. CALCULATE SUMMARY STATISTICS TO BE STORED IN DATA OBJECT AND USED ELSEWHERE IN APPLICATION
-Utah_SGP <- summarizeSGP(
-Utah_SGP,
-parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(SUMMARY=14)))
+Utah_SGP <- summarizeSGP(Utah_SGP,
+  parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(SUMMARY=15)))
 save(Utah_SGP, file="Utah_SGP.Rdata")
 
 # 13. EXPORT DATA FROM SGP OBJECT @Data SLOT AS PIPE-DELIMITED FILE IN VARIOUS FORMATS

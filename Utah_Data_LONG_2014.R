@@ -46,5 +46,3 @@ levels(Utah_SGP@Data$GT_STATUS) <- c("GT: No", "GT: Yes")
 
 ###  Save data object.
 save(Utah_SGP, file="Data/Utah_SGP.Rdata")
-
-
