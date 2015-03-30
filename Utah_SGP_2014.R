@@ -108,14 +108,48 @@ sgp.projections = FALSE,
 sgp.projections.lagged = FALSE,
 sgp.percentiles.baseline = FALSE,
 sgp.projections.baseline = FALSE,
+<<<<<<< HEAD
 sgp.projections.lagged.baseline = FALSE)
 # max.sgp.target.years.forward=3) # There are no lagged projections due to assessment program change
 # parallel.config=NULL # Parallel configuration only used when sgp.target.scale.scores is set to TRUE
 save(Utah_SGP, file="Utah_SGP.Rdata")
 
 # 12. CALCULATE SUMMARY STATISTICS TO BE STORED IN DATA OBJECT AND USED ELSEWHERE IN APPLICATION
-Utah_SGP <- summarizeSGP(Utah_SGP,
-  parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(SUMMARY=15)))
+Utah_SGP <- summarizeSGP(
+Utah_SGP,
+parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(SUMMARY=14)))
+save(Utah_SGP, file="Utah_SGP.Rdata")
+
+# 13. EXPORT DATA FROM SGP OBJECT @Data SLOT AS PIPE-DELIMITED FILE IN VARIOUS FORMATS
+outputSGP(
+Utah_SGP,
+output.type = c("LONG_Data", "WIDE_Data"),
+outputSGP.directory = "Data")
+
+# 14. LOAD SGP OUTPUT INTO DATA WAREHOUSE
+# SGP/Data/Utah_SGP_LONG_Data.txt -> be_upass.acsdbstage.sgp_raw
+
+# 15. CONSTRUCT INDIVIDUAL STUDENT REPORT (STUDENT GROWTH PLOTS)
+# This may be commented out in the initial run
+visualizeSGP(
+Utah_SGP,
+state = "UT",
+plot.types = c("studentGrowthPlot"),
+sgPlot.save.sgPlot.data = TRUE,
+sgPlot.front.page = "AD_SGP_GUIDE.pdf", # Serves as introduction to the report
+# sgPlot.cleanup = FALSE, # If not set to FALSE, all reports will be deleted on completion of run.  This shouldn't be an issue with MiKTeX installed.
+sgPlot.produce.plots = TRUE,
+sgPlot.zip = TRUE,
+=======
+sgp.projections.lagged.baseline = FALSE)
+# max.sgp.target.years.forward=3) # There are no lagged projections due to assessment program change
+# parallel.config=NULL # Parallel configuration only used when sgp.target.scale.scores is set to TRUE
+save(Utah_SGP, file="Utah_SGP.Rdata")
+
+# 12. CALCULATE SUMMARY STATISTICS TO BE STORED IN DATA OBJECT AND USED ELSEWHERE IN APPLICATION
+Utah_SGP <- summarizeSGP(
+Utah_SGP,
+parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(SUMMARY=14)))
 save(Utah_SGP, file="Utah_SGP.Rdata")
 
 # 13. EXPORT DATA FROM SGP OBJECT @Data SLOT AS PIPE-DELIMITED FILE IN VARIOUS FORMATS
@@ -137,4 +171,5 @@ sgPlot.front.page = "AD_SGP_GUIDE.pdf", # Serves as introduction to the report
 # sgPlot.cleanup = FALSE, # If not set to FALSE, all reports will be deleted on completion of run.  This shouldn't be an issue with MiKTeX installed.
 sgPlot.produce.plots = TRUE,
 sgPlot.zip = TRUE,
+>>>>>>> 5f85ffb36ad6992e32df5ef965214a0fd5b91be7
 parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=20))
