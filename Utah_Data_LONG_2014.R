@@ -1,6 +1,6 @@
 ##########################################################
 ####
-#### Code for preparation of Utah LONG data
+#### Code for cleaning and preparation of Utah LONG data
 ####
 ##########################################################
 
