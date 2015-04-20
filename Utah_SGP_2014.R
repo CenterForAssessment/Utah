@@ -79,7 +79,9 @@ Utah_SGP <- updateSGP(
 		simulate.sgps=FALSE,
 		save.intermediate.results=FALSE,
 		goodness.of.fit.print="GROB",
-		parallel.config=list(BACKEND="FOREACH", TYPE="doParallel", WORKERS=list(PERCENTILES=12)))
+		parallel.config=list(
+			BACKEND="FOREACH", TYPE="doParallel",
+			WORKERS=list(PERCENTILES=12)))
 
 # 8. LOAD 2014 EOCT FILES CONFIGURATION:
 
@@ -109,8 +111,7 @@ Utah_SGP <- analyzeSGP(
 		sgp.projections.baseline = FALSE,
 		sgp.projections.lagged.baseline = FALSE,
 		parallel.config=list(
-			BACKEND="FOREACH",
-			TYPE="doParallel", 
+			BACKEND="FOREACH", TYPE="doParallel", 
 			WORKERS=list(PERCENTILES=12)))
 
 save(Utah_SGP, file="Utah_SGP.Rdata")
@@ -133,8 +134,7 @@ save(Utah_SGP, file="Utah_SGP.Rdata")
 Utah_SGP <- summarizeSGP(
 		Utah_SGP,
 		parallel.config=list(
-			BACKEND="FOREACH",
-			TYPE="doParallel", 
+			BACKEND="FOREACH", TYPE="doParallel", 
 			WORKERS=list(SUMMARY=14)))
 
 save(Utah_SGP, file="Utah_SGP.Rdata")
@@ -160,6 +160,5 @@ visualizeSGP(
 		sgPlot.produce.plots = TRUE,
 		sgPlot.zip = TRUE,
 		parallel.config=list(
-			BACKEND="FOREACH", 
-			TYPE="doParallel", 
+			BACKEND="FOREACH", TYPE="doParallel", 
 			WORKERS=20))
