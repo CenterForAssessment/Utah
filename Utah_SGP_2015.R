@@ -85,9 +85,9 @@ load("Data/Base_Files/Utah_Data_LONG_2015.Rdata")
 ##  Source the 2014 config files and creat list to supply to sgp.config argument.
 ##  Note:  the 2014 EOGT config file was writtin in 2015 for this purpose.
 
-source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOGT/UT_EOGT_2014.R")
-source('/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOCT/2014/MATHEMATICS.R')
-source('/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOCT/2014/SCIENCE.R')
+source("SGP_CONFIG/EOGT/UT_EOGT_2014.R")
+source('SGP_CONFIG/EOCT/2014/MATHEMATICS.R')
+source('SGP_CONFIG/EOCT/2014/SCIENCE.R')
 
 UT.2014.config <- c(
 	ELA_2014.config,
@@ -103,7 +103,7 @@ UT.2014.config <- c(
 	SEC_MATH_II_2014.config,
 	SEC_MATH_III_2014.config)
 
-setwd("/media/Data/Dropbox/SGP/Utah")
+setwd("Utah")
 
 ##  Don't enforce max order for 2014.  Set to 5 for 2015 later.
 ##  The 2014 ELA SGPs contain up to 6 priors.
@@ -133,9 +133,9 @@ Utah_SGP <- updateSGP(
 
 # 7B.  2015 FAY STUDENTS
 
-source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOGT/UT_EOGT_2015.R")
-source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOCT/2015/SCIENCE.R")
-source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOCT/2015/MATHEMATICS.R")
+source("SGP_CONFIG/EOGT/UT_EOGT_2015.R")
+source("SGP_CONFIG/EOCT/2015/SCIENCE.R")
+source("SGP_CONFIG/EOCT/2015/MATHEMATICS.R")
 
 UT.config <- c(
 	ELA_2015.config, 
@@ -178,7 +178,7 @@ Utah_SGP <- updateSGP(
 # 7C.  2015 NON-FAY STUDENTS
 
 ## Load the non-FAY cleaned data
-load("/media/Data/Dropbox/SGP/Utah/Data/Base_Files/Utah_Data_LONG_2015_nonFAY.Rdata")
+load("Data/Base_Files/Utah_Data_LONG_2015_nonFAY.Rdata")
 
 Utah_SGP <- updateSGP(
 	what_sgp_object=Utah_SGP,

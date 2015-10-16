@@ -12,7 +12,7 @@ library(data.table)
 ### Read in USOE .csv file  
 ##  NOTE:  The text "ASCENT, INC.," had to be changed to "ASCENT INC." (remove commas - caused problems with the .CSV format)
 
-Utah_Data_LONG_2015 <- fread("/media/Data/Dropbox/SGP/Utah/Data/Base_Files/SGP_Longfile_2015.csv", colClasses=rep("character", 20))
+Utah_Data_LONG_2015 <- fread("Data/Base_Files/SGP_Longfile_2015.csv", colClasses=rep("character", 20))
 setnames(Utah_Data_LONG_2015, c('VALID_CASE', 'SchoolYear', 'StudentID', 'TestSubjectID', 'TestSubject', 'SubjectArea', 'StudentGradeLevel', 'YEAR', 'ID', 'CONTENT_AREA', 'GRADE', 'SCALE_SCORE', 'ACHIEVEMENT_LEVEL', 'DISTRICT_NUMBER', 'SCHOOL_NUMBER', 'DISTRICT_NAME', 'SCHOOL_NAME', 'LAST_NAME', 'FIRST_NAME', 'SSID'))
 
 Utah_Data_LONG_2015[, SCHOOL_ENROLLMENT_STATUS := 'Enrolled School: Yes']
@@ -69,7 +69,7 @@ Utah_Data_LONG_2015 <- ALL_SAGE[YEAR %in% c(2014, 2015)][, names(Utah_Data_LONG_
 Utah_Data_LONG_2015 <- Utah_Data_LONG_2015[-which(YEAR == 2014 & NOTES == "Original data.")]
 
 ###  Save data object.
-save(Utah_Data_LONG_2015, file="/media/Data/Dropbox/SGP/Utah/Data/Base_Files/Utah_Data_LONG_2015.Rdata")
+save(Utah_Data_LONG_2015, file="Data/Base_Files/Utah_Data_LONG_2015.Rdata")
 
 
 ###  Add the additional priors for 2014 non-FAY into the Utah_SGP@Data slot and re-save SGP object
@@ -79,7 +79,7 @@ Utah_SGP@Data[, EMH_LEVEL := NULL]
 Utah_SGP@Data[, GRADE_PRIOR := NULL]
 Utah_SGP@Data[, ACHIEVEMENT_LEVEL_PRIOR2 := NULL]
 
-save(Utah_SGP, file="/media/Data/Dropbox/SGP/Utah_SGP2.Rdata")
+save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
 ###  Create Knots and Boundaries for SAGE Tests
 
@@ -87,15 +87,10 @@ ALL_SAGE[, SCALE_SCORE := as.numeric(SCALE_SCORE)]
 sage.kbs <- createKnotsBoundaries(ALL_SAGE[YEAR %in% c(2014, 2015)])
 str(sage.kbs[["MATHEMATICS"]])
 
-extendrange(c(100,999), f=0.1)
 
-
-library(SGP)
-library(data.table)
 ###  Format and clean the Non-FAY data
 
-Utah_Data_LONG_2015_nonFAY <- fread("/media/Data/Dropbox/SGP/Utah/Data/Base_Files/SGP 2015 Supplemental - Missing SGP Longfile (plus nonFAY 2008-2009).csv", colClasses=rep("character", 22))
-#Utah_Data_LONG_2015_nonFAY <- fread("~/Dropbox/SGP/Utah/Data/Base_Files/SGP 2015 Supplemental - Missing SGP Longfile (plus nonFAY 2008-2009).csv", colClasses=rep("character", 22))
+Utah_Data_LONG_2015_nonFAY <- fread("Data/Base_Files/SGP 2015 Supplemental - Missing SGP Longfile (plus nonFAY 2008-2009).csv", colClasses=rep("character", 22))
 
 Utah_Data_LONG_2015_nonFAY[, SCHOOL_ENROLLMENT_STATUS := 'Enrolled School: No']
 Utah_Data_LONG_2015_nonFAY[, DISTRICT_ENROLLMENT_STATUS := 'Enrolled District: No']
@@ -124,5 +119,5 @@ setkeyv(nonFAY, key(UT))
 dim(nonFAY[!duplicated(nonFAY) & NOTES != 'Student Non-FAY.'])
 
 Utah_Data_LONG_2015_nonFAY <- nonFAY[!duplicated(nonFAY) & NOTES == 'Student Non-FAY.' & YEAR == '2015']
-save(Utah_Data_LONG_2015_nonFAY, file="/media/Data/Dropbox/SGP/Utah/Data/Base_Files/Utah_Data_LONG_2015_nonFAY.Rdata")
+save(Utah_Data_LONG_2015_nonFAY, file="Data/Base_Files/Utah_Data_LONG_2015_nonFAY.Rdata")
 
