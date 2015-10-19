@@ -154,6 +154,9 @@ UT.config <- c(
 ##  Reset max.order.for.percentile to 5 again
 SGPstateData[["UT"]][["SGP_Configuration"]][["max.order.for.percentile"]] <- 5
 
+##  Reset return.prior.scale.score.standardized to TRUE.  Gets set to FALSE in above call to updateSGP
+SGPstateData[["UT"]][["SGP_Configuration"]][["return.prior.scale.score.standardized"]] <- TRUE
+
 ##  Run analyses - add 2015 data through prepareSGP step and 
 ##  calculate percentiles and projections through analyzeSGP step
 
