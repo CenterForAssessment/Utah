@@ -1,0 +1,696 @@
+\documentclass[12pt]{article}
+\usepackage[margin=0.915in]{geometry}
+
+%%%
+%%%             BEGIN Damian Preamble
+%%%   Preface commands for pdfLaTeX output
+%%%
+
+%%
+%% Calling relevant packages
+%%
+
+\usepackage[%
+pdfstartview={FitV}, 
+colorlinks=true,
+menucolor=DarkGray,
+linkcolor=MidnightBlue,
+citecolor=MidnightBlue,
+urlcolor=OrangeRed]{hyperref}
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf}
+
+%% From pandoc default: Begin
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+ %% From pandoc default: Begin
+
+%\usepackage[hyper]{apacite}
+\usepackage[svgnames]{xcolor}
+\usepackage{rotating,bm,amsmath,amsfonts,amssymb,indentfirst,lscape,fancybox,fancyvrb,listings,pdfpages}
+\usepackage[pagestyles]{titlesec}
+%\usepackage{ucs}
+
+%%
+%% Format changes for chapter and section commands
+%%
+
+%\input{onesidedheader.tex}
+
+%%
+%% Chapter declarations
+%%
+
+
+%%
+%% Section declarations
+%%
+
+%%
+%% Subsection declarations
+%%
+
+
+%%
+%% Subsubsection declarations
+%%
+
+%%
+%% Listings setup information
+%%
+
+\lstset{language=R, frame=ltrb, framesep=5pt, xleftmargin=12pt, xrightmargin=5pt,
+       numbers=none, breaklines=true, fancyvrb=true,
+       breakatwhitespace=true, captionpos=b, abovecaptionskip=1.5ex,
+       backgroundcolor=\color{Cornsilk},
+       basicstyle=\small\color{DarkSlateGrey},
+       keywordstyle=\ttfamily\color{DarkSlateGrey},
+       identifierstyle=\ttfamily\color{DarkSlateGrey}\bfseries, 
+       commentstyle=\color{Fuchsia},
+       stringstyle=\ttfamily,
+       showstringspaces=false}
+
+%%
+%% Header and Footer Specification 
+%% TO ACTIVATE THE HEADER/FOOTER, ONE MUST PLACE \pagestyle{plain} 
+%% followed by \pagestyle{damian} in the document
+%%
+
+\widenhead{0.14in}{0.14in}
+
+\renewpagestyle{plain}{}
+
+\newpagestyle{damian}[\sffamily]{
+\headrule
+\sethead[\sectiontitle][\chaptertitle][\thepage]
+  {\sectiontitle}{\chaptertitle}{\thepage}
+
+\footrule
+\setfoot[][\raisebox{-.85ex}[0pt]{\NavigationBar}][]
+{}{\raisebox{-.85ex}[0pt]{\NavigationBar}}{}
+	\newcommand{\NavigationBar}{%
+	  \Acrobatmenu{PrevPage}{Previous}\hspace{.5cm}
+	  \Acrobatmenu{NextPage}{Next}\hspace{.5cm}
+	  \Acrobatmenu{FirstPage}{First}\hspace{.5cm}
+	  \Acrobatmenu{LastPage}{Last}\hspace{.5cm}
+	  \Acrobatmenu{GoBack}{Back}\hspace{.5cm}
+	  \Acrobatmenu{Quit}{Quit}%
+}
+}
+
+%%
+%% Custom specifications, commands, and colors
+%%
+
+\definecolor{DarkGray}{cmyk}{0,0,0,.624}
+\newcommand{\R}{{\sffamily \textup{R}}}
+\newcommand{\MlwiN}{{\sffamily \textup{MlwiN}}}
+\newcommand{\Sweave}{{\sffamily \textup{Sweave}}}
+\newcommand{\sssty}{\scriptscriptstyle}
+\newcommand{\bigdot}{\ensuremath{\hspace{-.3ex}\bm{.}\hspace{-.05ex}}}
+\renewcommand{\abstractname}{Abstract}
+\renewcommand{\lstlistingname}{\R~Code Example}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\fboxsep}{4mm}
+\setlength{\fboxrule}{0.4pt}
+
+%%
+%%		END Damian Preamble
+%%
+
+\hypersetup{%
+  pdftitle={ Appendix A to the 2014 Utah Growth Model Report },
+  pdfauthor={},
+  pdfcreator={},
+  pdfkeywords={},
+  bookmarks=true} % pdfproducer={pdfLaTeX}
+
+\usepackage{caption}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{dcolumn}
+
+\setcounter{secnumdepth}{3}
+
+
+
+
+%\usepackage{pdfdraftcopy}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% \usepackage{bbm}
+\DeclareMathAlphabet{\mathbbm}{U}{bbm}{m}{n}
+\SetMathAlphabet\mathbbm{bold}{U}{bbm}{bx}{n}
+\DeclareMathAlphabet{\mathbbmss}{U}{bbmss}{m}{n}
+\SetMathAlphabet\mathbbmss{bold}{U}{bbmss}{bx}{n}
+\DeclareMathAlphabet{\mathbbmtt}{U}{bbmtt}{m}{n}
+
+\begin{document}
+
+
+\newcommand{\pl}[1]{\textsf{PL#1}}
+\newcommand{\Cov}{\ensuremath{\mbox{\textsf{Cov}}}}
+\newcommand{\Diag}{\ensuremath{\mbox{\textsf{Diag}}}}
+\newcommand{\Bias}{\ensuremath{\mbox{\textsf{Bias}}}}
+\newcommand{\Astar}[1]{\ensuremath{#1^{^*}}}
+\thispagestyle{plain}
+\pagestyle{damian}
+
+\title{\textsf{\LARGE Appendix A to the 2014 Utah Growth Model Report  \\\medskip Utah Student Growth Model Fit Plots }}
+\author{}
+
+ \date{June 2015} 
+
+\maketitle
+
+\newpage
+
+
+\section{Student Growth Percentile Fit
+Plots}\label{student-growth-percentile-fit-plots}
+
+A goodness of fit plot is produced for each unique analysis run in 2014.
+Each analysis is defined by the grade and content area for the
+grade-level analyses and the unique course progression sequences for the
+end of course test (EOCT) subjects.
+
+Each fit plot contains three panels. The top panel is a mosaic plot that
+shows the percentage of students that fall into each proficiency level,
+and the location of the 10\(^{th}\) through 90\(^{th}\) quantiles of the
+Student Growth Percentile (SGP) distribution represented as dashed white
+lines (with the exception of the solid white line for the
+median/50\(^{th}\) percentile). The bottom left panel shows the
+empirical distribution of SGPs given prior scale score deciles in the
+form of a 10 by 10 cell grid. Percentages of student growth percentiles
+between the 10\(^{th}\), 20\(^{th}\), 30\(^{th}\), 40\(^{th}\),
+50\(^{th}\), 60\(^{th}\), 70\(^{th}\), 80\(^{th}\), and 90\(^{th}\)
+percentiles were calculated based upon the decile of the prior year's
+scaled score (the total students in each for the analyses varies
+depending on grade and subject). Deviations from perfect fit are
+indicated by red and blue shading. The further above 10 the darker the
+red, and the further below 10 the darker the blue. A more detailed
+discussion about the reasons for and implications of model misfit for
+the various SGP analysis types can be found in the ``Goodness of Fit''
+section of the 2014 Utah Student Growth Model report. The bottom right
+panel of each plot is a Q-Q plot which compares the observed
+distribution of SGPs with the theoretical (uniform) distribution.
+
+\section{SAGE Grade-Level Plots}\label{sage-grade-level-plots}
+
+\subsection{ELA}\label{ela}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_4;2013_ELA_3.png}
+\caption{Goodness of Fit Plot for Grade 4 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_5;2013_ELA_4;2012_ELA_3.png}
+\caption{Goodness of Fit Plot for Grade 5 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_6;2013_ELA_5;2012_ELA_4;2011_ELA_3.png}
+\caption{Goodness of Fit Plot for Grade 4 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_7;2013_ELA_6;2012_ELA_5;2011_ELA_4;2010_ELA_3.png}
+\caption{Goodness of Fit Plot for Grade 7 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_8;2013_ELA_7;2012_ELA_6;2011_ELA_5;2010_ELA_4;2009_ELA_3.png}
+\caption{Goodness of Fit Plot for Grade 8 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_9;2013_ELA_8;2012_ELA_7;2011_ELA_6;2010_ELA_5;2009_ELA_4;2008_ELA_3.png}
+\caption{Goodness of Fit Plot for Grade 9 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_10;2013_ELA_9;2012_ELA_8;2011_ELA_7;2010_ELA_6;2009_ELA_5;2008_ELA_4.png}
+\caption{Goodness of Fit Plot for Grade 10 ELA, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/ELA.2014/2014_ELA_11;2013_ELA_10;2012_ELA_9;2011_ELA_8;2010_ELA_7;2009_ELA_6;2008_ELA_5.png}
+\caption{Goodness of Fit Plot for Grade 11 ELA, 2014.}
+\end{figure}
+
+\clearpage 
+
+\subsection{Mathematics}\label{mathematics}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/MATHEMATICS.2014/2014_MATH_4;2013_MATH_3.png}
+\caption{Goodness of Fit Plot for Grade 4 Mathematics, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/MATHEMATICS.2014/2014_MATH_5;2013_MATH_4;2012_MATH_3.png}
+\caption{Goodness of Fit Plot for Grade 5 Mathematics, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/MATHEMATICS.2014/2014_MATH_6;2013_MATH_5;2012_MATH_4;2011_MATH_3.png}
+\caption{Goodness of Fit Plot for Grade 6 Mathematics, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/MATHEMATICS.2014/2014_MATH_7;2013_MATH_6;2012_MATH_5;2011_MATH_4;2010_MATH_3.png}
+\caption{Goodness of Fit Plot for Grade 7 Mathematics, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/MATHEMATICS.2014/2014_MATH_8;2013_MATH_7;2012_MATH_6;2011_MATH_5;2010_MATH_4;2009_MATH_3.png}
+\caption{Goodness of Fit Plot for Grade 8 Mathematics, 2014.}
+\end{figure}
+
+\clearpage 
+
+\subsection{Science}\label{science}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SCIENCE.2014/2014_SCIENCE_5;2013_SCIENCE_4.png}
+\caption{Goodness of Fit Plot for Grade 5 Science, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SCIENCE.2014/2014_SCIENCE_6;2013_SCIENCE_5;2012_SCIENCE_4.png}
+\caption{Goodness of Fit Plot for Grade 6 Science, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SCIENCE.2014/2014_SCIENCE_7;2013_SCIENCE_6;2012_SCIENCE_5;2011_SCIENCE_4.png}
+\caption{Goodness of Fit Plot for Grade 7 Science, 2014.}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SCIENCE.2014/2014_SCIENCE_8;2013_SCIENCE_7;2012_SCIENCE_6;2011_SCIENCE_5;2010_SCIENCE_4.png}
+\caption{Goodness of Fit Plot for Grade 8 Science, 2014.}
+\end{figure}
+
+\section{EOCT Goodness of Fit Plots}\label{eoct-goodness-of-fit-plots}
+
+\subsection{Earth Science}\label{earth-science}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/EARTH_SCIENCE.2014/2014_EARTH_SCIENCE_EOCT;2013_SCIENCE_8;2012_SCIENCE_7;2011_SCIENCE_6;2010_SCIENCE_5;2009_SCIENCE_4.png}
+\caption{Goodness of Fit Plot for 2014 Earth Science (Priors - 2013
+Science Grade 8, 2012 Science Grade 7, 2011 Science Grade 6, 2010
+Science Grade 5, 2009 Science Grade 4)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/EARTH_SCIENCE.2014/2014_EARTH_SCIENCE_EOCT;2013_SCIENCE_8;2012_SCIENCE_7;2011_SCIENCE_6;2010_SCIENCE_5.png}
+\caption{Goodness of Fit Plot for 2014 Earth Science (Priors - 2013
+Science Grade 8, 2012 Science Grade 7, 2011 Science Grade 6, 2010
+Science Grade 5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/EARTH_SCIENCE.2014/2014_EARTH_SCIENCE_EOCT;2013_SCIENCE_8;2012_SCIENCE_7;2011_SCIENCE_6.png}
+\caption{Goodness of Fit Plot for 2014 Earth Science (Priors - 2013
+Science Grade 8, 2012 Science Grade 7, 2011 Science Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/EARTH_SCIENCE.2014/2014_EARTH_SCIENCE_EOCT;2013_SCIENCE_8;2012_SCIENCE_7.png}
+\caption{Goodness of Fit Plot for 2014 Earth Science (Priors - 2013
+Science Grade 8, 2012 Science Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/EARTH_SCIENCE.2014/2014_EARTH_SCIENCE_EOCT;2013_SCIENCE_8.png}
+\caption{Goodness of Fit Plot for 2014 Earth Science (Priors - 2013
+Science Grade 8)}
+\end{figure}
+
+\clearpage 
+
+\subsection{Biology}\label{biology}
+
+\subsubsection{Earth Science as Imediate
+Prior}\label{earth-science-as-imediate-prior}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_EARTH_SCIENCE_EOCT;2012_SCIENCE_8;2011_SCIENCE_7;2010_SCIENCE_6;2009_SCIENCE_5.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Earth
+Science, 2012 Science Grade 8, 2011 Science Grade 7, 2010 Science Grade
+6, 2009 Science Grade 5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_EARTH_SCIENCE_EOCT;2012_SCIENCE_8;2011_SCIENCE_7;2010_SCIENCE_6.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Earth
+Science, 2012 Science Grade 8, 2011 Science Grade 7, 2010 Science Grade
+6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_EARTH_SCIENCE_EOCT;2012_SCIENCE_8;2011_SCIENCE_7.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Earth
+Science, 2012 Science Grade 8, 2011 Science Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_EARTH_SCIENCE_EOCT;2012_SCIENCE_8.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Earth
+Science, 2012 Science Grade 8)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_EARTH_SCIENCE_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Earth
+Science)}
+\end{figure}
+
+\clearpage 
+
+\subsubsection{Grade 8 Science as Imediate
+Prior}\label{grade-8-science-as-imediate-prior}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_SCIENCE_8;2012_SCIENCE_7;2011_SCIENCE_6;2010_SCIENCE_5;2009_SCIENCE_4.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Science
+Grade 8, 2012 Science Grade 7, 2011 Science Grade 6, 2010 Science Grade
+5, 2009 Science Grade 4)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_SCIENCE_8;2012_SCIENCE_7;2011_SCIENCE_6;2010_SCIENCE_5.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Science
+Grade 8, 2012 Science Grade 7, 2011 Science Grade 6, 2010 Science Grade
+5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_SCIENCE_8;2012_SCIENCE_7;2011_SCIENCE_6.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Science
+Grade 8, 2012 Science Grade 7, 2011 Science Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_SCIENCE_8;2012_SCIENCE_7.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Science
+Grade 8, 2012 Science Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/BIOLOGY.2014/2014_BIOLOGY_EOCT;2013_SCIENCE_8.png}
+\caption{Goodness of Fit Plot for 2014 Biology (Priors - 2013 Science
+Grade 8)}
+\end{figure}
+
+\clearpage 
+
+\subsection{Chemistry}\label{chemistry}
+
+\subsubsection{Biology as Imediate Prior, Grade 8 Science
+Secondary}\label{biology-as-imediate-prior-grade-8-science-secondary}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_SCIENCE_8;2011_SCIENCE_7;2010_SCIENCE_6;2009_SCIENCE_5.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Science Grade 8, 2011 Science Grade 7, 2010 Science Grade 6, 2009
+Science Grade 5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_SCIENCE_8;2011_SCIENCE_7;2010_SCIENCE_6.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Science Grade 8, 2011 Science Grade 7, 2010 Science Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_SCIENCE_8;2011_SCIENCE_7.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Science Grade 8, 2011 Science Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_SCIENCE_8.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Science Grade 8)}
+\end{figure}
+
+\clearpage 
+
+\subsubsection{Biology as Imediate Prior, Earth Science
+Secondary}\label{biology-as-imediate-prior-earth-science-secondary}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_EARTH_SCIENCE_EOCT;2011_SCIENCE_8;2010_SCIENCE_7;2009_SCIENCE_6.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Earth Science, 2011 Science Grade 8, 2010 Science Grade 7, 2009
+Science Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_EARTH_SCIENCE_EOCT;2011_SCIENCE_8;2010_SCIENCE_7.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Earth Science, 2011 Science Grade 8, 2010 Science Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_EARTH_SCIENCE_EOCT;2011_SCIENCE_8.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Earth Science, 2011 Science Grade 8)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/CHEMISTRY.2014/2014_CHEMISTRY_EOCT;2013_BIOLOGY_EOCT;2012_EARTH_SCIENCE_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Chemistry (Priors - 2013 Biology,
+2012 Earth Science)}
+\end{figure}
+
+\clearpage 
+
+\subsection{Physics}\label{physics}
+
+\subsubsection{Biology as Imediate
+Prior}\label{biology-as-imediate-prior}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/PHYSICS.2014/2014_PHYSICS_EOCT;2013_BIOLOGY_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Physics (Priors - 2013 Biology)}
+\end{figure}
+
+\clearpage 
+
+\subsubsection{Chemistry as Imediate
+Prior}\label{chemistry-as-imediate-prior}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/PHYSICS.2014/2014_PHYSICS_EOCT;2013_CHEMISTRY_EOCT;2012_BIOLOGY_EOCT;2011_SCIENCE_8.png}
+\caption{Goodness of Fit Plot for 2014 Physics (Priors - 2013 Chemistry,
+2012 Biology, 2011 Science Grade 8)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/PHYSICS.2014/2014_PHYSICS_EOCT;2013_CHEMISTRY_EOCT;2012_BIOLOGY_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Physics (Priors - 2013 Chemistry,
+2012 Biology)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/PHYSICS.2014/2014_PHYSICS_EOCT;2013_CHEMISTRY_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Physics (Priors - 2013
+Chemistry)}
+\end{figure}
+
+\clearpage 
+
+\subsection{Secondary Math I}\label{secondary-math-i}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_I.2014/2014_SEC_MATH_I_EOCT;2013_PRE_ALGEBRA_EOCT;2012_MATH_7;2011_MATH_6;2010_MATH_5;2009_MATH_4.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math I (Priors - 2013
+Pre Algebra EOCT, 2012 Math Grade 7, 2011 Math Grade 6, 2010 Math Grade
+5, 2009 Math Grade 4)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_I.2014/2014_SEC_MATH_I_EOCT;2013_PRE_ALGEBRA_EOCT;2012_MATH_7;2011_MATH_6;2010_MATH_5.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math I (Priors - 2013
+Pre Algebra EOCT, 2012 Math Grade 7, 2011 Math Grade 6, 2010 Math Grade
+5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_I.2014/2014_SEC_MATH_I_EOCT;2013_PRE_ALGEBRA_EOCT;2012_MATH_7;2011_MATH_6.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math I (Priors - 2013
+Pre Algebra EOCT, 2012 Math Grade 7, 2011 Math Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_I.2014/2014_SEC_MATH_I_EOCT;2013_PRE_ALGEBRA_EOCT;2012_MATH_7.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math I (Priors - 2013
+Pre Algebra EOCT, 2012 Math Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_I.2014/2014_SEC_MATH_I_EOCT;2013_PRE_ALGEBRA_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math I (Priors - 2013
+Pre Algebra EOCT)}
+\end{figure}
+
+\clearpage 
+
+\subsection{Secondary Math II}\label{secondary-math-ii}
+
+\subsubsection{Pre-Algebra as Imediate
+Prior}\label{pre-algebra-as-imediate-prior}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_PRE_ALGEBRA_EOCT;2011_MATH_7;2010_MATH_6;2009_MATH_5.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math II (Priors - 2012
+Pre Algebra, 2011 Math Grade 7, 2010 Math Grade 6, 2009 Math Grade 5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_PRE_ALGEBRA_EOCT;2011_MATH_7;2010_MATH_6.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math II (Priors - 2012
+Pre Algebra, 2011 Math Grade 7, 2010 Math Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_PRE_ALGEBRA_EOCT;2011_MATH_7.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math II (Priors - 2012
+Pre Algebra, 2011 Math Grade 7)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_PRE_ALGEBRA_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math II (Priors - 2012
+Pre Algebra)}
+\end{figure}
+
+\clearpage 
+
+\subsubsection{Algebra I as Imediate
+Prior}\label{algebra-i-as-imediate-prior}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_ALGEBRA_I_EOCT;2011_PRE_ALGEBRA_EOCT;2010_MATH_6;2009_MATH_5.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math III (Priors - 2012
+Algebra I, 2011 Pre Algebra, 2010 Math Grade 6, 2009 Math Grade 5)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_ALGEBRA_I_EOCT;2011_PRE_ALGEBRA_EOCT;2010_MATH_6.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math III (Priors - 2012
+Algebra I, 2011 Pre Algebra, 2010 Math Grade 6)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_ALGEBRA_I_EOCT;2011_PRE_ALGEBRA_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math III (Priors - 2012
+Algebra I, 2011 Pre Algebra)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_II.2014/2014_SEC_MATH_II_EOCT;2012_ALGEBRA_I_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math III (Priors - 2012
+Algebra I)}
+\end{figure}
+
+\clearpage 
+
+\subsection{Secondary Math III}\label{secondary-math-iii}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_III.2014/2014_SEC_MATH_III_EOCT;2012_ALGEBRA_I_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math III (Priors - 2012
+Algebra I)}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{../img/Goodness_of_Fit/SEC_MATH_III.2014/2014_SEC_MATH_III_EOCT;2013_ALGEBRA_I_EOCT.png}
+\caption{Goodness of Fit Plot for 2014 Secondary Math III (Priors - 2013
+Algebra I)}
+\end{figure}
+
+\bibliographystyle{plainnat}
+\bibliography{/Library/Frameworks/R.framework/Versions/3.2/Resources/library/SGPreports/rmarkdown/templates/multi_document/resources/educ.bib}
+
+
+
+
+\end{document}
+
+
