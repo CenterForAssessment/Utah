@@ -28,7 +28,7 @@ A goodness of fit plot is produced for each unique analysis run in 2014.  Each a
 
 Each fit plot contains three panels.  The top panel is a mosaic plot that shows the percentage of students that fall into each proficiency level, and the location of the 10<sup>th</sup> through 90<sup>th</sup> quantiles of the Student Growth Percentile (SGP) distribution represented as dashed white lines (with the exception of the solid white line for the median/50<sup>th</sup> percentile).  The bottom left panel shows the empirical distribution of SGPs given prior scale score deciles in the form of a 10 by 10 cell grid.  Percentages of student growth percentiles between the 10<sup>th</sup>, 20<sup>th</sup>, 30<sup>th</sup>, 40<sup>th</sup>, 50<sup>th</sup>, 60<sup>th</sup>, 70<sup>th</sup>, 80<sup>th</sup>, and 90<sup>th</sup> percentiles were calculated based upon the decile of the prior year's scaled score (the total students in each for the analyses varies depending on grade and subject).  Deviations from perfect fit are indicated by red and blue shading. The further above 10 the darker the red, and the further below 10 the darker the blue. A more detailed discussion about the reasons for and implications of model misfit for the various SGP analysis types can be found in the "Goodness of Fit" section of the 2014 Utah Student Growth Model report.  The bottom right panel of each plot is a Q-Q plot which compares the observed distribution of SGPs with the theoretical (uniform) distribution.
 
-# SAGE Grade-Level Plots<a id="sage-plots">
+# SAGE Grade-Level Plots
 
 ## ELA
 

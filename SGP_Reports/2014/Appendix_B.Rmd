@@ -1,6 +1,6 @@
 ---
-title: "Appendix B to the 2014 Utah Growth Model Report"
-subtitle: "Norm- and Criterion-Referenced Growth: An Overview of the SGP Methodology"
+title: "Appendix B to the Utah Growth Model Report"
+subtitle: "An Overview of the SGP Methodology"
 author:
   - name: Damian W. Betebenner
   - name: Adam R. VanIwaarden
@@ -103,8 +103,13 @@ LaTeX_End -->
 <!-- HTML_Start -->
 <div class="section level6">
 <h6> <strong>Fig. B.1:</strong> Depiction of the distribution associated with 2011 and 2012 student scale scores together with the conditional distribution and associated growth percentile.</h6>
-<p><img src="../img/Appendices/SGP_Method/bidensity_p1.jpg" /> <img src="../img/Appendices/SGP_Method/bidensity_p2.jpg" /> <img src="../img/Appendices/SGP_Method/bidensity_p3.jpg" /> <img src="../img/Appendices/SGP_Method/bidensity_p4.jpg" /></p>
-
+<p>
+<img src="../img/Appendices/SGP_Method/bidensity_p1.jpg" width=50% /> 
+<img src="../img/Appendices/SGP_Method/bidensity_p2.jpg" width=50% /> 
+<img src="../img/Appendices/SGP_Method/bidensity_p3.jpg" width=50% /> 
+<img src="../img/Appendices/SGP_Method/bidensity_p4.jpg" width=50% />
+</p>
+</div>
 <!-- LaTeX_Start 
 \begin{figure}[H]
 \caption*{\label{fig:Bidensity} {\bf{Fig. B.1:}} Depiction of the distribution associated with 2011 and 2012 student scale scores together with the conditional distribution and associated growth percentile.}
@@ -130,7 +135,6 @@ Figure `r paste("B", getOption("fig_caption_no"), sep=".")` also serves to illus
 In situations where a vertical scale exists, the increase/decrease in scale score points can be calculated and the growth percentile can be understood alongside this change.  For example, were the scales presented in Figure `r paste("B", getOption("fig_caption_no"), sep=".")` vertical, then one can calculate that the student grew 40 points (from 460 to 500) between 2011 and 2012.  This 40 points represents the absolute magnitude of change.  Quantifying the magnitude of change is scale dependent.  For example, different vertical achievement scales in 2011 and 2012 would yield different annual scale score increases: A scale score increase of 40 could be changed to a scale score increase of 10 using a simple transformation of the vertical scale on which all the students are measured.  However, relative to other students, their growth has not changed - their growth percentile is invariant to scale transformations common in educational assessment.  Student growth percentiles norm-referencedly situate achievement change bypassing questions associated with the magnitude of change, and directing attention toward relative standing which, we would assert, is what stakeholders are most interested in.  
 
 To fully understand how many states intend to use growth percentiles to make determinations about whether a student's growth is sufficient, the next section details specifics of how student growth percentiles are calculated.  These calculations are subsequently used to calculate percentile growth projections/trajectories that are used to establish how much growth it will take for each student to reach his/her achievement targets.  
-
 
 <!-- HTML_Start -->
 <!-- LaTeX_Start 
@@ -204,7 +208,8 @@ Figure `r paste("B", getOption("fig_caption_no")+1, sep=".")` gives a bivariate 
 <!-- HTML_Start -->
 <div class="section level6">
 <h6> <strong>Fig. B.2:</strong> Linear and B-spline conditional deciles based upon bivariate math data, grades 5 and 6.</h6>
-<p><img src="../img/Appendices/SGP_Method/linearquantileplot.png" /> <img src="../img/Appendices/SGP_Method/bsplinequantileplot.png" /></p>
+<p><img src="../img/Appendices/SGP_Method/linearquantileplot.png" width=50% /> <img src="../img/Appendices/SGP_Method/bsplinequantileplot.png" width=50% /></p>
+</div>
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
@@ -229,7 +234,7 @@ The B-spline basis functions require the selection of boundary and interior knot
 
 The default choice in the `SGP` package [@sgp2014] is to select the 20<sup>th</sup>, 40<sup>th</sup>, 60<sup>th</sup> and 80<sup>th</sup> quantiles of the observed scale score distribution.  In general the knots and boundaries are computed using a distribution from several years of compiled test data (i.e.  multiple cohorts) so that any irregularities in a single year are smoothed out.  Subsequent annual analyses then use these same knots and boundaries as well.  All defaults were used to compile the knots and boundaries for Utah from the CRT tests.  New knots and boundaries will be required for SAGE assessments beginning in 2015 when they will be used as the most recent dependent variables in the quantile regressions.
 
-Finally, it should be noted that the independent estimation of the regression functions can potentially result in the crossing of the quantile functions.  This occurs near the extremes of the distributions and is potentially more likely to occur given the use of non-linear functions.  The result of allowing the quantile functions to cross in this maner would be *lower* percentile estimations of growth for *higher* observed scale scores at the extremes (give all else equal in prior scores) and vice versa.  In order to deal with these contradictory estimates, quantile regression results are isotonized to prevent quantile crossing following the methods derived by Chernozhukov, Fernandez-Val and Glichon [-@chernozhukov2010quantile].
+Finally, it should be noted that the independent estimation of the regression functions can potentially result in the crossing of the quantile functions.  This occurs near the extremes of the distributions and is potentially more likely to occur given the use of non-linear functions.  The result of allowing the quantile functions to cross in this manner would be *lower* percentile estimations of growth for *higher* observed scale scores at the extremes (give all else equal in prior scores) and vice versa.  In order to deal with these contradictory estimates, quantile regression results are isotonized to prevent quantile crossing following the methods derived by Chernozhukov, Fernandez-Val and Glichon [-@chernozhukov2010quantile].
 
 <!-- HTML_Start -->
 <!-- LaTeX_Start 
