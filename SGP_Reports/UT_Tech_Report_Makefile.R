@@ -3,12 +3,11 @@
 # 2014
 #######
 
-load("/Users/avi/Dropbox/SGP/Utah_SGP.Rdata")
+load("Utah_SGP.Rdata")
 setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2014")
 
 library(SGPreports)
 use.data.table()
-source('~/Dropbox (CenterforAssessment)/Github_Repos/Packages/SGPreports/R/renderEPUB.R')
 
 renderMultiDocument(rmd_input = "Utah_SGP_Report_2014.Rmd",
 										output_format = c("HTML", "EPUB", "PDF"), #, "EPUB", "DOCX"
@@ -44,8 +43,7 @@ renderMultiDocument(rmd_input = "Appendix_C.Rmd",
 # 2015
 #######
 
-# load("/Users/avi/Dropbox/SGP/Utah/Data/Utah_SGP.Rdata")
-load("/Users/avi/Dropbox/SGP/Utah_SGP_FIN.Rdata")
+load("Utah/Data/Utah_SGP.Rdata")
 setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2015")
 
 ###  Clean up the GoFit Plot directories
@@ -62,7 +60,6 @@ setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2015")
 
 library(SGPreports)
 use.data.table()
-# source('~/Dropbox (CenterforAssessment)/Github_Repos/Packages/SGPreports/R/renderEPUB.R')
 
 renderMultiDocument(rmd_input = "Utah_SGP_Report_2015.Rmd",
 										output_format = c("HTML", "EPUB", "PDF"), #, "EPUB", "DOCX"
