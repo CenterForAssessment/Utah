@@ -43,7 +43,7 @@ renderMultiDocument(rmd_input = "Appendix_C.Rmd",
 # 2015
 #######
 
-load("Utah/Data/Utah_SGP.Rdata")
+load("Data/Utah_SGP.Rdata")
 setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2015")
 
 ###  Clean up the GoFit Plot directories
