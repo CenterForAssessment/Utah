@@ -4,7 +4,7 @@ subtitle: "A Technical Overview of the 2014-2015 Student Growth Percentile Calcu
 author:
   - name: Damian W. Betebenner
   - name: Adam R. VanIwaarden
-  - name: <em>National Center for the Improvement <br></br> of Educational Assessment (NCIEA)</em>
+  - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
 abstract:  "DRAFT REPORT - DO NOT CITE! <br></br> This report provides details about the Utah Student Growth Model methodology and presents a descriptive analysis of the 2015 SGP results."
 date: October 2015
 ---

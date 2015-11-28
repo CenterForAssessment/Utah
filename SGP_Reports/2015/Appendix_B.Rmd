@@ -4,7 +4,7 @@ subtitle: "An Overview of the SGP Methodology"
 author:
   - name: Damian W. Betebenner
   - name: Adam R. VanIwaarden
-  - name: <em>National Center for the Improvement <br></br> of Educational Assessment (NCIEA)</em>
+  - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
 date: May 2015
 ---
 
