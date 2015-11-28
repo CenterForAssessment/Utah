@@ -31,7 +31,7 @@ renderMultiDocument(rmd_input = "Appendix_B.Rmd",
 										# cleanup_aux_files = FALSE,
 										pandoc_args = "--webtex")
 
-renderMultiDocument(rmd_input = "Appendix_C.Rmd",
+renderMultiDocument(rmd_input = "Appendix_C_2014.Rmd",
 										output_format = c("HTML", "EPUB", "PDF"), #, "EPUB", "DOCX"
 										cover_img="../img/cover.jpg",
 										add_cover_title=TRUE, 
@@ -43,7 +43,7 @@ renderMultiDocument(rmd_input = "Appendix_C.Rmd",
 # 2015
 #######
 
-load("Data/Utah_SGP.Rdata")
+load("/Users/avi/Dropbox/SGP/Utah/Data/Utah_SGP.Rdata")
 setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2015")
 
 ###  Clean up the GoFit Plot directories
@@ -74,7 +74,6 @@ renderMultiDocument(rmd_input = "Appendix_A_2015.Rmd",
 										add_cover_title=TRUE)#,
 										# cleanup_aux_files = FALSE)
 
-
 renderMultiDocument(rmd_input = "Appendix_B.Rmd",
 										output_format = c("HTML", "EPUB", "PDF"), #, "DOCX"
 										cover_img="../img/cover.jpg",
@@ -82,3 +81,9 @@ renderMultiDocument(rmd_input = "Appendix_B.Rmd",
 										# self_contained = FALSE,
 										# cleanup_aux_files = FALSE,
 										pandoc_args = "--webtex")
+
+renderMultiDocument(rmd_input = "Appendix_C_2015.Rmd",
+										output_format = c("HTML", "EPUB", "PDF"), #, "DOCX"
+										# cleanup_aux_files = FALSE)
+										cover_img="../img/cover.jpg",
+										add_cover_title=TRUE)#,
