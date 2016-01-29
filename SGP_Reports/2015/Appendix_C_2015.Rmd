@@ -104,7 +104,7 @@ date: November 2015
 				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Grade, ymax=(min(SGP) -10))) + 
 						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Highest Scoring Students' Growth Percentiles") 
 			}
-			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(height = 0, width = 0.75), size=4, colour="red") +
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(width = 0.75), size=4, colour="red") +
 					coord_flip() + theme(axis.title=element_text(size=12,face="bold"), axis.text.y = element_blank()) # +
 		} else {
 			if (LOSS) {
@@ -114,7 +114,7 @@ date: November 2015
 				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=CA, ymax=(min(SGP) -7))) + 
 						 geom_boxplot() + labs(x="Content Area", y="Highest Scoring Students' Growth Percentiles")
 			}
-			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(height = 0, width = 0.75), size=4, colour="red") +
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(width = 0.75), size=4, colour="red") +
 					coord_flip() + theme(axis.title=element_text(size=12,face="bold"), legend.position="none")
 		}
 	}

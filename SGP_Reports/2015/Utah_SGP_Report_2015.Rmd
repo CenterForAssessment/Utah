@@ -29,10 +29,10 @@ This document was written by Damian Betebenner & Adam VanIwaarden for the Utah S
   ##  Load SGP and other packages here to avoid messages.
   require(SGP)
 	require(data.table)
-	require(plyr)
+	# require(plyr)
 	require(Gmisc)
   require(htmlTable)
-  require(ztable)
+  # require(ztable)
 
   options(table_counter=FALSE)
   options(table_number=0)
@@ -51,14 +51,14 @@ This document was written by Damian Betebenner & Adam VanIwaarden for the Utah S
 
 This report contains details on the implementation of the student growth percentiles (SGP) model for the state of Utah. The National Center for the Improvement of Educational Assessment (NCIEA) contracted with the Utah State Office of Education (USOE) to implement the SGP methodology using data derived from the Utah student assessment program to create the Utah Student Growth Model. The goal of the engagement with USOE is to create a set of open source analytic techniques and conduct a set of initial analyses that will eventually be conducted by USOE in following years.
 
-The SGP methodology is an open source norm- and criterion-referenced student growth analysis that produces student growth percentiles and student growth projections/targets for each student with longitudinal data in the state. The methodology is currently used for many purposes. States and districts have used the results in various ways including parent/student diagnostic reporting, institutional improvement, and school and educator accountability. 
+The SGP methodology is an open source norm- and criterion-referenced student growth analysis that produces student growth percentiles and student growth projections/targets for each student in the state with adequate longitudinal data. The methodology is currently used for many purposes. States and districts have used the results in various ways including parent/student diagnostic reporting, institutional improvement, and school and educator accountability. 
 
 The report includes four sections covering Data, Analytics, SGP Results, and Goodness of Fit:
 
-- *Data* includes details on the decision rules used in the raw data preparation and student record validation.
-- *Analytics* introduces some of the basic methodological concepts implemented.
-- *SGP Results* provides basic descriptive statistics from the 2015 analyses.
-- *Goodness of Fit* describes how well the statistical models used to produce SGPs fit Utah students' data.  This includes discussion of goodness of fit plots and the student- and school level correlations between SGP and prior achievement.
+- ***Data*** includes details on the decision rules used in the raw data preparation and student record validation.
+- ***Analytics*** introduces some of the basic statistical methods and computational process implemented in the 2015 analyses.^[More in-depth treatment of the SGP Methodology can be found [here](https://github.com/CenterForAssessment/SGP_Resources/tree/master/articles).]
+- ***SGP Results*** provides basic descriptive statistics from the 2015 analyses.
+- ***Goodness of Fit*** describes how well the statistical models used to produce SGPs fit Utah students' data.  This includes discussion of goodness of fit plots and the student- and school-level correlations between SGP and prior achievement.
 
 Additionally, multiple appendices are included.  Appendix A includes Goodness of Fit plots for all content areas and grades.  Appendix B provides a more technical description of the SGP methodology and statistical concepts.  Appendix C is a more detailed investigation of potential ceiling and/or floor effects present in the Utah student assessment data and growth analyses.
 
@@ -124,8 +124,7 @@ LaTeX_End -->
 
 # Analytics
 
-This section provides basic details about the calculation of student growth percentiles and 
-percentile growth trajectories ('projections') from Utah state assessment data using the [`R` Software Environment](http://www.r-project.org/) [@Rsoftware] in conjunction with the [`SGP` Package](https://github.com/CenterForAssessment/SGP) [@sgp2015].  More in depth treatment of the data analysis process with code examples is available to USOE the staff through Github.
+This section provides basic details about the calculation of student growth percentiles and percentile growth trajectories ('projections') from Utah state assessment data using the [`R` Software Environment](http://www.r-project.org/) [@Rsoftware] in conjunction with the [`SGP` Package](https://github.com/CenterForAssessment/SGP) [@sgp2015].  More in depth treatment of the data analysis process with code examples is available to the USOE staff through [Github](https://github.com/CenterForAssessment).
 
 Broadly, the SGP analysis of the Utah longitudinal student assessment data takes place in two steps:
 
@@ -136,15 +135,13 @@ Those familiar with data analysis know that the bulk of the effort in the above 
 
 ## Data Preparation
 
-The data preparation step involves taking data provided by the USOE and producing a `.Rdata` file that will subsequently be analyzed in Step 2. This process is carried out annually as new data becomes available from the state assessment program.  The data supplied by the USOE Information Technology department and subsequently cleaned and processed using `R`.
+The data preparation step involves cleaning and processing data provided by the USOE using `R` and producing a `.Rdata` file that will subsequently be analyzed in Step 2. This process is carried out annually as new data becomes available from the state assessment program.  In previous years' analyses the bulk of the data cleaning and implementation of business rule validation was also performed in `R` by NCIEA staff.  However, the division of the cleaning and validation tasks used in 2015 is an important step in moving towards USOE self-sufficiency in calculating growth percentiles in subsequent years.
 
-In previous years' analyses the bulk of the data cleaning and implementation of business rule validation was also performed in `R` by NCIEA staff.  However, the division of the cleaning and validation tasks used in 2015 is an important step in moving towards USOE self-sufficiency in calculating growth percentiles in subsequent years.
-
-The cleaned and formatted data was combined with the existing data used up through the 2014 analyses.  With an appropriate longitudinal data prepared, we continued to the calculation of student-level SGPs.
+The cleaned and formatted data was combined with the existing data used up through the 2014 analyses.  With longitudinal data prepared appropriately, we continued to the calculation of student-level SGPs.
 
 ## 2015 Data Analysis
 
-The objective of the student growth percentile (SGP) analysis is to produce a measure which describes how (a)typical a student's growth is by examining his/her current achievement relative to students with a similar achievement history; i.e. his/her *academic peers*. The estimation of this norm-referenced growth quantity is conducted using quantile regression [@Koenker:2005] to model curvilinear functional relationships between student's prior and current scores.  One hundred such regression calculations are run for each separate analysis (defined as a unique year, content area, and grade combination).  The end product of these 100 separate regression models is a single coefficient matrix, which serves as a look-up table to relate prior student achievement to current achievement for each percentile. This process ultimately leads to the calculation of thousands of calculations for each of Utah's annual analyses.  For a more in-depth discussion of the calculation and estimation of SGPs, see Betebenner ([-@Betebenner:2009]) and Appendix B of this report for further information on the SGP methodology.
+The objective of the student growth percentile (SGP) analysis is to produce a measure which describes how (a)typical a student's growth is by examining his/her current achievement relative to students with a similar achievement history; i.e. his/her *academic peers*. The estimation of this norm-referenced growth quantity is obtained using quantile regression [@Koenker:2005] to model curvilinear functional relationships between student's prior and current scores.  One hundred such regression calculations are run for each separate analysis (defined as a unique year, content area, and grade combination).  The end product of these 100 separate regression models is a single coefficient matrix, which serves as a look-up table to relate prior student achievement to current achievement for each percentile. This process ultimately leads to the calculation of thousands of regression models annually for Massachusetts.  See Betebenner [-@Betebenner:2009] and Appendix B of this report for a more in-depth discussion of the SGP estimation methodology.
 
 The 2015 Utah SGP analyses follow a work flow established in previous years that includes the following 4 steps:
 
@@ -158,21 +155,20 @@ The 2015 Utah SGP analyses follow a work flow established in previous years that
 
 The EOCT analyses are specialized enough so that it is necessary to explicitly specify the analyses to be performed via a configuration code script.  For several years, configurations have been employed to conduct EOCT SGP analyses for Utah. Unlike previous years, where EOGT analyses were run separately and did not require configuration scripts, the 2015 analyses specify the configurations for these analyses.  This allows the analyses to be run more efficiently.
 
-Each configuration specifies a set of parameters that defines the norm group of students to be examined.  Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level.  Other parameters may also be defined.  Each configuration used for the Utah EOCT analyses contain the first three elements.  The EOCT analyses also contain the fourth and fifth elements:
+Each configuration specifies a set of parameters that defines the norm group of students to be examined.  Every potential norm group is defined by, at a minimum, the progressions of content area, academic year and grade-level.  Other parameters may also be defined.  Each configuration used for the Utah EOGT analyses contain the first three elements.  The EOCT analyses also contain the fourth and fifth elements:
 
 - **`sgp.content.areas`:** A progression of values that specifies the content areas to be looked at and their order
 - **`sgp.panel.years`:** The progression of the years associated with the content area progression (`sgp.content.areas`) provided in the configuration, potentially allowing for skipped years, etc.
 - **`sgp.grade.sequences`:** The grade progression associated with the content area and year progressions provided in the configuration. **'EOCT'** stands for 'End Of Course Test'.  The use of the generic 'EOCT' allows for secondary students to be compared based on the pattern of course taking rather than being dependent upon grade-level/class-designation.
 - **`sgp.projection.grade.sequences`:** This element is used to identify the configurations that will be used to produce straight and/or lagged student growth projections.  It can, somewhat counter-intuitively, be left out or set to NULL, in which case projections will be produced and the package functions will populate the grade sequences to use based on the values provided in the `sgp.grade.sequences` element.  Alternatively, when set to "NO_PROJECTIONS", no projections will be produced.  For EOCT analyses, only configurations that correspond to the canonical course progressions can produce straight or lagged student growth projections.  The canonical progressions are codified in `SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]]`. 
-- **`sgp.norm.group.preference`:** Because a student can potentially be included in more than one analysis/configuration, this argument provides a ranking specifying which SGP is preferable and will ultimately be the SGP matched with the student in the [`combineSGP`](https://github.com/CenterForAssessment/SGP/blob/master/R/combineSGP.R) 
-step.  ***Lower numbers correspond with higher preference.***
+- **`sgp.norm.group.preference`:** Because a student can potentially be included in more than one analysis/configuration, this argument provides a ranking specifying which SGP is preferable and will ultimately be the SGP matched with the student in the [`combineSGP`](https://github.com/CenterForAssessment/SGP/blob/master/R/combineSGP.R) step.  ***Lower numbers correspond with higher preference.***  Note that this configuration element is unnecessary for the EOGT analyses because those records must be unique given the data preparation business rules described above.
 
 The `sgp.content.areas`, `sgp.panel.years`, and `sgp.grade.sequences` elements all correspond to values found in the Utah data, and are used to select the subset of the longitudinal data set to be analyzed.  Only these three elements are needed for the EOGT analyses because they automatically fall into canonical projection sequences and there will not be any duplicates produced given the data cleaning process.  
 
 
 ### Update Utah assessment meta-data
 
-The use of higher-level functions included in the SGP package (e.g. `analyzeSGP`) requires the availability of state specific assessment information.  This meta-data is compiled in a `R` object named `SGPstateData` that is housed in the package.  The required updates for the 2015 analyses included ***a)*** updating the norm group preferences, ***b)*** adding meta-data used in the calculation of student growth percentiles and projections, including the SAGE test knots and boundaries for the cubic basis splines and the test specific proficiency cutscores, and ***c)*** adding new SAGE related meta-data for the production of individual student reports (ISRs).
+The use of higher-level functions included in the `SGP` package (e.g. `analyzeSGP`) requires the availability of state specific assessment information.  This meta-data is compiled in a `R` object named `SGPstateData` that is housed in the package.  The required updates for the 2015 analyses included ***a)*** updating the norm group preferences, ***b)*** adding meta-data used in the calculation of student growth percentiles and projections, including the SAGE test knots and boundaries for the cubic basis splines and the test specific proficiency cutscores, and ***c)*** adding new SAGE related meta-data for the production of individual student reports (ISRs).
 
 
 <div class='caption'>**Norm group preferences**</div>
@@ -185,7 +181,9 @@ The process through which EOCT analyses are run can produce multiple SGPs for so
 
 
 <div class='caption'>**Calculation and addition of knots and boundaries**</div>
-Calculation of SGPs includes the use of cubic B-spline basis functions to more adequately model the heteroscedasticity and non-linearity found in assessment data.^[It should be noted that the independent estimation of the regression functions can potentially result in the crossing of the quantile functions.  This occurs near the extremes of the distributions and is potentially more likely to occur given the use of non-linear functions.  A potential result of allowing the quantile functions to cross would be *lower* percentile estimations of growth for *higher* observed scale scores at the extremes (give all else equal in students' prior score histories) and vice versa.  In order to deal with these contradictory estimates, quantile regression results are isotonized to prevent quantile crossing following the methods derived by Chernozhukov, Fernandez-Val and Glichon [-@chernozhukov2010quantile].]  These functions require the selection of boundary and interior knots.  Boundary knots are end-points outside of the scale score distribution that anchor the B-spline basis.  These are generally selected by extending the entire range of scale scores by 10%.  That is, they are defined as lying 10% below the lowest obtainable (or observed) scale score (LOSS) and 10% above the highest obtainable scale score (HOSS).  The interior knots are the *internal* breakpoints that define the spline.  The default choice in the `SGP` package [@sgp2015] is to select the 20<sup>th</sup>, 40<sup>th</sup>, 60<sup>th</sup> and 80<sup>th</sup> quantiles of the observed scale score distribution.
+Calculation of SGPs includes the use of cubic B-spline basis functions to more adequately model the heteroscedasticity and non-linearity found in assessment data.^[It should be noted that the independent estimation of the regression functions can potentially result in the crossing of the quantile functions.  This occurs near the extremes of the distributions and is potentially more likely to occur given the use of non-linear functions.  A potential result of allowing the quantile functions to cross would be *lower* percentile estimations of growth for *higher* observed scale scores at the extremes (give all else equal in students' prior score histories) and vice versa.  In order to deal with these contradictory estimates, quantile regression results are isotonized to prevent quantile crossing following the methods derived by Chernozhukov, Fernandez-Val and Glichon [-@chernozhukov2010quantile].]  
+
+These functions require the selection of boundary and interior knots.  Boundary knots are end-points outside of the scale score distribution that anchor the B-spline basis.  These are generally selected by extending the entire range of scale scores by 10%.  That is, they are defined as lying 10% below the lowest obtainable (or observed) scale score (LOSS) and 10% above the highest obtainable scale score (HOSS).  The interior knots are the *internal* breakpoints that define the spline.  The default choice in the `SGP` package [@sgp2015] is to select the 20<sup>th</sup>, 40<sup>th</sup>, 60<sup>th</sup> and 80<sup>th</sup> quantiles of the observed scale score distribution.
 
 In general the knots and boundaries are computed from a distribution comprised of several years of test data (i.e. multiple cohorts) so that any irregularities in a single year are smoothed out.  This is important because subsequent annual analyses use these same knots and boundaries as well.  All defaults were used to compile the knots and boundaries for Utah from the CRT and EOCT tests in previous years, and were also used in 2015 to compute the SAGE assessments' knots and boundaries using SAGE data from 2014 and 2015.  New knots and boundaries will be required for Utah SAGE assessments beginning in 2015 as they are now used as the dependent variables in the quantile regressions.
 
@@ -201,7 +199,7 @@ Finally, meta data for the ISR production was added.  Mainly this entailed updat
 
 ### Conduct SGP Analyses.
 
-Unlike the 2014 analyses, we use the `updateSGP` function to A) do the final preparation and addition of the new long data to the existing `SGP` data object (`prepareSGP` step) and B) produce SGPs for ***both*** the grade-level and EOCT subjects (`analyzeSGP` step).  Also, unlike any previous years' analyses, we produced SGPs for students who were non-continuously enrolled for the full academic year (FAY).  Only the FAY students were used to construct the estimating models and their associated coefficient matrices.  The non-FAY analyses utilize these model coefficient matrices to produce those students' SGPs.  Therefore, there are two analyses being run with the data submitted this year by USOE (in strict order): *1)* 2015 FAY students and *2)* 2015 non-FAY students.
+Unlike the 2014 analyses, we use the [`updateSGP`](http://www.inside-r.org/packages/cran/SGP/docs/updateSGP) function to A) do the final preparation and addition of the new long data to the existing `SGP` data object (`prepareSGP` step) and B) produce SGPs for ***both*** the grade-level and EOCT subjects (`analyzeSGP` step).  Also, unlike any previous years' analyses, we produced SGPs for students who were non-continuously enrolled for the full academic year (FAY).  Only the FAY students were used to construct the estimating models and their associated coefficient matrices.  The non-FAY analyses utilize these model coefficient matrices to produce those students' SGPs.  Therefore, there are two analyses being run with the data submitted this year by USOE (in strict order): *1)* 2015 FAY students and *2)* 2015 non-FAY students.
 
 
 ### Merge 2015 results into the longitudinal data, and output, summarize and visualize data.
@@ -233,7 +231,7 @@ To demonstrate the norm-referenced nature of the growth percentiles viewed at th
 		tmp_gl_sage_smry <- paste(t(as.matrix(gl_sage_smry[CONTENT_AREA==ca,][, list(MEDIAN)])), " (", t(as.matrix(gl_sage_smry[CONTENT_AREA==ca,][, list(MEAN)])), ")", sep="")
 		tmp_gl_sage_smry <- data.frame(matrix(c(capwords(ca), tmp_gl_sage_smry), 1, length(tmp_gl_sage_smry)+1), stringsAsFactors = FALSE)
 		names(tmp_gl_sage_smry) <- c("Content Area", t(as.matrix(gl_sage_smry[CONTENT_AREA==ca,][, list(GRADE)])))
-		gl_sage_smryB <- rbind.fill(gl_sage_smryB, tmp_gl_sage_smry)
+		gl_sage_smryB <- rbindlist(list(gl_sage_smryB, tmp_gl_sage_smry), fill=TRUE)
 	}
 	gl_sage_smryB[is.na(gl_sage_smryB)] <- ""
 	
@@ -246,7 +244,7 @@ To demonstrate the norm-referenced nature of the growth percentiles viewed at th
 	eoct_sage_smry <- Utah_SGP@Data[CONTENT_AREA %in% EOCT_subjects & YEAR=='2015'][,list("Median SGP"=median(as.numeric(SGP), na.rm=TRUE), "Mean SGP"=round(mean(SGP, na.rm=TRUE), 1)), by='CONTENT_AREA']
 	setkey(eoct_sage_smry)
 ```
-```{r, results='asis', echo=FALSE, sumTabEOCT}
+```{r, results='asis', echo=FALSE, sumTab_EOCT}
 	eoct_sage_smry_B <- eoct_sage_smry[match(EOCT_subjects, eoct_sage_smry[["CONTENT_AREA"]]) ,]
 	eoct_sage_smry_B <- eoct_sage_smry_B[, CONTENT_AREA := sapply(CONTENT_AREA, capwords, special.words=c("I", "II", "III"))]
 	setnames(eoct_sage_smry_B, "CONTENT_AREA", "Content Area")
@@ -261,11 +259,11 @@ The results are coarse in that they are aggregated across tens of thousands of s
 
 It is important to note how, at the entire state level, the *norm-referenced* growth information returns little information on annual trends due to its norm-reference nature. What the results indicate is that a typical (or average) student in the state demonstrates 50<sup>th</sup> percentile growth. That is, "typical students" demonstrate "typical growth". One benefit of the norm-referenced results follows when subgroups are examined (e.g., schools, district, demographic groups, etc.) Examining subgroups in terms of the median of their student growth percentiles, it is then possible to investigate why some subgroups display lower/higher student growth than others. Moreover, because the subgroup summary statistic (i.e., the median) is composed of many individual student growth percentiles, one can break out the result and further examine the distribution of individual results. 
 
-
 <!-- HTML_Start -->
 <!-- LaTeX_Start 
 \pagebreak
 LaTeX_End -->
+
 
 # Goodness of Fit
 Examination of goodness-of-fit was conducted by comparing the estimated conditional density with the theoretical uniform density of the SGPs.  Despite the use of B-splines to accommodate heteroscedasticity and skewness of the conditional density, assumptions are made concerning the number and position of spline knots that impact the percentile curves that are fit.  With an infinite population of test takers, at each prior scaled score, with perfect model fit, the expectation is to have 10 percent of the estimated growth percentiles between 1 and 9, 10 and 19, 20 and 29, ..., and 90 and 99.  Deviations from 10 percent would be indicative of lack of model fit.  
@@ -274,9 +272,10 @@ Examination of goodness-of-fit was conducted by comparing the estimated conditio
 ## Model Fit Plots
 Using all available grade level and EOC test scores as the variables, estimation of student growth percentiles was conducted for each possible student (those with a current score and at least one prior score).  A goodness of fit plot is produced for each unique analysis run in 2015.  Each analysis is defined by the grade and content area for the grade-level analyses.
 
-The "Ceiling/Floor Effects Test" panel is intended to help identify potential problems in SGP estimation at the Highest and Lowest Obtainable (or Observed) Scale Scores (HOSS and LOSS).  If is is relatively typical for extremely high (low) achieving students to consistently score at or near the HOSS (LOSS) each year, the SGPs for these students may be unexpectedly low (high).  That is, for example, if a sufficient number of students maintain performance at the HOSS over time, this performance will be estimated to typical, and therfore SGP estimates will reflect typical growth (e.g. 50th percentile).  In some cases small deviations from these extreme score values might even yield low growth estimates.  Although these score patterns can ligitimately be estimated as a low growth percentile, it is potentially an unfair description of student growth (and by proxy teacher or school, etc. performance or "value added").  Ultimately this is an artifact of the inability of the assessment to adequately measure student performance at extreme ability levels.  
+The "Ceiling/Floor Effects Test" panel is intended to help identify potential problems in SGP estimation at the Highest and Lowest Obtainable (or Observed) Scale Scores (HOSS and LOSS).  If is is relatively typical for extremely high (low) achieving students to consistently score at or near the HOSS (LOSS) each year, the SGPs for these students may be unexpectedly low (high).  That is, for example, if a sufficient number of students maintain performance at the HOSS over time, this performance will be estimated to typical, and therefore SGP estimates will reflect typical growth (e.g. 50th percentile).  In some cases small deviations from these extreme score values might even yield low growth estimates.  Although these score patterns can legitimately be estimated as a low growth percentile, it is potentially an unfair description of student growth (and by proxy teacher or school, etc. performance or "value added").  Ultimately this is an artifact of the inability of the assessment to adequately measure student performance at extreme ability levels.  
 
-The table of values here shows whether the current year scale scores at both extremes yield the expected SGPs^[Note that the prior year scale scores are not represented here, but are critical in the SGP calculation of all students].  The expectation is that the majority of SGPs for students scoring at or near the LOSS will be low (preferably less than 5 and not higher than 10), and that SGPs for students scoring at or near the HOSS will be high (preferably higher than 95 and not less than 90).  Because few students may  score *exactly* at the HOSS/LOSS^[This is particularly true when IRT Theta ($\hat{\theta}$) estimates are used rather than scaled scores, which often apply artificial LOSS/HOSS cut points.], the top/bottom 50 students are selected and any student scoring within their range of scores are selected for inclusion in these tables.  Consequently, there may be a range of scores at the HOSS/LOSS rather than a single score^[This can make the interpretation of the SGP distribution somewhat harder because current year scores not directly at the extremes do not necessarily preclude maximum SGP estimates.], and there may be more than 50 students included in the HOSS/LOSS row if the 50 students at the extremes only contain the single HOSS/LOSS score^[This also leads to potential difficulties in interpretation because with a higher number of students comes a greater distribution of prior scale scores and therefore a greater distribution of the expected SGPs].  In either case, a more fine grained analysis of the relationship between score histories and SGPs and the associated potential for ceiling or floor effects in the models/model estimates may be necessary.  These plots are meant to serve more as a "canary in the coal mine" than as a detailed, conclusive indicator of an effect.
+The table of values here shows whether the current year scale scores at both extremes yield the expected SGPs^[Note that the prior year scale scores are not represented here, but are critical in the SGP calculation of all students].  The expectation is that the majority of SGPs for students scoring at or near the LOSS will be low (preferably less than 5 and not higher than 10), and that SGPs for students scoring at or near the HOSS will be high (preferably higher than 95 and not less than 90).  Because few students may score *exactly* at the HOSS/LOSS^[This is particularly true when IRT Theta ($\hat{\theta}$) estimates are used rather than scaled scores, which often apply artificial LOSS/HOSS cut points.], the top/bottom 50 students are selected and any student scoring within their range of scores are selected for inclusion in these tables.  Consequently, there may be a range of scores at the HOSS/LOSS rather than a single score^[This can make the interpretation of the SGP distribution somewhat harder because current year scores not directly at the extremes do not necessarily preclude maximum SGP estimates.], and there may be more than 50 students included in the HOSS/LOSS row if the 50 students at the extremes only contain the single HOSS/LOSS score^[This also leads to potential difficulties in interpretation because with a higher number of students comes a greater distribution of prior scale scores and therefore a greater distribution of the expected SGPs].  
+In either case, a more fine grained analysis of the relationship between score histories and SGPs and the associated potential for ceiling or floor effects in the models/model estimates may be necessary.  These plots are meant to serve more as a "canary in the coal mine" than as a detailed, conclusive indicator of an effect.  Appendix C of this report provides a more in depth analysis of potential ceiling or floor effects.
 
 The bottom left panel shows the empirical distribution of SGPs given prior scale score deciles in the form of a 10 by 10 cell grid.  Percentages of student growth percentiles between the 10<sup>th</sup>, 20<sup>th</sup>, 30<sup>th</sup>, 40<sup>th</sup>, 50<sup>th</sup>, 60<sup>th</sup>, 70<sup>th</sup>, 80<sup>th</sup>, and 90<sup>th</sup> percentiles were calculated based upon the empirical decile of the cohort's prior year scaled score distribution^[The total students in each for the analyses varies depending on grade and subject.].  Deviations from perfect fit are indicated by red and blue shading. The further above 10 the darker the red, and the further below 10 the darker the blue. A more detailed discussion about the reasons for and implications of model misfit for the various SGP analysis types can be found in the "Goodness of Fit" section of the 2015 Utah Student Growth Model report.  
 
@@ -345,12 +344,14 @@ LaTeX_End -->
 
 
 ## Student Level Results
-To investigate the possibility that individual level misfit might impact summary level results, student growth percentile analyses were run on all students and the results were examined relative to prior achievement.  With perfect fit to data, the correlation between students' most recent prior achievement scores and their student growth percentiles is zero (i.e., the goodness of fit tables would have a uniform distribution of percentiles across all previous scale score levels).  To investigate in another way, correlations between prior student scale scores and student growth percentiles were calculated.^[In addition to providing information about model fit, these student level correlations can assess potential impact of test ceiling effects.]  Additionally, the correlation between prior and current scale scores (achievement) are calculated to provide a contrast.  For evidence of good model fit, the desired observed relationships would be no relationship (zero correlation) between prior achievement and growth, and a positive relationship between prior and current achievement, which suggests that growth is in fact detectable and growth modeling is therefore reasonable to begin with.
+To investigate the possibility that individual level misfit might impact summary level results, student growth percentile analyses were run on all students and the results were examined relative to prior achievement.  With perfect fit to data, the correlation between students' most recent prior achievement scores and their student growth percentiles is zero (i.e., the goodness of fit tables would have a uniform distribution of percentiles across all previous scale score levels).  To investigate in another way, correlations between prior student scale scores and student growth percentiles were calculated.^[In addition to providing information about model fit, these student level correlations can assess potential impact of test ceiling effects.]  Additionally, the correlation between prior and current scale scores (achievement) are calculated to provide a contrast.  For evidence of good model fit, the desired observed relationships would be no relationship (zero correlation) between prior achievement and growth, and a positive relationship between prior and current achievement.^[A positive relationship here suggests that growth is in fact detectable and growth modeling is therefore reasonable to begin with.]
 
-Student level correlations between the SGP and prior achievement are presented here.  The results are generally as expected.  With cohort-referenced percentiles, when the model is perfectly fit to the data, the correlation between students' most recent prior achievement scores and their student growth percentiles is zero (i.e., there is a uniform distribution of percentiles across all previous scale score levels).  Correlations for Utah cohort-referenced SGPs are all essentially zero.  This provides assurance that the models have fit the data well, and indicate that students can demonstrate high (or low) growth regardless of prior achievement using cohort-referenced SGPs.  Furthermore, a strong relationship exists between prior and current scale scores. 
+The student level correlation results are generally as expected.  With cohort-referenced percentiles, when the model is perfectly fit to the data, the correlation between students' most recent prior achievement scores and their student growth percentiles is zero (i.e., there is a uniform distribution of percentiles across all previous scale score levels).  Correlations for Utah cohort-referenced SGPs are all essentially zero.  This provides assurance that the models have fit the data well, and indicate that students can demonstrate high (or low) growth regardless of prior achievement using cohort-referenced SGPs.  Furthermore, a strong relationship exists between prior and current scale scores. 
+
+The EOCT correlations in Table `r tblNumNext()+1` are disaggregated by the constituent norm groups.  That is, each EOCT subject is potentially analyzed using more than one sequence of prior subjects, grades and years.  The norm groups here are indicated by the most recent (first) prior available for each norm group (although more prior years' scores are likely used).  Although still strong^[As a rule of thumb, we hope to see correlations above 0.60], the correlations between these different content areas are slightly lower than those between the grade level subjects.
 
 
-```{r, cache=TRUE, echo=FALSE, include=FALSE}
+```{r, cache=TRUE, echo=FALSE, include=FALSE, Student_SAGE}
 	student.cor.grd <- Utah_SGP@Data[YEAR=='2015' & VALID_CASE=='VALID_CASE'][, list(
 		`$\\\rr_ {  SGP}$` = round(cor(SGP, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
 		`$\\\rr_ { Scale Score}$` = round(cor(SCALE_SCORE, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
@@ -358,14 +359,10 @@ Student level correlations between the SGP and prior achievement are presented h
 		N_Size = sum(!is.na(SGP))), by = c('CONTENT_AREA', 'GRADE')]
 
 	gl_tmp_tbl <- student.cor.grd[!is.na(student.cor.grd[["$\\\rr_ {  SGP}$"]]) & CONTENT_AREA %in% GL_subjects] 
-	gl_tmp_tbl <- gl_tmp_tbl[][order(match(gl_tmp_tbl$CONTENT_AREA, GL_subjects))]
 	gl_tmp_tbl[, GRADE := as.numeric(GRADE)]
 	setkey(gl_tmp_tbl, CONTENT_AREA, GRADE)
+	gl_tmp_tbl <- gl_tmp_tbl[][order(match(gl_tmp_tbl$CONTENT_AREA, GL_subjects))]
 
-```
-
-
-```{r, results='asis', echo=FALSE, Student_SAGE}
 	tmp.cap <- "EOGT Student Level Correlations between Prior Standardized Scale Score and 1) SGP or 2) Current Scale Score."
 	gl_tmp_tbl$CONTENT_AREA <- sapply(gl_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
 	gl_tmp_tbl$CONTENT_AREA[duplicated(gl_tmp_tbl$CONTENT_AREA)] <- ""
@@ -375,14 +372,29 @@ Student level correlations between the SGP and prior achievement are presented h
   cat(dualTable(as.matrix(gl_tmp_tbl), align=paste(rep('r', dim(gl_tmp_tbl)[2]), collapse=''), caption = tmp.cap))
 ```
 
-```{r, results='asis', echo=FALSE, Student_EOCTCohort}
-	eoct_tmp_tbl <- student.cor.grd[!is.na(student.cor.grd[["$\\\rr_ {  SGP}$"]]) & CONTENT_AREA %in% EOCT_subjects]
-	eoct_tmp_tbl$GRADE <- NULL
-	eoct_tmp_tbl$CONTENT_AREA <- sapply(eoct_tmp_tbl$CONTENT_AREA, capwords)
-	eoct_tmp_tbl$N_Size <- prettyNum(eoct_tmp_tbl$N_Size, preserve.width = "individual", big.mark=',')
-	names(eoct_tmp_tbl)[c(1,4)] <- sapply(names(eoct_tmp_tbl)[c(1,4)], capwords)
+```{r, results='asis', echo=FALSE, Student_EOCT}
+	student.cor.eoct <-Utah_SGP@Data[YEAR=='2015' & CONTENT_AREA %in% EOCT_subjects & VALID_CASE=='VALID_CASE'][, list(
+		`$\\\rr_ {  SGP}$` = round(cor(SGP, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
+		`$\\\rr_ { Scale Score}$` = round(cor(SCALE_SCORE, SCALE_SCORE_PRIOR_STANDARDIZED, use='pairwise.complete'), 2), 
+		N_Size = sum(!is.na(SGP))), keyby = list(CONTENT_AREA, First_Prior)]
 
-	tmp.cap <- "EOCT Student Level Correlations between Prior Standardized Scale Score and 1) SGP or 2) Current Scale Score."
+	eoct_tmp_tbl <- student.cor.eoct[!is.na(student.cor.eoct[["$\\\rr_ {  SGP}$"]])] 
+	eoct_tmp_tbl[, First_Prior := sapply(gsub("/", " ", First_Prior), capwords)]
+	eoct_tmp_tbl[, First_Prior := gsub(" Eoct", "", First_Prior)]
+	eoct_tmp_tbl[, First_Prior := gsub(" 8", " Grade 8", First_Prior)]
+	eoct_tmp_tbl[, First_Prior := gsub(" Sec ", " Secondary ", First_Prior)]
+	
+	# eoct_tmp_tbl[, First_Prior := paste(sapply(strsplit(First_Prior, "/"), function(y) y[1]), sapply(sapply(strsplit(sapply(strsplit(First_Prior, "/"), function(y) y[2]), "_"), function(c) paste(c, collapse = " Grade ")), capwords))] # From New Jersey
+
+	eoct_tmp_tbl <- eoct_tmp_tbl[][order(match(eoct_tmp_tbl$CONTENT_AREA, EOCT_subjects))]
+	eoct_tmp_tbl$CONTENT_AREA <- sapply(eoct_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+
+	tmp.cap <- "EOCT Student Level Correlations between Prior Standardized Scale Score and 1) SGP or 2) Current Scale Score - Disaggregated by Norm Group."
+	eoct_tmp_tbl$CONTENT_AREA <- sapply(eoct_tmp_tbl$CONTENT_AREA, capwords, USE.NAMES=FALSE)
+	eoct_tmp_tbl$CONTENT_AREA[duplicated(eoct_tmp_tbl$CONTENT_AREA)] <- ""
+	eoct_tmp_tbl[, CONTENT_AREA := gsub("Sec ", "Secondary ", CONTENT_AREA)]
+	eoct_tmp_tbl$N_Size <- prettyNum(eoct_tmp_tbl$N_Size, preserve.width = "individual", big.mark=',')
+	setnames(eoct_tmp_tbl, c(1:2,5), sapply(names(eoct_tmp_tbl)[c(1:2,5)], capwords))
 
 	cat(dualTable(as.matrix(eoct_tmp_tbl), align=paste(rep('r', dim(eoct_tmp_tbl)[2]), collapse=''), caption = tmp.cap))
 ```
@@ -462,7 +474,7 @@ The relationship between average prior student achievement and median SGP observ
 ```
 <p></p>
 
-Correlation tables describing the relationship between prior achievement (again defined as mean prior standardized scale score) and aggregate growth percentiles are presented below in separate subsections for grade level and EOCT subjects.  Additionally, the correlation between the growups prior achievement and a measure of their current achievement (here the percent of kids that are at or above the proficiency cuts).  Typically these correlations are stronger than that between prior achievement and growth, which suggests that school achievement *status* tends to stay the same over time.  
+Correlation tables describing the relationship between prior achievement (again defined as mean prior standardized scale score) and aggregate growth percentiles are presented below in separate subsections for grade level and EOCT subjects.  Additionally, the correlation between the groups prior achievement and a measure of their current achievement (here the percent of kids that are at or above the proficiency cuts).  Typically these correlations are stronger than that between prior achievement and growth, which suggests that school achievement *status* tends to stay the same over time.  
 
 This is indeed what we see in the correlation tables. The first table in the each subsection provides these overall SGP aggregates' relationships with mean prior standardized scale scores. The additional correlation tables are dis-aggregated by content area, and content area and grade to provide more detail.
 

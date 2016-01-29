@@ -46,6 +46,10 @@ renderMultiDocument(rmd_input = "Appendix_C_2014.Rmd",
 load("/Users/avi/Dropbox/SGP/Utah/Data/Utah_SGP.Rdata")
 setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2015")
 
+library(data.table)
+Utah_SGP@Data$First_Prior <- as.character(NA)
+Utah_SGP@Data[, First_Prior := sapply(strsplit(as.character(Utah_SGP@Data$SGP_NORM_GROUP), "; "), function(x) rev(x)[2])]
+
 ###  Clean up the GoFit Plot directories
 
 # gof <- "/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/img/Goodness_of_Fit"
