@@ -5,7 +5,7 @@ author:
   - name: Adam R. VanIwaarden
   - name: Damian W. Betebenner
   - name: <em>National Center for the Improvement<br></br> of Educational Assessment (NCIEA)</em>
-date: November 2015
+date: April 2016
 ---
 
 <!--SGPreport-->
@@ -37,54 +37,47 @@ date: November 2015
 	current.year <- "2015"
 
 	###  Set up long data
-	long.data <- copy(Utah_SGP@Data[, c("ID", "VALID_CASE", "CONTENT_AREA",  "GRADE", "YEAR", "SCALE_SCORE", "SGP", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "SGP_NORM_GROUP"), with=FALSE][VALID_CASE=="VALID_CASE" & YEAR %in% c(prior.year, current.year)])
-	# table(long.data[YEAR==current.year][, GRADE, CONTENT_AREA])
-	##  Get max score lookup
+	long.data <- copy(Utah_SGP@Data[, c("ID", "VALID_CASE", "CONTENT_AREA", "GRADE",  "YEAR", "SCALE_SCORE", "SGP", "SCALE_SCORE_PRIOR", "SCALE_SCORE_PRIOR_STANDARDIZED", "SGP_NORM_GROUP", "Most_Recent_Prior"), with=FALSE][VALID_CASE=="VALID_CASE" & YEAR %in% c(prior.year, current.year)])
 
-	##  Top/Bottom 0.X% Can't do this with long.data.  Could try to get grade/subject specific pct value.  
-	##  Might get close with EOGT, but not with EOCT (incomplete norm groups post preference based merge in combineSGP)
-	#	pct <- .995
-	# pct <- 50/dim(tmp.data.final)[1] # Take Top/Bottom 50 kids to find LOSS/HOSS
-
-	setkeyv(long.data, c("CONTENT_AREA", "YEAR",  "GRADE", "SCALE_SCORE"))
+	setkeyv(long.data, c("CONTENT_AREA", "YEAR", "GRADE", "Most_Recent_Prior", "SCALE_SCORE"))
 
 	loss.hoss <- long.data[YEAR == current.year & !is.na(SGP)][, list(
-		# LOSS_PCT = quantile(as.numeric(SCALE_SCORE), probs = 1-pct, na.rm = T), 
 		LOSS_50 = SCALE_SCORE[which.min(SCALE_SCORE)+49], #  Bottom 50 Scores
-# 		LOSS_2 = SCALE_SCORE[which.min(SCALE_SCORE)+1], #  Bottom 2 Scores
 		LOSS_1 = min(SCALE_SCORE),   #  LOSS Only
-		# HOSS_PCT = quantile(as.numeric(SCALE_SCORE), probs = pct, na.rm = T), 
 		HOSS_50 = SCALE_SCORE[which.max(SCALE_SCORE)-49], #  TOP 50 Scores
-		# HOSS_2 = SCALE_SCORE[which.max(SCALE_SCORE)-1], #  TOP 2 Scores
 		HOSS_1 = max(SCALE_SCORE)   #  HOSS Only
-		), keyby=list(CONTENT_AREA, YEAR, GRADE)]
+		), keyby=list(CONTENT_AREA, YEAR, GRADE, Most_Recent_Prior)]
 
-	setkeyv(long.data, c("CONTENT_AREA", "YEAR", "GRADE"))
+	setkeyv(long.data, c("CONTENT_AREA", "YEAR", "GRADE", "Most_Recent_Prior"))
 	long.data <- merge(long.data, loss.hoss, all.x = TRUE)
-	long.data[, Grade := factor(as.numeric(GRADE))]
+	long.data[, Grade := ordered(GRADE, levels=c(3:8, "EOCT"))]
+	long.data[, CA := ordered(CONTENT_AREA, levels=subject_order, labels=sapply(subject_order, capwords, USE.NAMES = FALSE))]
 
-	# tmp_prior_grade <- sapply(as.character(long.data$SGP_NORM_GROUP), function(f) tail(strsplit(tail(strsplit(f, ";")[[1]],2)[1], "_")[[1]], 1))
-
-	##  Subset out all students with max score and their historical long data
-
+	###  Subset out all students with max score and their historical long data
 	max.data <- data.table(long.data[SCALE_SCORE >= HOSS_50 & !is.na(SGP),], key=c("ID", "CONTENT_AREA", "GRADE"))
 	max.data[, CA := gsub("Sec ", "Secondary ", sapply(CONTENT_AREA, capwords))]
 	min.data <- data.table(long.data[SCALE_SCORE <= LOSS_50 & !is.na(SGP),], key=c("ID", "CONTENT_AREA", "GRADE"))
 	min.data[, CA := gsub("Sec ", "Secondary ", sapply(CONTENT_AREA, capwords))]
 
+
 	###
 	###  Utility functions for ggplot (necessary because use of ggplot(...) withing knitr is odd - can't find defined variables in envir/scope, just like data.table)
 	###
 	
-	condDistPlot <- function(ca, g) {
-		tmp.data <- subset(long.data, YEAR==current.year & CONTENT_AREA==ca & GRADE==g & !is.na(SCALE_SCORE_PRIOR), select=c(ID, SCALE_SCORE, SCALE_SCORE_PRIOR))
-
+	condDistPlot <- function(ca, g, prior.ca = NULL) {
 		if (g == "EOCT") {
+			tmp.data <- subset(long.data, YEAR==current.year & CONTENT_AREA==ca & Most_Recent_Prior==prior.ca & !is.na(SCALE_SCORE_PRIOR), select=c(ID, SCALE_SCORE, SCALE_SCORE_PRIOR))
 			x.lab <- paste(current.year, gsub("Sec ", "Secondary ", capwords(ca)))
-			y.lab <- "Prior Standardized Scores\n"
+			y.lab <- paste(c(sapply(strsplit(prior.ca, "/")[[1]], capwords)), collapse = " ") #"First Prior:", 
+			y.lab <- gsub(" Eoct", "", y.lab)
+			y.lab <- gsub(" 8", " Grade 8", y.lab)
+			y.lab <- gsub(" 7", " Grade 7", y.lab)
+			y.lab <- gsub(" 6", " Grade 6", y.lab)
 		}	else {
+			tmp.data <- subset(long.data, YEAR==current.year & CONTENT_AREA==ca & GRADE==g & !is.na(SCALE_SCORE_PRIOR), select=c(ID, SCALE_SCORE, SCALE_SCORE_PRIOR))
 			x.lab <- paste(current.year, "Grade", g, capwords(ca))
-			y.lab <- paste(prior.year, "Grade", g-1, capwords(ca))
+			if (is.null(prior.ca)) prior.ca <- ca
+			y.lab <- paste(prior.year, "Grade", g-1, capwords(prior.ca))
 		}
 
 		ggplot(tmp.data, aes(x=SCALE_SCORE, y=SCALE_SCORE_PRIOR)) + geom_point(alpha=0.35) + theme_bw() + 
@@ -94,19 +87,9 @@ date: November 2015
 			labs(y = y.lab, x = x.lab) + theme(axis.title=element_text(size=10, face="bold"), legend.position="none")
 	}
 
-	boxPlot <- function(tmp.data, y, LOSS=FALSE, facet=TRUE) {
+	boxPlot <- function(tmp.data, y, LOSS=FALSE, facet=NULL) {
 		give.n <- function(x) { return(c(y = y, label = length(x))) }
-		if (facet) {
-			if (LOSS) {
-				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Grade, ymax=(min(SGP) +10))) + 
-						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Lowest Scoring Students' Growth Percentiles") 
-			} else {
-				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Grade, ymax=(min(SGP) -10))) + 
-						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Highest Scoring Students' Growth Percentiles") 
-			}
-			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(width = 0.75), size=4, colour="red") +
-					coord_flip() + theme(axis.title=element_text(size=12,face="bold"), axis.text.y = element_blank()) # +
-		} else {
+		if (is.null(facet)) {
 			if (LOSS) {
 				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=CA, ymax=(min(SGP) +7))) + 
 						 geom_boxplot() + labs(x="Content Area", y="Lowest Scoring Students' Growth Percentiles")
@@ -114,23 +97,47 @@ date: November 2015
 				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=CA, ymax=(min(SGP) -7))) + 
 						 geom_boxplot() + labs(x="Content Area", y="Highest Scoring Students' Growth Percentiles")
 			}
-			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(width = 0.75), size=4, colour="red") +
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(width = 0.75), size=3, colour="red") +
 					coord_flip() + theme(axis.title=element_text(size=12,face="bold"), legend.position="none")
-		}
+		} else {
+		if (facet=="Grade") {
+			if (LOSS) {
+				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Grade, ymax=(min(SGP) +7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Lowest Scoring Students' Growth Percentiles") 
+			} else {
+				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Grade, ymax=(min(SGP) -7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Highest Scoring Students' Growth Percentiles") 
+			}
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(0.75), size=3, colour="red") +
+					coord_flip() + theme(axis.title=element_text(size=12,face="bold"), axis.text.y = element_blank()) # +
+		} else {
+			###  Facet is either Grade or Most_Recent_Prior
+			if (LOSS) {
+				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Most_Recent_Prior, ymax=(min(SGP) +7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Lowest Scoring Students' Growth Percentiles") 
+			} else {
+				p <- ggplot(data=tmp.data, aes(x=CA, y=SGP, fill=Most_Recent_Prior, ymax=(min(SGP) -7))) + 
+						 geom_boxplot() + facet_grid(.~CA, scales="free") + labs(x="", y="Highest Scoring Students' Growth Percentiles") 
+			}
+			p + stat_summary(fun.data = give.n, geom = "text", position=position_dodge(0.75), size=3, colour="red") +
+					coord_flip() + theme(axis.title=element_text(size=12,face="bold"), axis.text.y = element_blank()) # +
+		}}
 	}
 ```
 
 
 # Introduction
-In the 2013-2014 academic year, Utah transitioned from its previous Utah Criterion Referenced Tests (CRT) to the [Student Assessment of Growth and Excellence (SAGE)](http://www.schools.utah.gov/assessment/SAGE.aspx). The transition included numerous changes to the assessment system including the incorporation of new performance standards and moving to a vertical scale.  As other states have gone through similar assessment transitions in 2014-2015, many have observed ceiling and floor effects in the new assessments (i.e. a relatively large proportion of students scoring at/near the scale extremes).  This has occurred despite purported improvements in assessment qualities that should prevent these effects (e.g. adaptive tests).  Regardless of the source of assessment ceilings/floors, they can make the Student Growth Percentile (SGP) estimates questionable.
+In the 2013-2014 academic year, Utah transitioned from its previous Utah Criterion Referenced Tests (CRT) to the [Student Assessment of Growth and Excellence (SAGE)](http://www.schools.utah.gov/assessment/SAGE.aspx). The transition included numerous changes to the assessment system including the incorporation of new performance standards and moving to a vertical scale.  As other states have gone through similar assessment transitions in 2014-2015, many have observed ceiling and floor effects in the new assessments (i.e. a relatively large proportion of students scoring at/near the scale extremes).  This has occurred despite purported improvements in assessment qualities that should prevent these effects (e.g. adaptive tests).  Regardless of the source of assessment ceilings/floors, they can telegraph onto the Student Growth Percentile (SGP) calculations making these estimates questionable.
 
-Although very similar in nature, ceiling effects are somewhat more problematic than floor effects because consistently highest achieving students receive lower than expected growth percentiles and therefore the students are negatively impacted.  Conversely, consistently lowest achieving students have higher estimated SGPs than would be expected.  Although this could be interpreted as a positive impact on these students by giving them higher SGPs, it can also conceals unacceptably low growth.  
+Although very similar in nature, ceiling effects are somewhat more problematic than floor effects because students that consistently achieve the highest scores receive lower than expected growth percentiles and are therefore negatively impacted.  Conversely, the consistently lowest achieving students have higher estimated SGPs than would be expected.  Although this could be interpreted as a positive impact for these students by giving them higher SGPs, it can also conceal unacceptably low growth that needs to be identified and addressed.
 
-Essentially these problems are caused by the way in which a "percentile" is defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were tested with a relatively easy test and 20% of the students had a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than 100% of their peers and so could be also defined as achieving at the 99.99<sup>th</sup> percentile.  To extend this heuristic from achievement to growth, if 50% of those top scorers also scored perfectly on the next test, we might estimate that they had 50<sup>th</sup> percentile growth.  Although there is nothing *technically* incorrect about this estimate because their growth is fairly typical for their specific norm group, it is an inadequate or unsatisfactory assessment of their growth because they have consistently attained at the highest level.
+Essentially these problems are caused by the way in which a "percentile" is most typically defined to begin with, and the inability of the assessments (and therefore the SGP model) to make granular distinctions between kids who score at the extremes of the test year after year.  As an example, if a group of students were tested with a relatively easy test and 20% of the students had a perfect score, these students would be defined as being in the 80<sup>th</sup> percentile because they scored higher than 80% of their peers.  This is somewhat misleading however, because their score was *equal to* or greater than *all* of their peers and so could be also described as achieving at the 99<sup>th</sup> percentile under an equally valid definition.
 
-Given these impacts and the difficulty in detecting them given traditional SGP diagnostic tools, the Center for Assessment has added "Ceiling/Test Effects" indicators to the SGP model goodness of fit plots, as well as providing all clients even more rigorous diagnostics through this appendix to the annual technical report.  This report includes:
+To extend this heuristic from achievement to growth, if 50% of those top students also scored perfectly on the next test, we might estimate that they had 50<sup>th</sup> percentile growth.  Although there is nothing *technically* incorrect about this estimate since their growth is fairly typical for their academic peer group, it is an inadequate or unsatisfactory assessment of their growth because they have consistently attained at the highest observable level.  Furthermore, if it is typical for their peers to maintain perfect scores then even small deviations from a perfect score could produce *low growth* SGP estimates.
 
-1. Plots of the scale score distributions for the current and prior years, which may provide an indication of whether a ceiling or floor is present in either (or both) the current or historical data.
+Given these impacts and the difficulty in detecting them using traditional SGP diagnostic tools, the Center for Assessment has added "Ceiling/Test Effects" indicators to the SGP model goodness of fit plots and is providing all clients even more rigorous diagnostic and descriptive analyses through this Appendix to the annual technical report.  This report includes:
+
+1. Plots of the scale score distributions for the current and prior years' tests, which may provide an indication of whether a ceiling or floor is present in either (or both) the current or historical data.
 2. Box plots showing the range and distribution of SGPs for *only* the highest and lowest achieving students in the current year.
 
 <!-- HTML_Start -->
@@ -284,14 +291,14 @@ LaTeX_End -->
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
-\caption*{\label{fig:Bidensity} {\bf{Fig. C.5:}} Marginal distributions of prior scale scores:  EOCT Content Areas.}
+\caption*{\label{fig:Bidensity} {\bf{Fig. C.7:}} Marginal distributions of prior scale scores:  EOCT Content Areas.}
   \begin{subfigure}[b]{\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/margDist_EOCT-1.png}
   \end{subfigure}
 \end{figure}
 
 \begin{figure}[H]
-\caption*{\label{fig:Bidensity} {\bf{Fig. C.6:}} Marginal distributions of current scale scores:  EOCT Content Areas.}
+\caption*{\label{fig:Bidensity} {\bf{Fig. C.8:}} Marginal distributions of current scale scores:  EOCT Content Areas.}
   \begin{subfigure}[b]{\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/margDist_EOCT-2.png}
   \end{subfigure}
@@ -302,12 +309,11 @@ LaTeX_End -->
 
 
 ## Conditional Distributions
-The marginal density plots provide a limited amount of information, particularly for the potential for ceiling/floor effects in the calculation of ***growth***.  In order to provide a more nuanced view of the relationship between the prior and current scale scores, the following plots depict the conditional (joint) distributions for each content area and grade level.  These plots start with a basic scatter plot of each student's scores, and on top of this is layered 1) **green contour lines** to provide a sense of joint density, 2) a **magenta non-linear line** identifying the bivariate relationship between prior and current scores, and 3) **rug plots** that describe the marginal distributions (as above, the prior scores are blue and current scores are red).  
+The marginal density plots provide a limited amount of information, particularly for the potential for ceiling/floor effects in the calculation of ***growth***.  In order to provide a more nuanced view of the relationship between the prior and current scale scores, the following plots depict the conditional (joint) distributions for each content area and grade level.  These plots start with a basic scatter plot of each student's scores, and on top of this is layered 1) **green contour lines** to provide a sense of the joint density, 2) a **magenta non-linear line** identifying the bivariate relationship between prior and current scores, and 3) **rug plots** that describe the marginal distributions (as above, the prior scores are blue and current scores are red).  
 
-For the 2014 and 2015 Utah data, we again see very few issues in all content area and grade combinations, with the exception of the EOCT Secondary Mathematics courses.  Whereas floor effects appear in single years in other places, these plots (Figure C.12) show consistent floor effects in both years and the prevalence of students scoring the lowest observable score for (at least) two years in a row.
+Ceiling or floor effects often present themselves as dark shaded points in the extreme top-right or bottom-left corners of the plots.  This suggests that staying at the extremes from year to year is not uncommon, which may lead to odd growth estimates for these chronically high/low achieving students.  For the 2014 and 2015 Utah data, we again see very few issues in all content area and grade combinations, with the exception of the EOCT Secondary Mathematics courses.  Whereas floor effects appear in single years in other places, these plots (Figure C.13) show consistent floor effects in both years and the prevalence of students scoring the lowest observable score for (at least) two years in a row.
 
-```{r, echo=FALSE, include=FALSE, condDist_EOGT, cache=TRUE, fig.height=3, fig.width=3}
-#  Loop around subjects to produce plots:
+```{r, echo=FALSE, include=FALSE, condDist_EOGT, cache=TRUE, fig.height=2.5, fig.width=3}
 	condDistPlot(ca="ELA", g=4)
 	condDistPlot(ca="ELA", g=5)
 	condDistPlot(ca="ELA", g=6)
@@ -327,55 +333,7 @@ For the 2014 and 2015 Utah data, we again see very few issues in all content are
 	condDistPlot(ca="SCIENCE", g=6)
 	condDistPlot(ca="SCIENCE", g=7)
 	condDistPlot(ca="SCIENCE", g=8)
-
-# for (ca in GL_subjects) {
-# 	for (g in 4:11) {
-# 		x <- data.table(long.data[YEAR==current.year & CONTENT_AREA==ca & GRADE==g,][, list(ID, SCALE_SCORE, SCALE_SCORE_PRIOR)][!is.na(SCALE_SCORE_PRIOR)], key=c("ID", "SCALE_SCORE"))
-# 		if (dim(x)[1] > 0) {
-# 			condDistPlot(data=x, ca, g)
-# 		}
-# 	}
-# }
 ```
-
-###  Mathematics
-
-<!-- HTML_Start -->
-##### `r figCapNo("Conditional distribution(s) of current and prior scale scores:  EOGT Mathematics.")`
-![](../img/Appendices/Appendix_C_2015/condDist_EOGT-9.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-10.png) 
-
-
-##### `r figCapNo("Conditional distribution(s) of current and prior scale scores:  EOGT Mathematics <em>Continued</em>.")`
-![](../img/Appendices/Appendix_C_2015/condDist_EOGT-11.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-12.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-13.png)
-
-<!-- LaTeX_Start 
-\begin{figure}[H]
-\caption*{\label{fig:condDistMath} {\bf{Fig. C.7:}} Conditional distribution(s) of current and prior scale scores:  EOGT Mathematics.}
-  \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-9.png}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-10.png}
-  \end{subfigure}
-\end{figure}
-
-\pagebreak
-
-\begin{figure}[H]
-\caption*{\label{fig:condDistMath2} {\bf{Fig. C.8:}} Conditional distribution(s) of current and prior scale scores:  EOGT Mathematics \textit{Continued}.}
-  \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-11.png}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-12.png}
-  \end{subfigure}
-  \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-13.png}
-  \end{subfigure}
-\end{figure}
-
-\pagebreak
-LaTeX_End -->
 
 ###  ELA
 
@@ -383,10 +341,8 @@ LaTeX_End -->
 ##### `r figCapNo("Conditional distribution(s) of current and prior scale scores:  EOGT ELA.")`
 ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-1.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-2.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-3.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-4.png)
 
-
 ##### `r figCapNo("Conditional distribution(s) of current and prior scale scores:  EOGT ELA <em>Continued</em>.")`
 ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-5.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-6.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-7.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-8.png)
-
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
@@ -397,18 +353,18 @@ LaTeX_End -->
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-2.png}
   \end{subfigure}
+\end{figure}
+
+\pagebreak
+
+\begin{figure}[H]
+\caption*{\label{fig:condDistELA2} {\bf{Fig. C.10:}} Conditional distribution(s) of current and prior scale scores: ELA \textit{Continued}.}
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-3.png}
   \end{subfigure}
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-4.png}
   \end{subfigure}
-\end{figure}
-
-\pagebreak
-
-\begin{figure}[H]
-\caption*{\label{fig:condDistELA2} {\bf{Fig. C.10:}} Conditional distribution(s) of current and prior scale scores:  EOGT ELA \textit{Continued}.}
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-5.png}
   \end{subfigure}
@@ -427,6 +383,37 @@ LaTeX_End -->
 LaTeX_End -->
 
 
+###  Mathematics
+
+<!-- HTML_Start -->
+##### `r figCapNo("Conditional distribution(s) of current and prior scale scores:  EOGT Mathematics.")`
+![](../img/Appendices/Appendix_C_2015/condDist_EOGT-9.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-10.png) 
+![](../img/Appendices/Appendix_C_2015/condDist_EOGT-11.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-12.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOGT-13.png)
+
+
+<!-- LaTeX_Start 
+\begin{figure}[H]
+\caption*{\label{fig:condDistMath} {\bf{Fig. C.11:}} Conditional distributions of current and prior scale scores: EOGT Mathematics.}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-9.png}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-10.png}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-11.png}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-12.png}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-13.png}
+  \end{subfigure}
+\end{figure}
+
+\pagebreak
+LaTeX_End -->
+
 
 ###  Science
 
@@ -436,7 +423,7 @@ LaTeX_End -->
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
-\caption*{\label{fig:condDistELA} {\bf{Fig. C.11:}} Conditional distribution(s) of current and prior scale scores:  EOGT Science.}
+\caption*{\label{fig:condDistELA} {\bf{Fig. C.12:}} Conditional distribution(s) of current and prior scale scores:  EOGT Science.}
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOGT-14.png}
   \end{subfigure}
@@ -454,31 +441,24 @@ LaTeX_End -->
 \pagebreak
 LaTeX_End -->
 
+
 ###  EOCT Content Areas
-The Secondary Mathematics courses for both the 2014 and 2015 Utah EOCT data^[Note that all of these plots use the standardized prior year scale scores.  This is due to the use of multiple content area progressions in the EOCT analyses, so the standardization puts the prior scores on a more comparable scale.] have floor effects, including students scoring the lowest observable score for both years (visible as the dark shaded point in the extreme bottom left corner of the plots in Figure C.12).  This suggests that staying at the floor from year to year is not uncommon, which may lead to inflated growth estimates for these chronically low achieving students.
+
+The conditional density plots for the EOCT subjects are displayed below.  The most recent prior is used in each plot to provide insight on the academic peer (norm) group that were analyzed separately.  The 2014 and 2015 Secondary Mathematics courses' data show floor effects, including students scoring the lowest observable score for both years (visible as the dark shaded point in the extreme bottom-left corner of the plots in Figure C.13).  This suggests that staying at the floor from year-to-year is not uncommon, which may lead to inflated growth estimates for these chronically low achieving students.  Also of note is the dark shaded point in the extreme top-right corner of the Earth Science plot.  Although this does not look particularly concerning here, this evidence of a minor ceiling effect is corroborated in the following section on the SGP distribution for the highest scoring students.
 
 
 ```{r, echo=FALSE, include=FALSE, condDist_EOCT_M, cache=TRUE, fig.height=2.75, fig.width=3}
-		condDistPlot(ca="SEC_MATH_I", g="EOCT")
-		condDistPlot(ca="SEC_MATH_II", g="EOCT")
-		condDistPlot(ca="SEC_MATH_III", g="EOCT")
+	condDistPlot(ca="SEC_MATH_I", g="EOCT", prior.ca="2014/MATHEMATICS_8")
+	condDistPlot(ca="SEC_MATH_II", g="EOCT", prior.ca="2014/SEC_MATH_I_EOCT")
+	condDistPlot(ca="SEC_MATH_III", g="EOCT", prior.ca="2014/SEC_MATH_II_EOCT")
 ```
-```{r, echo=FALSE, include=FALSE, condDist_EOCT, cache=TRUE, fig.height=3, fig.width=3}
-		condDistPlot(ca="EARTH_SCIENCE", g="EOCT")
-		condDistPlot(ca="BIOLOGY", g="EOCT")
-		condDistPlot(ca="CHEMISTRY", g="EOCT")
-		condDistPlot(ca="PHYSICS", g="EOCT")
-
-	#  Loop around subjects to produce plots:
-	# for (ca in EOCT_subjects) {
-# 		x <- data.table(long.data[YEAR==current.year & CONTENT_AREA==ca,][,list(
-# 			ID, SCALE_SCORE, SCALE_SCORE_PRIOR_STANDARDIZED)][!is.na(SCALE_SCORE_PRIOR_STANDARDIZED)], key=c("ID","SCALE_SCORE"))
-# 		ggplot(x,aes(x=SCALE_SCORE, y=SCALE_SCORE_PRIOR_STANDARDIZED)) + geom_point(alpha=0.35) + geom_smooth(aes(x=SCALE_SCORE), colour='magenta') +
-# 				geom_rug(sides="tb", size=0.05, col=rgb(0.8,0,0,alpha=0.1)) + geom_rug(sides="rl", size=0.05, col=rgb(0,0,0.8,alpha=0.1)) +
-# 				stat_density2d(data=x, geom="density2d",  aes(alpha = ..level..), colour='green', contour = TRUE, size=1) + theme_bw() +
-# 				labs(y = "\nPrior Standardized Scale Scores\n", x =paste("\nCurrent Scale Score -", gsub("Sec ", "Secondary ", capwords(ca)))) +
-# 				theme(axis.title=element_text(size=14,face="bold"), legend.position="none")
-	# }
+```{r, echo=FALSE, include=FALSE, condDist_EOCT, cache=TRUE, fig.height=2.5, fig.width=3}
+	condDistPlot(ca="EARTH_SCIENCE", g="EOCT", prior.ca="2014/SCIENCE_8")
+	condDistPlot(ca="BIOLOGY", g="EOCT", prior.ca="2014/SCIENCE_8")
+	condDistPlot(ca="BIOLOGY", g="EOCT", prior.ca="2014/EARTH_SCIENCE_EOCT")
+	condDistPlot(ca="CHEMISTRY", g="EOCT", prior.ca="2014/BIOLOGY_EOCT")
+	condDistPlot(ca="PHYSICS", g="EOCT", prior.ca="2014/BIOLOGY_EOCT")
+	condDistPlot(ca="PHYSICS", g="EOCT", prior.ca="2014/CHEMISTRY_EOCT")
 ```
 
 <!-- HTML_Start -->
@@ -487,15 +467,15 @@ The Secondary Mathematics courses for both the 2014 and 2015 Utah EOCT data^[Not
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
-\caption*{\label{fig:condDistMath2} {\bf{Fig. C.12:}} Conditional distribution(s) of current and prior scale scores:  EOCT Mathematics.}
+\caption*{\label{fig:condDistMath2} {\bf{Fig. C.13:}} Conditional distribution(s) of current and prior scale scores:  EOCT Mathematics.}
   \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-1.png}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT_M-1.png}
   \end{subfigure}
   \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-2.png}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT_M-2.png}
   \end{subfigure}
   \begin{subfigure}[b]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-3.png}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT_M-3.png}
   \end{subfigure}
 \end{figure}
 
@@ -503,15 +483,14 @@ The Secondary Mathematics courses for both the 2014 and 2015 Utah EOCT data^[Not
 LaTeX_End -->
 
 
-Some more minor floor effects are apparent for the 2014 science related EOCT scores, and there may be some evidence of a ceiling effect in Physics.  Also of note is the dark shaded point in the extreme top right corner of the Earth Science plot.  Although this does not look particularly concerning here, this is evidence of a minor ceiling effect and is corroborated in the following section on the SGP distribution for the 2015 highest scoring students.
-
 <!-- HTML_Start -->
-##### `r figCapNo("Conditional distribution(s) of current and prior scale scores:  EOCT Sciences.")`
-![](../img/Appendices/Appendix_C_2015/condDist_EOCT-1.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-2.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-3.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-4.png)
+##### `r figCapNo("Conditional distribution(s) of current and prior scale scores: EOCT Sciences.")`
+![](../img/Appendices/Appendix_C_2015/condDist_EOCT-1.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-2.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-3.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-4.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-5.png) ![](../img/Appendices/Appendix_C_2015/condDist_EOCT-6.png)
+
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
-\caption*{\label{fig:condDistMath2} {\bf{Fig. C.13:}} Conditional distribution(s) of current and prior scale scores:  EOCT Sciences.}
+\caption*{\label{fig:condDistMath2} {\bf{Fig. C.14:}} Conditional distribution(s) of current and prior scale scores: EOCT Sciences.}
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-1.png}
   \end{subfigure}
@@ -524,6 +503,12 @@ Some more minor floor effects are apparent for the 2014 science related EOCT sco
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-4.png}
   \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-5.png}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/condDist_EOCT-6.png}
+  \end{subfigure}
 \end{figure}
 
 \pagebreak
@@ -532,51 +517,41 @@ LaTeX_End -->
 
 # SGP Ranges for the Highest and Lowest Achieving Students
 
-In order to isolate the impact of assessment ceilings/floors on student growth percentile (SGP) calculations, the following section provides box plots of the distribution of SGPs for the highest and lowest achieving students.  We are specifically interested in the SGPs for students scoring at the highest/lowest obtainable scale score (HOSS/LOSS - i.e. the actual ceiling/floor).  However, in order to assure that an adequate number of students are included in these plots, the first set of plots in each subsection uses, at a *minimum*, the highest/lowest 50 scores.  Note that this roughly corresponds to the number of students used in the SGP model goodness of fit plots, and this is why these plots are provided as a starting point for this part of the investigation.  If all 50 students have only a single scale score value (i.e. the HOSS/LOSS), then **all** students with this score are included.  Consequently, the number of students included in each box plot may be greater than 50 (the exact number is shown at the margins in red text).
+In order to isolate the impact of assessment ceilings/floors on student growth percentile (SGP) calculations, the following section provides box plots of the distribution of SGPs for the highest and lowest achieving students.  We are specifically interested in the growth percentiles for students scoring at the highest/lowest obtainable scale score (HOSS/LOSS - i.e. the artificial test ceiling/floor) on the current year test.  However, in order to assure that an adequate number of students are included, the first set of plots in each subsection uses, at a *minimum*, the highest/lowest 50 scores.  Note that this roughly corresponds to the number of students used in the SGP model goodness of fit plots, and this is why these plots are provided as a starting point for this part of the investigation.  All students with a score in these students' range of scores are included.  Consequently, the number of students in each box plot may be greater than 50 (the exact number is shown at the margins in red text).
 
-The second set of box plots in the EOGT and EOCT subsections isolate ***only*** those students scoring the HOSS/LOSS.  These plots may then incorporate a varying number of students depending on the prevalence of a ceiling/floor in the current year.
+The second set of box plots in the following subsections isolate ***only*** those students scoring the HOSS/LOSS.  These plots may then incorporate a widely varying number of students depending on the prevalence of a ceiling/floor in the current year.  Note that because Georgia uses the SIMEX measurement error corrected SGP as the official SGP, that is the version used here.
 
 The box plots provide several descriptive statistics.  The dark line within the box marks the *median* SGP, while the ends ("hinges") of the boxes correspond to the first and third quartiles (the 25<sup>th</sup> and 75<sup>th</sup> percentiles).  The upper whisker extends from the hinge to the highest value that is within 1.5 $\times$ IQR of the hinge, where IQR is the inter-quartile range, or distance between the first and third quartiles. The lower whisker extends from the hinge to the lowest value within 1.5 $\times$ IQR of the hinge. Data beyond the end of the whiskers are outliers and plotted as points.  Evidence of a *lack* of either a ceiling or floor effect would be to have all high achieving students with SGPs near 99 and all low achieving students with SGPs near 1.  That is, the desired visual evidence is a solid line at SGP = 99/1.
 
-In the 2015 Utah EOGT SGP analyses, we see a slight ceiling effect in 8th grade math and some floor effects in grade level math as well (the 5<sup>th</sup> grade results are the most concerning).  EOCT Secondary Mathematics SGPs have a pronounced floor effect.
+Overall there are no signs of major issues in the 2015 SGP results.  In some analyses there are outliers which might require further consideration or manual adjustment.
 
 ```{r, echo=FALSE, include=FALSE, cache=TRUE, HOSS_Box_EOGT, fig.height=4, fig.width=7}
-	min.ceiling<-min(max.data[CONTENT_AREA %in% GL_subjects]$SGP) -5
-	boxPlot(tmp.data=max.data[CONTENT_AREA %in% GL_subjects], min.ceiling)
-	boxPlot(tmp.data=max.data[CONTENT_AREA %in% GL_subjects & SCALE_SCORE==HOSS_1], min.ceiling)
+	min.ceiling<-min(max.data[CONTENT_AREA %in% GL_subjects]$SGP)-5
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% GL_subjects], min.ceiling, facet="Grade")
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% GL_subjects & SCALE_SCORE==HOSS_1], min.ceiling+5, facet="Grade")
+# max.data[CONTENT_AREA %in% "MATHEMATICS" & SCALE_SCORE==HOSS_1 & GRADE==8] # 2 interesting cases
 ```
-
 ```{r, echo=FALSE, include=FALSE, cache=TRUE, LOSS_Box_EOGT, fig.height=4, fig.width=7}
 	max.floor <- max(min.data[CONTENT_AREA %in% GL_subjects]$SGP)
-	boxPlot(tmp.data=min.data[CONTENT_AREA %in% GL_subjects], max.floor +5, LOSS=TRUE)
-	boxPlot(tmp.data=min.data[CONTENT_AREA %in% GL_subjects & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE)
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% GL_subjects], max.floor+4, LOSS=TRUE, facet="Grade")
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% GL_subjects & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Grade")
 ```
 
-```{r, echo=FALSE, include=FALSE, cache=TRUE, HOSS_Box_EOCT, fig.height=4, fig.width=7}
-	min.ceiling<-min(max.data[CONTENT_AREA %in% EOCT_subjects]$SGP)
-	boxPlot(tmp.data=max.data[CONTENT_AREA %in% EOCT_subjects], min.ceiling -4, facet=FALSE)
-	boxPlot(tmp.data=max.data[CONTENT_AREA %in% EOCT_subjects & SCALE_SCORE==HOSS_1], min.ceiling, facet=FALSE)
-```
-
-```{r, echo=FALSE, include=FALSE, cache=TRUE, LOSS_Box_EOCT, fig.height=4, fig.width=7}
-	max.floor <- max(min.data[CONTENT_AREA %in% EOCT_subjects]$SGP)
-	boxPlot(tmp.data=min.data[CONTENT_AREA %in% EOCT_subjects], max.floor +4, LOSS=TRUE, facet=FALSE)
-	boxPlot(tmp.data=min.data[CONTENT_AREA %in% EOCT_subjects & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet=FALSE)
-```
 
 ## EOGT Content Areas
+In the 2015 Utah EOGT SGP analyses we see evidence of a minor ceiling effect in 8<sup>th</sup> grade mathematics, as well as minor floor effects in grade level mathematics (the 5<sup>th</sup> grade results in particular).  In looking closely at the five students with the HOSS in 8<sup>th</sup> grade mathematics, the estimated SGPs range from 76 to 98, with the lowest two SGPs attributed to the students with the highest prior scale scores.  Although still relatively high, these values are somewhat questionable and demonstrate how ceiling effects begin to take shape.  Ultimately these few outliers are not low enough to cause concern or require further consideration.
 
 <!-- HTML_Start -->
-##### `r figCapNo("SGP distributions for highest and lowest 0.5% of scale scores by content area and grade level.")`
-![](../img/Appendices/Appendix_C_2015/HOSS_Box_EOGT-1.png)
+##### `r figCapNo("EOG SGP distributions for highest and lowest 50+ scale scores by content area and grade level.")`
+![](../img/Appendices/Appendix_C_2015/HOSS_Box_EOGT-1.png) ![](../img/Appendices/Appendix_C_2015/LOSS_Box_EOGT-1.png)
 
 
-##### `r figCapNo("SGP distributions for the HOSS and LOSS scores by content area and grade level.")`
-![](../img/Appendices/Appendix_C_2015/HOSS_Box_EOGT-2.png)
+##### `r figCapNo("EOG SGP distributions for the HOSS and LOSS scores by content area and grade level.")`
+![](../img/Appendices/Appendix_C_2015/HOSS_Box_EOGT-2.png) ![](../img/Appendices/Appendix_C_2015/LOSS_Box_EOGT-2.png)
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
-\caption*{\label{fig:boxPlotEOGT} {\bf{Fig. C.14:}} SGP distributions for highest and lowest 0.5 percent of scale scores by content area and grade level.}
+\caption*{\label{fig:boxPlotEOGT} {\bf{Fig. C.15:}} SGP distributions for highest and lowest 50+ scale scores by content area and grade level.}
   \begin{subfigure}[b]{\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/HOSS_Box_EOGT-1.png}
   \end{subfigure}
@@ -586,7 +561,7 @@ In the 2015 Utah EOGT SGP analyses, we see a slight ceiling effect in 8th grade 
 \end{figure}
 
 \begin{figure}[H]
-\caption*{\label{fig:boxPlotEOGT2} {\bf{Fig. C.15:}} SGP distributions for the HOSS and LOSS scores by content area and grade level.}
+\caption*{\label{fig:boxPlotEOGT2} {\bf{Fig. C.16:}} SGP distributions for the HOSS and LOSS scores by content area and grade level.}
   \begin{subfigure}[b]{\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/HOSS_Box_EOGT-2.png}
   \end{subfigure}
@@ -598,34 +573,55 @@ In the 2015 Utah EOGT SGP analyses, we see a slight ceiling effect in 8th grade 
 \pagebreak
 LaTeX_End -->
 
+## EOCT Subjects
 
-## EOCT Content Areas
+The end-of-course subject results are shown here *only for students scoring exactly the HOSS and LOSS*.  There are several subjects for which minor ceiling effects are evident.  As in with the EOGT analyses, EOCT ceiling effects are minor and not widespread (all outlier SGPs are above 80).  There is also evidence of a few students affected by a minor floor effect in the Secondary Mathematics analyses.  However, the SGPs in these cases are still relatively low and should raise sufficient concern about these students' performance.
+
+```{r, echo=FALSE, include=FALSE, cache=TRUE, HOSS_Box_EOCT, fig.height=4, fig.width=7}
+	min.ceiling<-min(max.data[CONTENT_AREA %in% EOCT_subjects]$SGP)-4
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% EOCT_subjects], min.ceiling )
+	boxPlot(tmp.data=max.data[CONTENT_AREA %in% EOCT_subjects & SCALE_SCORE==HOSS_1], min.ceiling)
+	
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "SEC_MATH_I"], min.ceiling , facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "SEC_MATH_I" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "SEC_MATH_II" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "SEC_MATH_III" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "EARTH_SCIENCE" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "BIOLOGY" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "CHEMISTRY" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=max.data[CONTENT_AREA %in% "PHYSICS" & SCALE_SCORE==HOSS_1], min.ceiling, facet="Most_Recent_Prior")
+
+	# max.data[CONTENT_AREA %in% "BIOLOGY" & SCALE_SCORE==HOSS_1 & Most_Recent_Prior=="2014/EARTH_SCIENCE_EOCT"]
+```
+```{r, echo=FALSE, include=FALSE, cache=TRUE, LOSS_Box_EOCT, fig.height=4, fig.width=7}
+	max.floor <- max(min.data[CONTENT_AREA %in% EOCT_subjects]$SGP)
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% EOCT_subjects], max.floor +4, LOSS=TRUE)
+	boxPlot(tmp.data=min.data[CONTENT_AREA %in% EOCT_subjects & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE)
+	
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "SEC_MATH_I" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "SEC_MATH_II" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "SEC_MATH_III" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "EARTH_SCIENCE" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "BIOLOGY" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "CHEMISTRY" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+# 	boxPlot(tmp.data=min.data[CONTENT_AREA %in% "PHYSICS" & SCALE_SCORE==LOSS_1], max.floor, LOSS=TRUE, facet="Most_Recent_Prior")
+```
+
 
 <!-- HTML_Start -->
 ##### `r figCapNo("SGP distributions for highest and lowest 0.5% of scale scores by content area.")`
 ![](../img/Appendices/Appendix_C_2015/HOSS_Box_EOCT-1.png)
-
 
 ##### `r figCapNo("SGP distributions for the HOSS and LOSS scores by content area.")`
 ![](../img/Appendices/Appendix_C_2015/HOSS_Box_EOCT-2.png)
 
 <!-- LaTeX_Start 
 \begin{figure}[H]
-\caption*{\label{fig:Bidensity} {\bf{Fig. C.16:}} SGP distributions for highest and lowest 0.5 percent of scale scores by content area.}
-  \begin{subfigure}[b]{\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/HOSS_Box_EOCT-1.png}
-  \end{subfigure}
-  \begin{subfigure}[b]{\textwidth}
-    \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/LOSS_Box_EOCT-1.png}
-  \end{subfigure}
-\end{figure}
-
-\begin{figure}[H]
 \caption*{\label{fig:Bidensity} {\bf{Fig. C.17:}} SGP distributions for the HOSS and LOSS scores by content area.}
-  \begin{subfigure}[b]{\textwidth}
+  \begin{subfigure}[b]{0.9\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/HOSS_Box_EOCT-2.png}
   \end{subfigure}
-  \begin{subfigure}[b]{\textwidth}
+  \begin{subfigure}[b]{0.9\textwidth}
     \includegraphics[width=\textwidth]{../img/Appendices/Appendix_C_2015/LOSS_Box_EOCT-2.png}
   \end{subfigure}
 \end{figure}
@@ -633,9 +629,10 @@ LaTeX_End -->
 \pagebreak
 LaTeX_End -->
 
+
 #  Discussion
 
-Overall there is little evidence of major ceiling effects in the 2015 Utah SGP analyses.  There might be some room for concern about floor effects in the Secondary Mathematics analyses, although the consequences for the floor effects may be less problematic (i.e. underestimating how low these students growth actually is).
+Overall there is little evidence of major ceiling or floor effects in the 2015 Utah SGP analyses.  There are a handful of outliers in some analyses that suggest minor effects on both sides.  The magnitude of these effects are minimal and do not suggest the need for major corrections, although a review of some individual cases may be desired.
 
 When ceiling or floor effects are encountered, there are several ways in which they can be "corrected" manually or analytically.  These include (but not limited to):
 

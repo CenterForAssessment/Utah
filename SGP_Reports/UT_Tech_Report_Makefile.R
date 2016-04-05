@@ -43,12 +43,13 @@ renderMultiDocument(rmd_input = "Appendix_C_2014.Rmd",
 # 2015
 #######
 
-load("/Users/avi/Dropbox/SGP/Utah/Data/Utah_SGP.Rdata")
-setwd("/Users/avi/Dropbox/Github_Repos/Documentation/Utah/SGP_Reports/2015")
+load("/Users/avi/Dropbox (CenterforAssessment)/SGP/Utah/Data/Utah_SGP.Rdata")
+setwd("/Users/avi/Dropbox (CenterforAssessment)/Github_Repos/Documentation/Utah/SGP_Reports/2015")
 
 library(data.table)
-Utah_SGP@Data$First_Prior <- as.character(NA)
-Utah_SGP@Data[, First_Prior := sapply(strsplit(as.character(Utah_SGP@Data$SGP_NORM_GROUP), "; "), function(x) rev(x)[2])]
+Utah_SGP@Data$Most_Recent_Prior <- as.character(NA)
+Utah_SGP@Data[, Most_Recent_Prior := sapply(strsplit(as.character(Utah_SGP@Data$SGP_NORM_GROUP), "; "), function(x) rev(x)[2])]
+# setnames(Utah_SGP@Data, "First_Prior", "Most_Recent_Prior")
 
 ###  Clean up the GoFit Plot directories
 

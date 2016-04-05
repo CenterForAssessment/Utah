@@ -1,0 +1,5 @@
+
+Started visualizeSGP Mon Apr  4 13:39:09 2016 
+
+Finished visualizeSGP Mon Apr  4 13:39:13 2016 in 4.394 Seconds 
+
