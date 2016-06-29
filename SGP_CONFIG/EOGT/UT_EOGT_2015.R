@@ -14,7 +14,8 @@ SCIENCE_2015.config <- list(
 	SCIENCE.2015 = list(
 		sgp.content.areas=rep('SCIENCE', 5),
 		sgp.panel.years=as.character(2011:2015),
-		sgp.grade.sequences=list(c('4', '5'), c('4', '5', '6'), c('4', '5', '6', '7'), c('4', '5', '6', '7', '8'))
+		sgp.grade.sequences=list(c('4', '5'), c('4', '5', '6'), c('4', '5', '6', '7'), c('4', '5', '6', '7', '8')),
+		sgp.projection.sequence = c("SCIENCE", "SCIENCE_BIO")
 	)
 )
 
