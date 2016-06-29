@@ -73,7 +73,7 @@ SEC_MATH_II_2015.config <- list(
 )
 #############################################################
 SEC_MATH_III_2015.config <- list(
-  SEC_MATH_III.2015 = list(
+	SEC_MATH_III.2015 = list(
 		sgp.content.areas=c('SEC_MATH_III','SEC_MATH_III'), # Repeater - NOT ENOUGH KIDS IN 2015
 		sgp.panel.years=as.character(2014:2015),
 		sgp.grade.sequences=list(c('EOCT','EOCT')),
@@ -95,7 +95,7 @@ SEC_MATH_III_2015.config <- list(
 		# sgp.projection.grade.sequences="NO_PROJECTIONS",
 		sgp.norm.group.preference=3), # Make this pref large since the progression is only needed for projections (will be duplicated in sequences below)
 
-  # VIA ALGEBRA 1
+# VIA ALGEBRA 1
 	SEC_MATH_III.2015 = list(
 		sgp.content.areas=c(rep('MATHEMATICS', 2), 'PRE_ALGEBRA','ALGEBRA_I','SEC_MATH_II','SEC_MATH_III'),
 		sgp.panel.years=as.character(c(2009:2012,2014:2015)),

@@ -224,7 +224,7 @@ Utah_SGP <- summarizeSGP(
 		WORKERS=list(SUMMARY=12))
 )
 
-save(Data/Utah_SGP, file="Data/Utah_SGP.Rdata")
+save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
 
 # 10. EXPORT DATA FROM SGP OBJECT @Data SLOT AS PIPE-DELIMITED FILE IN VARIOUS FORMATS
@@ -273,11 +273,100 @@ Utah_SGP@Data[, SCHOOL_NAME := as.character(SCHOOL_NAME)]
 
 visualizeSGP(
 	Utah_SGP,
+	plot.types=c("bubblePlot", "studentGrowthPlot"),
 	sgPlot.front.page = "Misc/USOE_Cover.pdf", # Serves as introduction to the report
 	sgPlot.header.footer.color="#0B6E8D", # Will need to change to match USOE_Cover.pdf
 	sgPlot.demo.report = TRUE,
 	sgPlot.year.span = 2,
-	sgPlot.plot.test.transition=FALSE,
+	sgPlot.plot.test.transition=FALSE)
+)
+
+Utah_SGP@Data[, GRADE := as.numeric(GRADE)]
+
+visualizeSGP(
+	Utah_SGP,
+	plot.types="growthAchievementPlot",
 	gaPlot.content_areas=c("ELA", "MATHEMATICS", "SCIENCE")
 )
 
+
+###
+###    Add in the 40th Percentile Targets
+###
+
+Utah_SGP@SGP$SGProjections <- Utah_SGP@SGP$SGProjections[c(1:28, 37:54)]
+
+source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOGT/UT_EOGT_2015.R")
+source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOCT/2015/MATHEMATICS.R")
+source("/media/Data/Dropbox/Github_Repos/Projects/Utah/sgp_config/EOCT/2015/SCIENCE.R")
+
+UT.config <- c(
+	ELA_2015.config, 
+	SCIENCE_2015.config, 
+	MATHEMATICS_2015.config, 
+	
+	EARTH_SCIENCE_2015.config, 
+	BIOLOGY_2015.config, 
+	CHEMISTRY_2015.config, 
+	PHYSICS_2015.config,
+
+	SEC_MATH_I_2015.config,
+	SEC_MATH_II_2015.config,
+	SEC_MATH_III_2015.config)
+
+SGPstateData[["UT"]][["Growth"]][["Cutscores"]][["Cuts"]] <- c(40, 60)
+
+Utah_SGP <- analyzeSGP(
+		Utah_SGP,
+		sgp.config=UT.config,
+
+		sgp.projections = TRUE,
+
+		sgp.percentiles = FALSE,
+		sgp.projections.lagged = FALSE,
+		sgp.percentiles.baseline = FALSE,
+		sgp.projections.baseline = FALSE,
+		sgp.projections.lagged.baseline = FALSE,
+		simulate.sgps=FALSE,
+		goodness.of.fit.print=FALSE)
+
+### Add in CURRENT Projections
+library(data.table)
+tmp.list.current <- list()
+my.variable.names <- c("ID", "SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT")
+my.projection.table.names <- c("ELA.2015", 
+	"MATHEMATICS.2015", "SEC_MATH_I.2015", "SEC_MATH_II.2015",# "SEC_MATH_III.2015", 
+	"SCIENCE.2015", "BIOLOGY.2015", "EARTH_SCIENCE.2015", "CHEMISTRY.2015")
+for (i in my.projection.table.names) {
+	tmp.list.current[[i]] <- data.table(
+			VALID_CASE="VALID_CASE",
+			CONTENT_AREA=unlist(strsplit(i, "\\."))[1],
+			# YEAR="2015",
+			Utah_SGP@SGP$SGProjections[[i]][,my.variable.names, with=FALSE])
+}
+
+###  Merge projection/target data in.  Do this seperately so that 8th grade students get their prior merged in (no current target).
+tmp.projections.c <- data.table(rbindlist(tmp.list.current), key=c("ID", "CONTENT_AREA"))
+
+setnames(tmp.projections.c, c("SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT"), c("TARGET_CONTENT_AREA", "TARGET_SCALE_SCORE"))
+setkeyv(tmp.projections.c, c("VALID_CASE", "CONTENT_AREA", "ID"))
+setkeyv(Utah_SGP_LONG_Data_2015, c("VALID_CASE", "CONTENT_AREA", "ID"))
+
+###  Now need to keep SCIENCE's multiple projections
+Utah_SGP_LONG_Data_2015_FORMATTED <- tmp.projections.c[
+	Utah_SGP_LONG_Data_2015[,list(VALID_CASE, CONTENT_AREA, GRADE, ID, SGP, ACHIEVEMENT_LEVEL, SCALE_SCORE_PRIOR, SCALE_SCORE)], 
+	allow.cartesian=TRUE] #keep all CURRENT students (allow.cartesian=TRUE)
+
+setkey(Utah_SGP_LONG_Data_2015_FORMATTED, VALID_CASE, CONTENT_AREA, TARGET_CONTENT_AREA, GRADE, SCALE_SCORE)
+
+Target_Table <- unique(Utah_SGP_LONG_Data_2015_FORMATTED)[,list(GRADE, CONTENT_AREA, TARGET_CONTENT_AREA, SCALE_SCORE, TARGET_SCALE_SCORE)]
+setkey(Target_Table, GRADE, CONTENT_AREA, TARGET_CONTENT_AREA, SCALE_SCORE)
+
+Target_Table[!is.na(TARGET_SCALE_SCORE)]
+
+Target_Table[which(TARGET_CONTENT_AREA == "BIO_PHYS"), TARGET_CONTENT_AREA := "PHYSICS"]
+Target_Table[which(TARGET_CONTENT_AREA == "SCIENCE_BIO"), TARGET_CONTENT_AREA := "BIOLOGY"]
+
+Target_Table <- Target_Table[-which(GRADE != 8 & CONTENT_AREA == "SCIENCE" & TARGET_CONTENT_AREA == "BIOLOGY"),][!is.na(TARGET_SCALE_SCORE)] # Only 8th grade Science will have a different 1 year target.
+
+write.table(Target_Table, file="Dropbox (SGP)/Github_Repos/Projects/Utah/Misc/Utah_SGP_Scale_Score_Target_Table.csv", sep=",", row.names=FALSE, na="", quote=FALSE)
