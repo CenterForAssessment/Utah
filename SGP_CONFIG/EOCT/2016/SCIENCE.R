@@ -7,7 +7,7 @@ EARTH_SCIENCE_2016.config <- list(
     sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(4:8, 'EOCT')),
-    # sgp.projection.grade.sequences="NO_PROJECTIONS",
+    sgp.projection.sequence = "EARTH_SCIENCE", # Not really needed for canonical progressions, but include anyway to be explicit
     sgp.norm.group.preference=1)
 )
 
@@ -20,13 +20,6 @@ EARTH_SCIENCE_2016.config <- list(
 #     sgp.grade.sequences=list(c(7:8, 'EOCT')),
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
 #     sgp.norm.group.preference=1),
-#   
-#   EARTH_SCIENCE.2016 = list(
-#     sgp.content.areas=c('SCIENCE', 'EARTH_SCIENCE'),
-#     sgp.panel.years=as.character(2015:2016),
-#     sgp.grade.sequences=list(c(8, 'EOCT')),
-#     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=2)
 # )
 
 #############################################################	
@@ -40,17 +33,11 @@ BIOLOGY_2016.config <- list(
     sgp.norm.group.preference=0),  
   
   # VIA EARTH SCIENCE
-  # 	BIOLOGY.2016 = list( # Max Percentile order of 5! Now also encoded in SGPstateData
-  # 			sgp.content.areas=c(rep('SCIENCE', 5), 'EARTH_SCIENCE', 'BIOLOGY'),
-  # 			sgp.panel.years=as.character(2011:2016),
-  # 			sgp.grade.sequences=list(c(4:8, 'EOCT', 'EOCT')),
-  # 			# sgp.projection.grade.sequences="NO_PROJECTIONS",
-  # 			sgp.norm.group.preference=1),  
   BIOLOGY.2016 = list(
     sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE', 'BIOLOGY'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT')),
-    # sgp.projection.grade.sequences="NO_PROJECTIONS",
+    sgp.projection.sequence = "BIOLOGY",
     sgp.norm.group.preference=1),  
   
   # VIA GRADE 8
@@ -59,14 +46,14 @@ BIOLOGY_2016.config <- list(
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(4:8, 'EOCT')),
     sgp.projection.grade.sequences="NO_PROJECTIONS",
-    sgp.norm.group.preference=2),  # Next Year make this preference = 2.  Set to 1 to produce same data originally provided to USOE (1 student affected)
+    sgp.norm.group.preference=2),
   
   # VIA CHEMISTRY
   BIOLOGY.2016 = list(
     sgp.content.areas=c('CHEMISTRY', 'BIOLOGY'),
     sgp.panel.years=as.character(2015:2016),
     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-    sgp.projection.grade.sequences="NO_PROJECTIONS",
+      sgp.projection.sequence = "CHEM_BIO",
     sgp.norm.group.preference=3),	
   
   # VIA PHYSICS
@@ -74,7 +61,7 @@ BIOLOGY_2016.config <- list(
     sgp.content.areas=c('PHYSICS', 'BIOLOGY'),
     sgp.panel.years=as.character(2015:2016),
     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-    sgp.projection.grade.sequences="NO_PROJECTIONS",
+      sgp.projection.sequence = "PHYS_BIO",
     sgp.norm.group.preference=4)
 )
 
@@ -96,24 +83,12 @@ BIOLOGY_2016.config <- list(
 #   	sgp.grade.sequences=list(c(8, 'EOCT', 'EOCT')),
 #   	sgp.projection.grade.sequences="NO_PROJECTIONS",
 #   	sgp.norm.group.preference=1),
-#   BIOLOGY.2016 = list(
-#     sgp.content.areas=c('EARTH_SCIENCE', 'BIOLOGY'),
-#     sgp.panel.years=as.character(2015:2016),
-#     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-#     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=2), 
 # 
 #   # SKIP EARTH SCIENCE
 #   BIOLOGY.2016 = list(
 #     sgp.content.areas=c(rep('SCIENCE', 2), 'BIOLOGY'),
 #     sgp.panel.years=as.character(2014:2016),
 #     sgp.grade.sequences=list(c(7:8, 'EOCT')),
-#     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=1),
-#   BIOLOGY.2016 = list(
-#     sgp.content.areas=c('SCIENCE', 'BIOLOGY'),
-#     sgp.panel.years=as.character(2015:2016),
-#     sgp.grade.sequences=list(c(8, 'EOCT')),
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
 #     sgp.norm.group.preference=2),
 #   
@@ -123,7 +98,7 @@ BIOLOGY_2016.config <- list(
 #     sgp.panel.years=as.character(2015:2016),
 #     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=1),	
+#     sgp.norm.group.preference=3),	
 #   
 #   # VIA PHYSICS
 #   BIOLOGY.2016 = list(
@@ -131,7 +106,7 @@ BIOLOGY_2016.config <- list(
 #     sgp.panel.years=as.character(2015:2016),
 #     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=1)
+#     sgp.norm.group.preference=4)
 # )
 
 #############################################################
@@ -142,7 +117,7 @@ CHEMISTRY_2016.config <- list(
     sgp.content.areas=c(rep('SCIENCE', 3), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(6:8, 'EOCT', 'EOCT', 'EOCT')),
-    # sgp.projection.grade.sequences="NO_PROJECTIONS",
+    sgp.projection.sequence = "CHEMISTRY",
     sgp.norm.group.preference=1),  
   
   # VIA GRADE 8, BIOLOGY	
@@ -150,15 +125,15 @@ CHEMISTRY_2016.config <- list(
     sgp.content.areas=c(rep('SCIENCE', 4), 'BIOLOGY', 'CHEMISTRY'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(5:8, 'EOCT', 'EOCT')),
-    sgp.projection.grade.sequences="NO_PROJECTIONS",
-    sgp.norm.group.preference=1),  # Also pref = 1 because it contains the 'BIOLOGY', 'CHEMISTRY' subset from config above
+    sgp.projection.grade.sequences="NO_PROJECTIONS", # No need here since config above contains 'BIOLOGY', 'CHEMISTRY' progression
+    sgp.norm.group.preference=2),
 
   # VIA PHYSICS
   CHEMISTRY.2016 = list(
     sgp.content.areas=c('PHYSICS', 'CHEMISTRY'),
     sgp.panel.years=as.character(2015:2016),
     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-    sgp.projection.grade.sequences="NO_PROJECTIONS",
+    sgp.projection.sequence = "PHYS_CHEM",
     sgp.norm.group.preference=3)
 )
 
@@ -173,14 +148,6 @@ CHEMISTRY_2016.config <- list(
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
 #     sgp.norm.group.preference=1),  
 #     
-#   # VIA BIOLOGY	
-#   CHEMISTRY.2016 = list(
-#     sgp.content.areas=c('BIOLOGY', 'CHEMISTRY'),
-#     sgp.panel.years=as.character(2015:2016),
-#     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-#     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=2),
-#   
 #   # VIA PHYSICS
 #   CHEMISTRY.2016 = list(
 #     sgp.content.areas=c('PHYSICS', 'CHEMISTRY'),
@@ -198,25 +165,25 @@ PHYSICS_2016.config <- list(
     sgp.content.areas=c(rep('SCIENCE', 2), 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY', 'PHYSICS'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(7:8, 'EOCT', 'EOCT', 'EOCT', 'EOCT')),
-    # sgp.projection.grade.sequences="NO_PROJECTIONS", # No projections for PHYSICS - END of the progression line
+    sgp.projection.sequence = "PHYSICS",
     sgp.norm.group.preference=1),  # Made #2 to produce same data originally provided to USOE.  Next Year make CHEMISTRY 1
   
   PHYSICS.2016 = list(
     sgp.content.areas=c(rep('SCIENCE', 3), 'BIOLOGY', 'CHEMISTRY', 'PHYSICS'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(6:8, 'EOCT', 'EOCT', 'EOCT')),
-    sgp.projection.grade.sequences="NO_PROJECTIONS",
+    sgp.projection.grade.sequences="NO_PROJECTIONS", # No need here since config above contains 'CHEMISTRY', 'PHYSICS'
     sgp.norm.group.preference=1),
   
   # VIA BIOLOGY
-  PHYSICS.2016 = list( # NOT ENOUGH STUDENTS - 2015 -  ONLY 'BIOLOGY', 'PHYSICS'
+  PHYSICS.2016 = list(
     sgp.content.areas=c(rep('SCIENCE',3), 'EARTH_SCIENCE', 'BIOLOGY', 'PHYSICS'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(6:8,'EOCT','EOCT','EOCT')),
-    sgp.projection.grade.sequences="NO_PROJECTIONS",
+    sgp.projection.sequence = "BIO_PHYS",
     sgp.norm.group.preference=3), # Next Year make CHEMISTRY 1 and BIO 2
   
-  PHYSICS.2016 = list( # NOT ENOUGH STUDENTS - 2015 -  ONLY 'BIOLOGY', 'PHYSICS'
+  PHYSICS.2016 = list(
     sgp.content.areas=c(rep('SCIENCE',4), 'BIOLOGY', 'PHYSICS'),
     sgp.panel.years=as.character(2011:2016),
     sgp.grade.sequences=list(c(5:8,'EOCT','EOCT')),
@@ -234,12 +201,7 @@ PHYSICS_2016.config <- list(
 #     sgp.grade.sequences=list(c('EOCT', 'EOCT', 'EOCT')),
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
 #     sgp.norm.group.preference=1),
-#   PHYSICS.2016 = list(
-#     sgp.content.areas=c('CHEMISTRY', 'PHYSICS'),
-#     sgp.panel.years=as.character(2015:2016),
-#     sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-#     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=2),
+
 #   
 #   # VIA BIOLOGY
 #   PHYSICS.2016 = list(
@@ -247,11 +209,5 @@ PHYSICS_2016.config <- list(
 #     sgp.panel.years=as.character(2014:2016),
 #     sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
 #     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=3),
-#   PHYSICS.2016 = list(
-#     sgp.content.areas=c('BIOLOGY', 'PHYSICS'),
-#     sgp.panel.years=as.character(2015:2016),
-#     sgp.grade.sequences=list(c('EOCT','EOCT')),
-#     sgp.projection.grade.sequences="NO_PROJECTIONS",
-#     sgp.norm.group.preference=4)
+#     sgp.norm.group.preference=3)
 # )
