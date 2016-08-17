@@ -125,6 +125,7 @@ Utah_SGP <- updateSGP(
 		WORKERS=list(PERCENTILES=12, PROJECTIONS =12, LAGGED_PROJECTIONS = 12, SGP_SCALE_SCORE_TARGETS=12, SUMMARY=12))
 )
 
+save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
 # 8. LOAD SGP OUTPUT INTO DATA WAREHOUSE
 # Data/Utah_SGP_LONG_Data.txt -> be_upass.acsdbstage.sgp_raw
