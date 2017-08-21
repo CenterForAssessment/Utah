@@ -16,11 +16,11 @@ setwd("~/SGP_Projects/Utah")
 configToSGPNormGroup <- function(sgp.config) {
 	if ("sgp.norm.group.preference" %in% names(sgp.config)) {
 		if ("sgp.exact.grade.progression" %in% names(sgp.config)) {
-			# tmp.norm.group.baseline <- 
-			tmp.norm.group <- paste(sgp.config$sgp.panel.years, paste(sgp.config$sgp.content.areas, 
+			# tmp.norm.group.baseline <-
+			tmp.norm.group <- paste(sgp.config$sgp.panel.years, paste(sgp.config$sgp.content.areas,
 				unlist(sgp.config$sgp.grade.sequences), sep="_"), sep="/")
 			tmp.data.all <- data.table(
-				SGP_NORM_GROUP=paste(tmp.norm.group, collapse="; "), 
+				SGP_NORM_GROUP=paste(tmp.norm.group, collapse="; "),
 				# SGP_NORM_GROUP_BASELINE=paste(tmp.norm.group.baseline, collapse="; "),
 				PREFERENCE=as.integer(sgp.config$sgp.norm.group.preference)
 			)
@@ -28,20 +28,20 @@ configToSGPNormGroup <- function(sgp.config) {
 			tmp.data.all <- data.table()
 			for (g in 1:length(sgp.config$sgp.grade.sequences)) {
 				l <- length(sgp.config$sgp.grade.sequences[[g]])
-				# tmp.norm.group.baseline <- 
-				tmp.norm.group <- paste(tail(sgp.config$sgp.panel.years, l), 
-					paste(tail(sgp.config$sgp.content.areas, l), unlist(sgp.config$sgp.grade.sequences[[g]]), sep="_"), sep="/") 
-		        
+				# tmp.norm.group.baseline <-
+				tmp.norm.group <- paste(tail(sgp.config$sgp.panel.years, l),
+					paste(tail(sgp.config$sgp.content.areas, l), unlist(sgp.config$sgp.grade.sequences[[g]]), sep="_"), sep="/")
+
 		        tmp.data <- data.table(
-					SGP_NORM_GROUP=paste(tmp.norm.group, collapse="; "), 
+					SGP_NORM_GROUP=paste(tmp.norm.group, collapse="; "),
 					# SGP_NORM_GROUP_BASELINE=paste(tmp.norm.group.baseline, collapse="; "),
 					PREFERENCE= sgp.config$sgp.norm.group.preference*100)
-							
+
 		        if (length(tmp.norm.group) > 2) {
 			        for (n in 1:(length(tmp.norm.group)-2)) {
 						tmp.data <- rbind(tmp.data, data.table(
-							SGP_NORM_GROUP=paste(tail(tmp.norm.group, -n), collapse="; "), 
-							# SGP_NORM_GROUP_BASELINE=paste(tmp.norm.group.baseline, collapse="; "),
+							SGP_NORM_GROUP=paste(tail(tmp.norm.group, -n), collapse="; "),
+							# SGP_NORM_GROUP_BASELINE=paste(tail(tmp.norm.group.baseline, -n), collapse="; "),
 							PREFERENCE= (sgp.config$sgp.norm.group.preference*100)+n))
 					}
 				}
@@ -71,53 +71,53 @@ source("SGP_CONFIG/EOCT/2014/SCIENCE.R")
 source("SGP_CONFIG/EOCT/2015/MATHEMATICS_2.R")
 source("SGP_CONFIG/EOCT/2015/SCIENCE_2.R")
 
-UT_EOCT_2011.config <- c( 
-		EARTH_SCIENCE_2011.config, 
-		BIOLOGY_2011.config, 
-		CHEMISTRY_2011.config, 
+UT_EOCT_2011.config <- c(
+		EARTH_SCIENCE_2011.config,
+		BIOLOGY_2011.config,
+		CHEMISTRY_2011.config,
 		PHYSICS_2011.config,
 		PRE_ALGEBRA_2011.config,
-		ALGEBRA_I_2011.config, 
+		ALGEBRA_I_2011.config,
 		GEOMETRY_2011.config,
 		ALGEBRA_II_2011.config)
 
 UT_EOCT_2012.config <- c(
-		EARTH_SCIENCE_2012.config, 
-		BIOLOGY_2012.config, 
-		CHEMISTRY_2012.config, 
+		EARTH_SCIENCE_2012.config,
+		BIOLOGY_2012.config,
+		CHEMISTRY_2012.config,
 		PHYSICS_2012.config,
 		PRE_ALGEBRA_2012.config,
-		ALGEBRA_I_2012.config, 
+		ALGEBRA_I_2012.config,
 		GEOMETRY_2012.config,
 		ALGEBRA_II_2012.config)
 
 UT_EOCT_2013.config <- c(
-		EARTH_SCIENCE_2013.config, 
-		BIOLOGY_2013.config, 
-		CHEMISTRY_2013.config, 
+		EARTH_SCIENCE_2013.config,
+		BIOLOGY_2013.config,
+		CHEMISTRY_2013.config,
 		PHYSICS_2013.config,
 		PRE_ALGEBRA_2013.config,
-		ALGEBRA_I_2013.config, 
+		ALGEBRA_I_2013.config,
 		GEOMETRY_2013.config,
 		ALGEBRA_II_2013.config)
-		
+
 UT_EOCT_2014.config <- c(
-		EARTH_SCIENCE_2014.config, 
-		BIOLOGY_2014.config, 
-		CHEMISTRY_2014.config, 
+		EARTH_SCIENCE_2014.config,
+		BIOLOGY_2014.config,
+		CHEMISTRY_2014.config,
 		PHYSICS_2014.config,
 
-		SEC_MATH_I_2014.config, 
+		SEC_MATH_I_2014.config,
 		SEC_MATH_II_2014.config,
 		SEC_MATH_III_2014.config)
-		
+
 UT_EOCT_2015.config <- c(
-	EARTH_SCIENCE_2015.config, 
-	BIOLOGY_2015.config, 
-	CHEMISTRY_2015.config, 
+	EARTH_SCIENCE_2015.config,
+	BIOLOGY_2015.config,
+	CHEMISTRY_2015.config,
 	PHYSICS_2015.config,
-	
-	SEC_MATH_I_2015.config, 
+
+	SEC_MATH_I_2015.config,
 	SEC_MATH_II_2015.config,
 	SEC_MATH_III_2015.config)
 
@@ -162,4 +162,3 @@ setkey(UT_SGP_Norm_Group_Preference, YEAR, SGP_NORM_GROUP, PREFERENCE)
 setkey(UT_SGP_Norm_Group_Preference, YEAR, SGP_NORM_GROUP)
 UT_SGP_Norm_Group_Preference <- unique(UT_SGP_Norm_Group_Preference)
 save(UT_SGP_Norm_Group_Preference, file="SGP_CONFIG/UT_SGP_Norm_Group_Preference.Rdata")
-
