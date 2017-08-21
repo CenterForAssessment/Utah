@@ -13,7 +13,7 @@
 ##### Input data:
 # v_sgp_longfile_20160811 - SY2016 - 2016 Accountability Only.sql (part of stored procedure in be_upass.acsdbstage)
 ##### High level controlling code:
-# UTAH_SGP_2016.R (this file)	
+# UTAH_SGP_2016.R (this file)
 ##### Valid course sequences:
 # MATHEMATICS.R
 # SCIENCE.R
@@ -50,7 +50,7 @@ require(SGP)
 
 # 5. CONNECT TO WAREHOUSE AND EXTRACT INPUT DATA
 
-##    Note: This process was conducted by USOE for 2016 data pull from warehouse.  
+##    Note: This process was conducted by USOE for 2016 data pull from warehouse.
 ##	  		The code below has not been verified, but is a leftover from 2014 code.
 
 ##    Note: This input data should consist of only the new 2016 data to be added to the data extracted in 2013 and 2014.
@@ -69,15 +69,17 @@ require(SGP)
 
 
 # 7. CALCULATE SGPs  --  2016 FAY and NON-FAY together
-# 	USE updateSGP FUNCTION TO 
-#		A) ADD LONG DATA TO THE EXISTING SGP (S4) DATA OBJECT (prepareSGP step) and 
+# 	USE updateSGP FUNCTION TO
+#		A) ADD LONG DATA TO THE EXISTING SGP (S4) DATA OBJECT (prepareSGP step) and
 #		B) PRODUCE SGP FOR BOTH GRADE-BASED AND EOCT TESTS (analyzeSGP step):
 
 # Load the 2015 SGP object with new prior data added in the 2016 data preparation step.
-load("Data/Utah_SGP.Rdata") 
+load("Data/Utah_SGP.Rdata")
+
+
 
 # Load the 2016 formatted data
-load("Data/Utah_Data_LONG_2016.Rdata") 
+load("Data/Utah_Data_LONG_2016.Rdata")
 
 
 # 7.  2016 Analyses - (All students including non-FAY)
@@ -87,13 +89,13 @@ source("SGP_CONFIG/EOCT/2016/SCIENCE.R")
 source("SGP_CONFIG/EOCT/2016/MATHEMATICS.R")
 
 UT.config <- c(
-	ELA_2016.config, 
-	SCIENCE_2016.config, 
-	MATHEMATICS_2016.config, 
-	
-	EARTH_SCIENCE_2016.config, 
-	BIOLOGY_2016.config, 
-	CHEMISTRY_2016.config, 
+	ELA_2016.config,
+	SCIENCE_2016.config,
+	MATHEMATICS_2016.config,
+
+	EARTH_SCIENCE_2016.config,
+	BIOLOGY_2016.config,
+	CHEMISTRY_2016.config,
 	PHYSICS_2016.config,
 
 	SEC_MATH_I_2016.config,
@@ -101,7 +103,7 @@ UT.config <- c(
 	SEC_MATH_III_2016.config)
 
 
-##  Run analyses - add 2016 data through prepareSGP step and 
+##  Run analyses - add 2016 data through prepareSGP step and
 ##  calculate percentiles and projections through analyzeSGP step
 
 Utah_SGP <- updateSGP(
@@ -121,7 +123,7 @@ Utah_SGP <- updateSGP(
 	overwrite.existing.data = FALSE,
 	outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data", "WIDE_Data"),
 	parallel.config = list(
-		BACKEND="FOREACH", TYPE="doParallel", 
+		BACKEND="FOREACH", TYPE="doParallel",
 		WORKERS=list(PERCENTILES=12, PROJECTIONS =12, LAGGED_PROJECTIONS = 12, SGP_SCALE_SCORE_TARGETS=12, SUMMARY=12))
 )
 
@@ -154,7 +156,7 @@ tmp.sch.levels <- gsub("SUCCESS School", "Success School", tmp.sch.levels)
 
 levels(Utah_SGP@Data$SCHOOL_NAME) <- tmp.sch.levels
 
-###  Reset the class of the NAME variables to character 
+###  Reset the class of the NAME variables to character
 Utah_SGP@Data[, LAST_NAME := as.character(LAST_NAME)]
 Utah_SGP@Data[, FIRST_NAME := as.character(FIRST_NAME)]
 Utah_SGP@Data[, SCHOOL_NAME := as.character(SCHOOL_NAME)]
@@ -177,6 +179,16 @@ visualizeSGP(
 	gaPlot.content_areas=c("ELA", "MATHEMATICS", "SCIENCE")
 )
 
+###  Create student report DEMO catalog
+Utah_SGP@SGP$SGProjections$SCIENCE.2016 <-
+	Utah_SGP@SGP$SGProjections$SCIENCE.2016[SGP_PROJECTION_GROUP != "SCIENCE_BIO"]
+
+visualizeSGP(
+	Utah_SGP,
+	plot.types=c("studentGrowthPlot"),
+	sgPlot.front.page = "Visualizations/Misc/USOE_Cover.pdf", # Serves as introduction to the report
+	sgPlot.demo.report = TRUE)
+
 
 # 10. Add in the 40th Percentile Targets
 
@@ -189,8 +201,8 @@ load("Data/Utah_SGP_LONG_Data_2016.Rdata")
 
 tmp.list.current <- list()
 my.variable.names <- c("ID", "SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT")
-my.projection.table.names <- c("ELA.2016", 
-	"MATHEMATICS.2016", "SEC_MATH_I.2016", "SEC_MATH_II.2016",# "SEC_MATH_III.2016", 
+my.projection.table.names <- c("ELA.2016",
+	"MATHEMATICS.2016", "SEC_MATH_I.2016", "SEC_MATH_II.2016",# "SEC_MATH_III.2016",
 	"SCIENCE.2016", "BIOLOGY.2016", "EARTH_SCIENCE.2016", "CHEMISTRY.2016")
 for (i in my.projection.table.names) {
 	tmp.list.current[[i]] <- data.table(
@@ -209,7 +221,7 @@ setkeyv(Utah_SGP_LONG_Data_2016, c("VALID_CASE", "CONTENT_AREA", "ID"))
 
 ###  Now need to keep SCIENCE's multiple projections
 Utah_SGP_LONG_Data_2016_FORMATTED <- tmp.projections.c[
-	Utah_SGP_LONG_Data_2016[,list(VALID_CASE, CONTENT_AREA, GRADE, ID, SGP, ACHIEVEMENT_LEVEL, SCALE_SCORE_PRIOR, SCALE_SCORE)], 
+	Utah_SGP_LONG_Data_2016[,list(VALID_CASE, CONTENT_AREA, GRADE, ID, SGP, ACHIEVEMENT_LEVEL, SCALE_SCORE_PRIOR, SCALE_SCORE)],
 	allow.cartesian=TRUE] #keep all CURRENT students (allow.cartesian=TRUE)
 
 setkey(Utah_SGP_LONG_Data_2016_FORMATTED, VALID_CASE, CONTENT_AREA, TARGET_CONTENT_AREA, GRADE, SCALE_SCORE)
