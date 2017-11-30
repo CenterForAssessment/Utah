@@ -77,7 +77,6 @@ require(SGP)
 load("Data/Utah_SGP.Rdata")
 
 
-
 # Load the 2017 formatted data
 load("Data/Utah_Data_LONG_2017.Rdata")
 
@@ -109,7 +108,7 @@ UT.config <- c(
 Utah_SGP <- updateSGP(
 	what_sgp_object = Utah_SGP,
 	with_sgp_data_LONG = Utah_Data_LONG_2017,
-	steps = c("prepareSGP", "analyzeSGP", "combineSGP", "summarizeSGP", "outputSGP"),
+	steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),#, "summarizeSGP"
 	sgp.config = UT.config,
 	sgp.percentiles = TRUE,
 	sgp.projections = TRUE,
@@ -123,11 +122,9 @@ Utah_SGP <- updateSGP(
 	overwrite.existing.data = FALSE,
 	outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data", "WIDE_Data"),
 	parallel.config = list(
-		BACKEND="FOREACH", TYPE="doParallel",
-		WORKERS=list(PERCENTILES=12, PROJECTIONS =12, LAGGED_PROJECTIONS = 12, SGP_SCALE_SCORE_TARGETS=12, SUMMARY=12))
+		BACKEND="PARALLEL", WORKERS=list(
+			PERCENTILES=12, PROJECTIONS = 8, LAGGED_PROJECTIONS = 8, SGP_SCALE_SCORE_TARGETS=8)) # , SUMMARY=12
 )
-
-save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
 # 8. LOAD SGP OUTPUT INTO DATA WAREHOUSE
 # Data/Utah_SGP_LONG_Data.txt -> be_upass.acsdbstage.sgp_raw
@@ -153,6 +150,8 @@ tmp.sch.levels <- gsub("Mcpolin", "McPolin", tmp.sch.levels)
 tmp.sch.levels <- gsub("Inc ,", "Inc.,", tmp.sch.levels)
 tmp.sch.levels <- gsub("Eschool@provo", "eSchool@Provo", tmp.sch.levels)
 tmp.sch.levels <- gsub("SUCCESS School", "Success School", tmp.sch.levels)
+tmp.sch.levels <- gsub("Alter Safe Sch-Hs", "Alter Safe Sch-HS", tmp.sch.levels)
+tmp.sch.levels <- gsub("Cherry Hill Gt Program", "Cherry Hill GT Program", tmp.sch.levels)
 
 levels(Utah_SGP@Data$SCHOOL_NAME) <- tmp.sch.levels
 
@@ -160,6 +159,8 @@ levels(Utah_SGP@Data$SCHOOL_NAME) <- tmp.sch.levels
 Utah_SGP@Data[, LAST_NAME := as.character(LAST_NAME)]
 Utah_SGP@Data[, FIRST_NAME := as.character(FIRST_NAME)]
 Utah_SGP@Data[, SCHOOL_NAME := as.character(SCHOOL_NAME)]
+
+save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
 ###  Set SGPstateData to NOT include the front page in the School Catalogs produced
 ###  This is now included in the UT entry of SGPstateData.  Set to NULL to include it in the catalog if wanted.
@@ -171,7 +172,7 @@ Utah_SGP@Data[, SCHOOL_NAME := as.character(SCHOOL_NAME)]
 visualizeSGP(
 	Utah_SGP,
 	plot.types=c("bubblePlot", "studentGrowthPlot", "growthAchievementPlot"),
-	sgPlot.front.page = "Misc/USOE_Cover.pdf", # Serves as introduction to the report
+	sgPlot.front.page = "Visualizations/Misc/USOE_Cover.pdf", # Serves as introduction to the report
 	sgPlot.header.footer.color="#0B6E8D", # Will need to change to match USOE_Cover.pdf
 	sgPlot.demo.report = TRUE,
 	sgPlot.year.span = 2,
@@ -179,15 +180,17 @@ visualizeSGP(
 	gaPlot.content_areas=c("ELA", "MATHEMATICS", "SCIENCE")
 )
 
-###  Create student report DEMO catalog
-Utah_SGP@SGP$SGProjections$SCIENCE.2017 <-
-	Utah_SGP@SGP$SGProjections$SCIENCE.2017[SGP_PROJECTION_GROUP != "SCIENCE_BIO"]
+# ###  Create student report DEMO catalog
 
-visualizeSGP(
-	Utah_SGP,
-	plot.types=c("studentGrowthPlot"),
-	sgPlot.front.page = "Visualizations/Misc/USOE_Cover.pdf", # Serves as introduction to the report
-	sgPlot.demo.report = TRUE)
+###  If you only want to show one Science progression (the canonical Science to Earth Science to Biology, etc.) then first REMOVE the Science to Bio projections:
+# Utah_SGP@SGP$SGProjections$SCIENCE.2017 <-
+# 	Utah_SGP@SGP$SGProjections$SCIENCE.2017[SGP_PROJECTION_GROUP != "SCIENCE_BIO"]
+
+# visualizeSGP(
+# 	Utah_SGP,
+# 	plot.types=c("studentGrowthPlot"),
+# 	sgPlot.front.page = "Visualizations/Misc/USOE_Cover.pdf", # Serves as introduction to the report
+# 	sgPlot.demo.report = TRUE)
 
 
 # 10. Add in the 40th Percentile Targets
@@ -202,8 +205,8 @@ load("Data/Utah_SGP_LONG_Data_2017.Rdata")
 tmp.list.current <- list()
 my.variable.names <- c("ID", "SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT")
 my.projection.table.names <- c("ELA.2017",
-	"MATHEMATICS.2017", "SEC_MATH_I.2017", "SEC_MATH_II.2017",# "SEC_MATH_III.2017",
-	"SCIENCE.2017", "BIOLOGY.2017", "EARTH_SCIENCE.2017", "CHEMISTRY.2017")
+	"MATHEMATICS.2017", "SEC_MATH_I.2017", "SEC_MATH_II.2017", # "SEC_MATH_III.2017",
+	"SCIENCE.2017", "EARTH_SCIENCE.2017", "BIOLOGY.2017", "CHEMISTRY.2017")
 for (i in my.projection.table.names) {
 	tmp.list.current[[i]] <- data.table(
 			VALID_CASE="VALID_CASE",
@@ -224,12 +227,14 @@ Utah_SGP_LONG_Data_2017_FORMATTED <- tmp.projections.c[
 	Utah_SGP_LONG_Data_2017[,list(VALID_CASE, CONTENT_AREA, GRADE, ID, SGP, ACHIEVEMENT_LEVEL, SCALE_SCORE_PRIOR, SCALE_SCORE)],
 	allow.cartesian=TRUE] #keep all CURRENT students (allow.cartesian=TRUE)
 
-setkey(Utah_SGP_LONG_Data_2017_FORMATTED, VALID_CASE, CONTENT_AREA, TARGET_CONTENT_AREA, GRADE, SCALE_SCORE)
+table.key <- c("VALID_CASE", "CONTENT_AREA", "TARGET_CONTENT_AREA", "GRADE", "SCALE_SCORE")
+setkeyv(Utah_SGP_LONG_Data_2017_FORMATTED, table.key)
 
-Target_Table <- unique(Utah_SGP_LONG_Data_2017_FORMATTED)[,list(GRADE, CONTENT_AREA, TARGET_CONTENT_AREA, SCALE_SCORE, TARGET_SCALE_SCORE)]
+Target_Table <- unique(Utah_SGP_LONG_Data_2017_FORMATTED, by=table.key)[,list(GRADE, CONTENT_AREA, TARGET_CONTENT_AREA, SCALE_SCORE, TARGET_SCALE_SCORE)]
 setkey(Target_Table, GRADE, CONTENT_AREA, TARGET_CONTENT_AREA, SCALE_SCORE)
 
 Target_Table[!is.na(TARGET_SCALE_SCORE)]
+table(Target_Table[, CONTENT_AREA, TARGET_CONTENT_AREA])
 
 Target_Table[which(TARGET_CONTENT_AREA == "BIO_PHYS"), TARGET_CONTENT_AREA := "PHYSICS"]
 Target_Table[which(TARGET_CONTENT_AREA == "SCIENCE_BIO"), TARGET_CONTENT_AREA := "BIOLOGY"]
