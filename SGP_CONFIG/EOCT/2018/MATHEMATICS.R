@@ -1,0 +1,125 @@
+# EOCT CONFIGURATION FILE - SECONDARY MATHEMATICS
+#############################################################
+SEC_MATH_I_2018.config <- list(
+	SEC_MATH_I.2018 = list(
+		sgp.content.areas=c('SEC_MATH_I','SEC_MATH_I'), #Repeater
+		sgp.panel.years=as.character(2017:2018),
+		sgp.grade.sequences=list(c('EOCT','EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=0),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 4), 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2014:2018),
+	  sgp.grade.sequences=list(c(5:8,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=1),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 3), 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2015:2018),
+	  sgp.grade.sequences=list(c(6:8,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=2),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 2), 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2016:2018),
+	  sgp.grade.sequences=list(c(7:8,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=3),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c('MATHEMATICS', 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2017:2018),
+	  sgp.grade.sequences=list(c(8,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=4),
+# ACCELERATED (MATH 8 TAKEN IN SAME YEAR AS SEC_MATH_I)
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 4), 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2014:2018),
+	  sgp.grade.sequences=list(c(4:7,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=1),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 3), 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2015:2018),
+	  sgp.grade.sequences=list(c(5:7,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=2),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 2), 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2016:2018),
+	  sgp.grade.sequences=list(c(6:7,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=3),
+	SEC_MATH_I.2018 = list(
+	  sgp.content.areas=c('MATHEMATICS', 'SEC_MATH_I'),
+	  sgp.panel.years=as.character(2017:2018),
+	  sgp.grade.sequences=list(c(7,'EOCT')),
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=4)
+)
+#############################################################
+SEC_MATH_II_2018.config <- list(
+	SEC_MATH_II.2018 = list(
+		sgp.content.areas=c('SEC_MATH_II','SEC_MATH_II'), #Repeater
+		sgp.panel.years=as.character(2017:2018),
+		sgp.grade.sequences=list(c('EOCT','EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=0),
+	SEC_MATH_II_2018 = list(
+	  sgp.content.areas=c(rep('MATHEMATICS', 3), 'SEC_MATH_I', 'SEC_MATH_II'),
+	  sgp.panel.years=c(2014:2018),
+	  sgp.grade.sequences=list(c(6:8,'EOCT','EOCT')),  
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=1),
+	SEC_MATH_II_2018 = list(
+		sgp.content.areas=c(rep('MATHEMATICS', 2), 'SEC_MATH_I', 'SEC_MATH_II'),
+		sgp.panel.years=c(2015:2018),
+		sgp.grade.sequences=list(c(7:8,'EOCT','EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=2),
+	SEC_MATH_II_2018 = list(
+		sgp.content.areas=c('MATHEMATICS', 'SEC_MATH_I', 'SEC_MATH_II'),
+		sgp.panel.years=c(2016:2018),
+		sgp.grade.sequences=list(c(8,'EOCT','EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=3),
+	SEC_MATH_II_2018 = list(
+	  sgp.content.areas=c('SEC_MATH_I', 'SEC_MATH_II'),
+	  sgp.panel.years=c(2017:2018),
+	  sgp.grade.sequences=list(c('EOCT','EOCT')),  
+	  sgp.exact.grade.progression=TRUE,
+	  sgp.norm.group.preference=4)
+)
+#############################################################
+SEC_MATH_III_2018.config <- list(
+  SEC_MATH_III.2018 = list(
+		sgp.content.areas=c('SEC_MATH_III','SEC_MATH_III'), #Repeater
+		sgp.panel.years=as.character(2017:2018),
+		sgp.grade.sequences=list(c('EOCT','EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=0),
+  SEC_MATH_III_2018 = list(
+    sgp.content.areas=c(rep('MATHEMATICS', 2),'SEC_MATH_I','SEC_MATH_II','SEC_MATH_III'),
+    sgp.panel.years=c(2014:2018),
+    sgp.grade.sequences=list(c(7:8,'EOCT','EOCT','EOCT')),  
+    sgp.exact.grade.progression=TRUE,
+    sgp.norm.group.preference=1),
+	SEC_MATH_III_2018 = list(
+		sgp.content.areas=c('MATHEMATICS','SEC_MATH_I','SEC_MATH_II','SEC_MATH_III'),
+		sgp.panel.years=c(2015:2018),
+		sgp.grade.sequences=list(c(8,'EOCT','EOCT','EOCT')),  
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=2),
+  SEC_MATH_III.2018 = list(
+		sgp.content.areas=c('SEC_MATH_I','SEC_MATH_II','SEC_MATH_III'),  
+		sgp.panel.years=as.character(2016:2018),
+		sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
+		sgp.exact.grade.progression=TRUE,
+		sgp.norm.group.preference=3),
+  SEC_MATH_III.2018 = list(
+    sgp.content.areas=c('SEC_MATH_II','SEC_MATH_III'),  
+    sgp.panel.years=as.character(2017:2018),
+    sgp.grade.sequences=list(c('EOCT','EOCT')),
+    sgp.exact.grade.progression=TRUE,
+    sgp.norm.group.preference=4)
+)
