@@ -100,10 +100,6 @@ UT.config <- c(
 ##  Run analyses - add 2018 data through prepareSGP step and
 ##  calculate percentiles and projections through analyzeSGP step
 
-SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]][["ELA"]] <- as.character(3:10)
-SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["ELA"]] <- rep("ELA", 8)
-SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["ELA"]] <- rep(1L, 7)
-
 Utah_SGP <- updateSGP(
 	what_sgp_object = Utah_SGP,
 	with_sgp_data_LONG = Utah_Data_LONG_2018,
@@ -182,7 +178,7 @@ visualizeSGP(
 	Utah_SGP,
 	plot.types=c("bubblePlot", "studentGrowthPlot", "growthAchievementPlot"),
 	sgPlot.front.page = "Visualizations/Misc/USOE_Cover.pdf", # Serves as introduction to the report
-	sgPlot.header.footer.color="#0B6E8D", # Will need to change to match USOE_Cover.pdf
+	sgPlot.header.footer.color="#0B6E8D", # Need to change to match USOE_Cover.pdf
 	sgPlot.demo.report = TRUE,
 	sgPlot.year.span = 2,
 	sgPlot.plot.test.transition=FALSE,
