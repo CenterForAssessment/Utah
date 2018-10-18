@@ -129,9 +129,10 @@ visualizeSGP(
 
 
 ####
-###   SCIENCE Analyses (October 2018 ???)
+###   SCIENCE Analyses (October 2018)
 ####
 
+source("SGP_CONFIG/EOGT/UT_EOGT_2018.R")
 source("SGP_CONFIG/EOCT/2018/SCIENCE.R")
 
 UT.config <- c(
@@ -142,12 +143,13 @@ UT.config <- c(
 	CHEMISTRY_2018.config,
 	PHYSICS_2018.config)
 
+SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.matrices"]] <- FALSE
+
 
 	Utah_SGP <- updateSGP(
 		what_sgp_object = Utah_SGP,
-		with_sgp_data_LONG = Utah_Data_LONG_SCIENCE_2018,
+		with_sgp_data_LONG = Utah_Data_LONG_2018,
 		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP", "summarizeSGP"),
-		overwrite.existing.data = FALSE,
 		sgp.config = UT.config,
 		sgp.percentiles = TRUE,
 		sgp.projections = TRUE,

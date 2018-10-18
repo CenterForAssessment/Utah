@@ -12,7 +12,7 @@ library(data.table)
 ### Read in USOE .csv file
 
 Utah_Data_LONG_2018 <- fread("Data/Base_Files/SGP Longfile 2018 v20180809.csv", colClasses=rep("character", 15))
-# Utah_Data_LONG_2018 <- fread("Data/Base_Files/SGP Longfile 2018 v20181020.csv", colClasses=rep("character", 15)) # Load SCIENCE data sent seperately (October?)
+# Utah_Data_LONG_2018 <- fread("Data/Base_Files/SGP Longfile 2018 Science v20181017.csv", colClasses=rep("character", 16)) # Load SCIENCE data sent seperately (October?)
 
 ###
 ##  Tidy up data (Same steps for ELA/MATHEMATICS data as for SCIENCE)
@@ -62,4 +62,5 @@ Utah_Data_LONG_2018[, FIRST_NAME := as.character(FIRST_NAME)]
 save(Utah_Data_LONG_2018, file="Data/Utah_Data_LONG_2018.Rdata")
 
 #  SCIENCE Data
+Utah_Data_LONG_2018[, preferred_score := NULL] # All 1's and not in ELA/Math data
 save(Utah_Data_LONG_2018, file="Data/Utah_Data_LONG_SCIENCE_2018.Rdata")

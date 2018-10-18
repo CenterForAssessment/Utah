@@ -1,5 +1,10 @@
-# EOCT CONFIGURATION FILE - HIGH SCHOOL SCIENCE
-#############################################################
+###########################################################################
+###                                                                     ###
+###      Utah EOCT CONFIGURATION FILE  -  2018 HIGH SCHOOL SCIENCE      ###
+###                                                                     ###
+###########################################################################
+
+
 	EARTH_SCIENCE_2018.config <- list(
 	  EARTH_SCIENCE.2018 = list(
 	    sgp.content.areas=c(rep('SCIENCE', 4), 'EARTH_SCIENCE'),
@@ -26,15 +31,15 @@
 			sgp.exact.grade.progression=TRUE,
 			sgp.norm.group.preference=4)
 	)
-#############################################################	
+#############################################################
 	BIOLOGY_2018.config <- list(
 	# REPEATER
 		BIOLOGY.2018 = list(
-			sgp.content.areas=c('BIOLOGY', 'BIOLOGY'), 
+			sgp.content.areas=c('BIOLOGY', 'BIOLOGY'),
 			sgp.panel.years=as.character(2017:2018),
 			sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 			sgp.exact.grade.progression=TRUE,
-			sgp.norm.group.preference=0),  
+			sgp.norm.group.preference=0),
 	# VIA GRADE 8
 	  BIOLOGY.2018 = list(
 	    sgp.content.areas=c(rep('SCIENCE', 4), 'BIOLOGY'),
@@ -53,7 +58,7 @@
 	    sgp.panel.years=as.character(2016:2018),
 	    sgp.grade.sequences=list(c(7:8, 'EOCT')),
 	    sgp.exact.grade.progression=TRUE,
-	    sgp.norm.group.preference=3), 
+	    sgp.norm.group.preference=3),
 		BIOLOGY.2018 = list(
 			sgp.content.areas=c('SCIENCE', 'BIOLOGY'),
 			sgp.panel.years=as.character(2017:2018),
@@ -78,7 +83,7 @@
 	    sgp.panel.years=as.character(2016:2018),
 	    sgp.grade.sequences=list(c(8, 'EOCT', 'EOCT')),
 	    sgp.exact.grade.progression=TRUE,
-	    sgp.norm.group.preference=3), 
+	    sgp.norm.group.preference=3),
 		BIOLOGY.2018 = list(
 			sgp.content.areas=c('EARTH_SCIENCE', 'BIOLOGY'),
 			sgp.panel.years=as.character(2017:2018),
@@ -91,7 +96,7 @@
 			sgp.panel.years=as.character(2017:2018),
 			sgp.grade.sequences=list(c('EOCT', 'EOCT')),
 			sgp.exact.grade.progression=TRUE,
-			sgp.norm.group.preference=1),	
+			sgp.norm.group.preference=1),
 	# VIA PHYSICS
 		BIOLOGY.2018 = list(
 			sgp.content.areas=c('PHYSICS', 'BIOLOGY'),
@@ -100,7 +105,9 @@
 			sgp.exact.grade.progression=TRUE,
 			sgp.norm.group.preference=1)
 	)
+
 #############################################################
+
 	CHEMISTRY_2018.config <- list(
 	# VIA BIOLOGY
 	  CHEMISTRY.2018 = list(
@@ -120,7 +127,7 @@
 		  sgp.panel.years=as.character(2016:2018),
 		  sgp.grade.sequences=list(c(8, 'EOCT', 'EOCT')),
 		  sgp.exact.grade.progression=TRUE,
-		  sgp.norm.group.preference=3), 
+		  sgp.norm.group.preference=3),
 		CHEMISTRY.2018 = list(
 			sgp.content.areas=c('EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY'),
 			sgp.panel.years=as.character(2016:2018),
@@ -141,7 +148,9 @@
 			sgp.exact.grade.progression=TRUE,
 			sgp.norm.group.preference=1)
 	)
+
 #############################################################
+
 	PHYSICS_2018.config <- list(
 	# VIA CHEMISTRY
 	  PHYSICS.2018 = list(
