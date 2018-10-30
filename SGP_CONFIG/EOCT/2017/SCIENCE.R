@@ -27,7 +27,7 @@
 			sgp.content.areas=c(rep('SCIENCE', 3), 'BIOLOGY'),
 			sgp.panel.years=as.character(2014:2017),
 			sgp.grade.sequences=list(c(6:8, 'EOCT')),
-			sgp.projection.grade.sequences="SCIENCE_BIO",
+			sgp.projection.sequence="SCIENCE_BIO",
 			sgp.norm.group.preference=1),
 
 	# CANONICAL - VIA EARTH SCIENCE

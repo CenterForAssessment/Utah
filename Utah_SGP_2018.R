@@ -1,8 +1,8 @@
-#########################################################
-###
-### Calculate SGPs for Utah - 2018
-###
-##########################################################
+################################################################
+###                                                          ###
+###              Calculate SGPs for Utah - 2018              ###
+###                                                          ###
+################################################################
 
 # 1. APPLICATIONS AND FILES TO LOAD ON SGP SERVER (D:/SGP/)
 ##### SGP documentation:
@@ -38,7 +38,6 @@
 
 # 3. SET WORKING DIRECTORY
 setwd("D:/SGP")
-
 
 # 4. INSTALL AND LOAD LATEST REQUIRED PACKAGES
 update.packages(ask = FALSE, checkBuilt = TRUE)
@@ -82,20 +81,19 @@ load("Data/Utah_SGP.Rdata")
 load("Data/Utah_Data_LONG_2018.Rdata")
 
 ###
-##  2018 Analyses - (All students including non-FAY)
+##   2018 Analyses - (All students including non-FAY)
 ###
 
 source("SGP_CONFIG/EOGT/UT_EOGT_2018.R")
 source("SGP_CONFIG/EOCT/2018/MATHEMATICS.R")
 
-UT.config <- c(
+UT_2018.config <- c(
 	ELA_2018.config,
 	MATHEMATICS_2018.config,
 
 	SEC_MATH_I_2018.config,
 	SEC_MATH_II_2018.config,
 	SEC_MATH_III_2018.config)
-
 
 ##  Run analyses - add 2018 data through prepareSGP step and
 ##  calculate percentiles and projections through analyzeSGP step
@@ -104,7 +102,7 @@ Utah_SGP <- updateSGP(
 	what_sgp_object = Utah_SGP,
 	with_sgp_data_LONG = Utah_Data_LONG_2018,
 	steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
-	sgp.config = UT.config,
+	sgp.config = UT_2018.config,
 	sgp.percentiles = TRUE,
 	sgp.projections = TRUE,
 	sgp.projections.lagged = TRUE,
@@ -123,19 +121,21 @@ Utah_SGP <- updateSGP(
 
 save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
-visualizeSGP(
-	Utah_SGP,
-	plot.types=c("growthAchievementPlot"))
-
 
 ####
 ###   SCIENCE Analyses (October 2018)
 ####
 
+require(SGP)
+
+# Load the 2018 SGP object and formatted SCIENCE data
+load("Data/Utah_SGP.Rdata")
+load("Data/Utah_Data_LONG_SCIENCE_2018.Rdata")
+
 source("SGP_CONFIG/EOGT/UT_EOGT_2018.R")
 source("SGP_CONFIG/EOCT/2018/SCIENCE.R")
 
-UT.config <- c(
+UT_2018.config <- c(
 	SCIENCE_2018.config,
 
 	EARTH_SCIENCE_2018.config,
@@ -143,14 +143,35 @@ UT.config <- c(
 	CHEMISTRY_2018.config,
 	PHYSICS_2018.config)
 
-SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.matrices"]] <- FALSE
+###   Temporarily alter projection sequences to fit 2018 analyses (i.e. available progressions).
 
+SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["SCIENCE"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["EARTH_SCIENCE"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["BIOLOGY"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["CHEMISTRY"]] <- c('SCIENCE', 'SCIENCE', 'SCIENCE', 'SCIENCE', 'SCIENCE', 'EARTH_SCIENCE', 'BIOLOGY', 'CHEMISTRY')
+
+SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]][["SCIENCE"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]][["EARTH_SCIENCE"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]][["BIOLOGY"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]][["CHEMISTRY"]] <- c("4", "5", "6", "7", "8", "EOCT", "EOCT", "EOCT")
+
+SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["SCIENCE"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["EARTH_SCIENCE"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["BIOLOGY"]] <-
+SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["CHEMISTRY"]] <- rep(1L, 7)
+
+SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]][["BIO_PHYS"]] <- c('SCIENCE', 'SCIENCE', 'SCIENCE', 'SCIENCE', 'SCIENCE', 'BIOLOGY', 'PHYSICS')
+SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]][["BIO_PHYS"]] <- c("4", "5", "6", "7", "8", "EOCT", "EOCT")
+SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]][["BIO_PHYS"]] <- rep(1L, 6)
+
+##  Run analyses - add 2018 data through prepareSGP step and
+##  calculate percentiles and projections through analyzeSGP step
 
 	Utah_SGP <- updateSGP(
 		what_sgp_object = Utah_SGP,
 		with_sgp_data_LONG = Utah_Data_LONG_2018,
 		steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP", "summarizeSGP"),
-		sgp.config = UT.config,
+		sgp.config = UT_2018.config,
 		sgp.percentiles = TRUE,
 		sgp.projections = TRUE,
 		sgp.projections.lagged = TRUE,
@@ -164,9 +185,10 @@ SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.
 		outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data", "WIDE_Data"),
 		parallel.config = list(
 			BACKEND="PARALLEL", WORKERS=list(
-				PERCENTILES=12, PROJECTIONS = 8, LAGGED_PROJECTIONS = 8, SGP_SCALE_SCORE_TARGETS=8, SUMMARY=12))
+				PERCENTILES=12, PROJECTIONS = 8, LAGGED_PROJECTIONS = 6, SGP_SCALE_SCORE_TARGETS=6, SUMMARY=12))
 	)
 
+	save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 
 # 8. LOAD SGP OUTPUT INTO DATA WAREHOUSE
 # Data/Utah_SGP_LONG_Data.txt -> be_upass.acsdbstage.sgp_raw
@@ -178,7 +200,7 @@ SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.
 
 visualizeSGP(
 	Utah_SGP,
-	plot.types=c("bubblePlot", "studentGrowthPlot", "growthAchievementPlot"),
+	plot.types=c("studentGrowthPlot", "growthAchievementPlot"),
 	sgPlot.front.page = "Visualizations/Misc/USOE_Cover.pdf", # Serves as introduction to the report
 	sgPlot.header.footer.color="#0B6E8D", # Need to change to match USOE_Cover.pdf
 	sgPlot.demo.report = TRUE,
@@ -208,10 +230,10 @@ load("Data/Utah_SGP_LONG_Data_2018.Rdata")
 ### Add in CURRENT Projections
 
 tmp.list.current <- list()
-my.variable.names <- c("ID", "SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT")
-my.projection.table.names <- c("ELA.2018",
-	"MATHEMATICS.2018", "SEC_MATH_I.2018", "SEC_MATH_II.2018")#, # "SEC_MATH_III.2018",
-	# "SCIENCE.2018", "EARTH_SCIENCE.2018", "BIOLOGY.2018", "CHEMISTRY.2018")
+my.variable.names <- c("ID", "GRADE", "SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT")
+my.projection.table.names <- c(
+	# "ELA.2018", "MATHEMATICS.2018", "SEC_MATH_I.2018", "SEC_MATH_II.2018")#, # "SEC_MATH_III.2018",
+	"SCIENCE.2018", "EARTH_SCIENCE.2018", "BIOLOGY.2018") #, "CHEMISTRY.2018")
 for (i in my.projection.table.names) {
 	tmp.list.current[[i]] <- data.table(
 			VALID_CASE="VALID_CASE",
@@ -224,8 +246,8 @@ for (i in my.projection.table.names) {
 tmp.projections.c <- data.table(rbindlist(tmp.list.current), key=c("ID", "CONTENT_AREA"))
 
 setnames(tmp.projections.c, c("SGP_PROJECTION_GROUP", "P40_PROJ_YEAR_1_CURRENT"), c("TARGET_CONTENT_AREA", "TARGET_SCALE_SCORE"))
-setkeyv(tmp.projections.c, c("VALID_CASE", "CONTENT_AREA", "ID"))
-setkeyv(Utah_SGP_LONG_Data_2018, c("VALID_CASE", "CONTENT_AREA", "ID"))
+setkeyv(tmp.projections.c, c("VALID_CASE", "CONTENT_AREA", "ID", "GRADE"))
+setkeyv(Utah_SGP_LONG_Data_2018, c("VALID_CASE", "CONTENT_AREA", "ID", "GRADE"))
 
 ###  Now need to keep SCIENCE's multiple projections
 Utah_SGP_LONG_Data_2018_FORMATTED <- tmp.projections.c[
@@ -249,5 +271,6 @@ Target_Table[which(TARGET_CONTENT_AREA == "BIO_PHYS"), TARGET_CONTENT_AREA := "P
 Target_Table[which(TARGET_CONTENT_AREA == "SCIENCE_BIO"), TARGET_CONTENT_AREA := "BIOLOGY"]
 
 Target_Table <- Target_Table[-which(GRADE != 8 & CONTENT_AREA == "SCIENCE" & TARGET_CONTENT_AREA == "BIOLOGY"),][!is.na(TARGET_SCALE_SCORE)] # Only 8th grade Science will have a different 1 year target.
+table(Target_Table[, TARGET_CONTENT_AREA, GRADE])
 
-write.table(Target_Table, file="/media/Data/Dropbox (SGP)/Github_Repos/Projects/Utah/Misc/Utah_SGP_Scale_Score_Target_Table_2018.csv", sep=",", row.names=FALSE, na="", quote=FALSE)
+write.table(Target_Table, file="/media/Data/Dropbox (SGP)/Github_Repos/Projects/Utah/Misc/Utah_SGP_Scale_Score_Target_Table_2018-Science.csv", sep=",", row.names=FALSE, na="", quote=FALSE)

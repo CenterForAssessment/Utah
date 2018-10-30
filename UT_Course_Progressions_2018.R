@@ -178,7 +178,7 @@ BIOLOGY[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][!i
 # 1:                       BIOLOGY.EOCT   791
 # 2:                     CHEMISTRY.EOCT   652
 # 3:                 EARTH_SCIENCE.EOCT 16237
-# 4:                       PHYSICS.EOCT  2173
+# 4:                       PHYSICS.EOCT  2173  XXX  No BIO_PHYS
 # 5:                         SCIENCE.06     1
 # 6:                         SCIENCE.07    20
 # 7:                         SCIENCE.08 17398
@@ -202,7 +202,7 @@ CHEMISTRY[, list(Total=sum(COUNT)), keyby="CONTENT_AREA_by_GRADE_PRIOR_YEAR.1"][
 # 1:                       BIOLOGY.EOCT 12801
 # 2:                     CHEMISTRY.EOCT   234
 # 3:                 EARTH_SCIENCE.EOCT   762
-# 4:                       PHYSICS.EOCT  1966
+# 4:                       PHYSICS.EOCT  1966  XXX  No PHYS_CHEM
 # 5:                         SCIENCE.06     1
 # 6:                         SCIENCE.07     4
 # 7:                         SCIENCE.08   283
