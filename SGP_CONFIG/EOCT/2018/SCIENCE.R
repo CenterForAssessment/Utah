@@ -11,25 +11,7 @@
 	    sgp.panel.years=as.character(2014:2018),
 	    sgp.grade.sequences=list(c(5:8, 'EOCT')),
 	    # sgp.exact.grade.progression=TRUE,
-	    sgp.norm.group.preference=1)#,
-		# EARTH_SCIENCE.2018 = list(
-		# 	sgp.content.areas=c(rep('SCIENCE', 3), 'EARTH_SCIENCE'),
-		# 	sgp.panel.years=as.character(2015:2018),
-		# 	sgp.grade.sequences=list(c(6:8, 'EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.norm.group.preference=2),
-		# EARTH_SCIENCE.2018 = list(
-		#   sgp.content.areas=c(rep('SCIENCE', 2), 'EARTH_SCIENCE'),
-		#   sgp.panel.years=as.character(2016:2018),
-		#   sgp.grade.sequences=list(c(7:8, 'EOCT')),
-		#   sgp.exact.grade.progression=TRUE,
-		#   sgp.norm.group.preference=3),
-		# EARTH_SCIENCE.2018 = list(
-		# 	sgp.content.areas=c('SCIENCE', 'EARTH_SCIENCE'),
-		# 	sgp.panel.years=as.character(2017:2018),
-		# 	sgp.grade.sequences=list(c(8, 'EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.norm.group.preference=4)
+	    sgp.norm.group.preference=1)
 	)
 #############################################################
 	BIOLOGY_2018.config <- list(
@@ -48,24 +30,6 @@
 	    # sgp.exact.grade.progression=TRUE,
 			sgp.projection.sequence = 'SCIENCE_BIO',
 	    sgp.norm.group.preference=1),
-		# BIOLOGY.2018 = list(
-		# 	sgp.content.areas=c(rep('SCIENCE', 3), 'BIOLOGY'),
-		# 	sgp.panel.years=as.character(2015:2018),
-		# 	sgp.grade.sequences=list(c(6:8, 'EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.norm.group.preference=2),
-	  # BIOLOGY.2018 = list(
-	  #   sgp.content.areas=c(rep('SCIENCE', 2), 'BIOLOGY'),
-	  #   sgp.panel.years=as.character(2016:2018),
-	  #   sgp.grade.sequences=list(c(7:8, 'EOCT')),
-	  #   sgp.exact.grade.progression=TRUE,
-	  #   sgp.norm.group.preference=3),
-		# BIOLOGY.2018 = list(
-		# 	sgp.content.areas=c('SCIENCE', 'BIOLOGY'),
-		# 	sgp.panel.years=as.character(2017:2018),
-		# 	sgp.grade.sequences=list(c(8, 'EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.norm.group.preference=4),
 	# VIA EARTH SCIENCE
 	  BIOLOGY.2018 = list(
 	    sgp.content.areas=c(rep('SCIENCE',3), 'EARTH_SCIENCE', 'BIOLOGY'),
@@ -73,24 +37,6 @@
 	    sgp.grade.sequences=list(c(6:8, 'EOCT', 'EOCT')),
 		# sgp.projection.grade.sequences='NO_PROJECTIONS', # Canonical progression
 	    sgp.norm.group.preference=1),
-		# BIOLOGY.2018 = list(
-		# 	sgp.content.areas=c(rep('SCIENCE',2), 'EARTH_SCIENCE', 'BIOLOGY'),
-		# 	sgp.panel.years=as.character(2015:2018),
-		# 	sgp.grade.sequences=list(c(7:8, 'EOCT', 'EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.norm.group.preference=2),
-	  # BIOLOGY.2018 = list(
-	  #   sgp.content.areas=c('SCIENCE', 'EARTH_SCIENCE', 'BIOLOGY'),
-	  #   sgp.panel.years=as.character(2016:2018),
-	  #   sgp.grade.sequences=list(c(8, 'EOCT', 'EOCT')),
-	  #   sgp.exact.grade.progression=TRUE,
-	  #   sgp.norm.group.preference=3),
-		# BIOLOGY.2018 = list(
-		# 	sgp.content.areas=c('EARTH_SCIENCE', 'BIOLOGY'),
-		# 	sgp.panel.years=as.character(2017:2018),
-		# 	sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.norm.group.preference=4),
 	# VIA CHEMISTRY
 		BIOLOGY.2018 = list(
 			sgp.content.areas=c('CHEMISTRY', 'BIOLOGY'),
@@ -217,32 +163,4 @@
 	    # sgp.exact.grade.progression=TRUE, #  Fewer than 3,000 kids - no need for 'nested' sgp.exact.grade.progression
 			sgp.projection.sequence = 'BIO_PHYS',
 	    sgp.norm.group.preference=1)
-		# PHYSICS.2018 = list(
-		# 	sgp.content.areas=c(rep('SCIENCE',2), 'BIOLOGY', 'PHYSICS'),
-		# 	sgp.panel.years=as.character(2015:2018),
-		# 	sgp.grade.sequences=list(c(7:8,'EOCT','EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.projection.grade.sequences='NO_PROJECTIONS',
-		# 	sgp.norm.group.preference=2),
-	  # PHYSICS.2018 = list(
-	  #   sgp.content.areas=c('SCIENCE', 'BIOLOGY', 'PHYSICS'),
-	  #   sgp.panel.years=as.character(2016:2018),
-	  #   sgp.grade.sequences=list(c(8,'EOCT','EOCT')),
-	  #   sgp.exact.grade.progression=TRUE,
-		# 	sgp.projection.grade.sequences='NO_PROJECTIONS',
-	  #   sgp.norm.group.preference=3),
-
-		# PHYSICS.2018 = list(  #  Fewer than 3,000 kids - no need for this and 'nested' sgp.exact.grade.progression
-		# 	sgp.content.areas=c('EARTH_SCIENCE', 'BIOLOGY', 'PHYSICS'),
-		# 	sgp.panel.years=as.character(2016:2018),
-		# 	sgp.grade.sequences=list(c('EOCT','EOCT','EOCT')),
-		# 	sgp.exact.grade.progression=TRUE,
-		# 	sgp.projection.grade.sequences='NO_PROJECTIONS',
-		# 	sgp.norm.group.preference=4),
-		# PHYSICS.2018 = list(
-		# 	sgp.content.areas=c('BIOLOGY', 'PHYSICS'),
-		# 	sgp.panel.years=as.character(2017:2018),
-		# 	sgp.grade.sequences=list(c('EOCT', 'EOCT')),
-		# 	sgp.projection.grade.sequences='NO_PROJECTIONS',
-		# 	sgp.norm.group.preference=5)
 	)
