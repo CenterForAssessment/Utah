@@ -12,21 +12,25 @@ setwd("/Users/avi/Dropbox (SGP)/SGP/Utah")
 
 ### Read in USBE .csv files
 
-rise.demog <- fread("./Data/Updated Files/SGP Longfile 2019 v20190930 wDemographics and DistrictSchools.csv", colClasses=rep("character", 26))[, MISSING := 0L]
-rise <- fread("./Data/Updated Files/SGP Longfile 2019 v20190930.csv", colClasses=rep("character", 16))[, MISSING := 1L]
-uap.demog <- fread("./Data/Updated Files/SGP Longfile 2019 - UAPlus - 20190930 wDemographics and DistrictSchools.csv", colClasses=rep("character", 26))[, MISSING := 0L]
-uap <- fread("./Data/Updated Files/SGP Longfile 2019 - UAPlus - 20190930.csv", colClasses=rep("character", 16))[, MISSING := 1L]
+ut.updated <- fread("./Data/Base_Files/SGP Longfile 2019 v20191031v2.csv", colClasses=rep("character", 16))[, MISSING := 1L] # Contains both RISE and UT Aspire Plus
+rise.demog <- fread("./Data/Base_Files/SGP Longfile 2019 v20190930 wDemographics and DistrictSchools.csv", colClasses=rep("character", 26))[, MISSING := 0L]
+uap.demog <- fread("./Data/Base_Files/SGP Longfile 2019 - UAPlus - 20191003 wDemographics and DistrictSchools.csv", colClasses=rep("character", 26))[, MISSING := 0L]
+# rise <- fread("./Data/Base_Files/SGP Longfile 2019 v20190930.csv", colClasses=rep("character", 16))[, MISSING := 1L]
+# uap <- fread("./Data/Base_Files/SGP Longfile 2019 - UAPlus - 20191003.csv", colClasses=rep("character", 16))[, MISSING := 1L]
 
-setnames(uap, "testsubjectid", "TestSubjectID")
-Utah_Data_LONG_2019 <- rbindlist(list(rise.demog[, MISSING := 0L], rise[, MISSING := 1L], uap.demog[, MISSING := 0L], uap[, MISSING := 1L]), fill = TRUE)
-rm(list=c("rise.demog", "rise", "uap.demog", "uap"))
+###  Fix New Data's TestSubjectID for UAP ELA
+uap.demog[TestSubjectID == '109', TestSubjectID := '108']
+uap.demog[TestSubjectID == '110', TestSubjectID := '109']
+
+# setnames(uap, "testsubjectid", "TestSubjectID")
+Utah_Data_LONG_2019 <- rbindlist(list(ut.updated, rise.demog, uap.demog), fill = TRUE)
+rm(list=c("ut.updated", "rise.demog", "uap.demog"))
 
 ###  Remove Duplicates without Demographic Variables
 setkeyv(Utah_Data_LONG_2019, c("VALID_CASE", "SchoolYear", "StudentID", "TestSubjectID", 'CONTENT_AREA', 'GRADE', 'SCALE_SCORE', "MISSING"))
 setkeyv(Utah_Data_LONG_2019, c("VALID_CASE", "SchoolYear", "StudentID", "TestSubjectID", 'CONTENT_AREA', 'GRADE', 'SCALE_SCORE'))
 Utah_Data_LONG_2019 <- Utah_Data_LONG_2019[!duplicated(Utah_Data_LONG_2019, by=key(Utah_Data_LONG_2019))]
 round(prop.table(table(Utah_Data_LONG_2019[, MISSING, TestSubjectID]), 1)*100, 2)
-
 
 # Utah_Orig_2019 <- fread("./Data/list(rise.demog[, MISSING := 0L], rise[, MISSING := 1L], uap.demog[, MISSING := 0L], uapSGP Longfile 2019 v20190827.csv", colClasses=rep("character", 16))
 # Utah_Orig2_2019 <- fread("~/Data/UT/Data/SGP Longfile 2019 v20190828 wDemographics and DistrictSchools.csv", colClasses=rep("character", 26))
@@ -64,6 +68,10 @@ Utah_Data_LONG_2019[, as.list(summary(SCALE_SCORE)), keyby=c("CONTENT_AREA", "GR
 Utah_Data_LONG_2019[, ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)]
 Utah_Data_LONG_2019[, ACHIEVEMENT_LEVEL_FULL := as.character(ACHIEVEMENT_LEVEL_FULL)]
 
+###  Invalidate mismatched Achievement Levels per Aaron B (10/1/19 email)
+Utah_Data_LONG_2019[GRADE %in% 3:8 & ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL, VALID_CASE := "INVALID_CASE"]
+table(Utah_Data_LONG_2019[, VALID_CASE, GRADE])
+
 ###   Tidy up Demographic Variables
 table(Utah_Data_LONG_2019[, race_merged])
 Utah_Data_LONG_2019[, race_merged := as.character(factor(race_merged,
@@ -90,7 +98,7 @@ Utah_Data_LONG_2019[, LAST_NAME := factor(LAST_NAME)]
 Utah_Data_LONG_2019[, FIRST_NAME := factor(FIRST_NAME)]
 
 levels(Utah_Data_LONG_2019$LAST_NAME) <- sapply(levels(Utah_Data_LONG_2019$LAST_NAME), capwords)
-levels(Utah_Data_LONG_2019$FIRST_NAME) <-sapply(levels(Utah_Data_LONG_2019$FIRST_NAME), capwords)
+levels(Utah_Data_LONG_2019$FIRST_NAME)<- sapply(levels(Utah_Data_LONG_2019$FIRST_NAME), capwords)
 
 ##   Reset the class of the NAME variables to character
 Utah_Data_LONG_2019[, LAST_NAME := as.character(LAST_NAME)]

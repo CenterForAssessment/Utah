@@ -80,55 +80,22 @@ load("./Data/Utah_SGP_LONG_Data-SAGE_ONLY_with_Demographics.Rdata")
 
 #   Load the 2019 formatted data
 load("./Data/Utah_Data_LONG_2019.Rdata")
-# Utah_Data_LONG_2019[is.na(ACHIEVEMENT_LEVEL_FULL), VALID_CASE := "INVALID_CASE"]
-Utah_Data_LONG_2019[GRADE %in% 3:8 & ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL, VALID_CASE := "INVALID_CASE"]
-table(Utah_Data_LONG_2019[, VALID_CASE, GRADE])
-
-# #   Trim down for RISE/Aspire Plus Analayses
-# vars.to.keep <- union(names(Utah_Data_LONG_2019), grep("SGP|SCALE_SCORE|CATCH_UP|MOVE_UP", names(Utah_SGP@Data), value=TRUE))
-# Utah_SGP@Data <- Utah_SGP@Data[YEAR %in% 2013:2018, vars.to.keep, with=FALSE]
-# Utah_SGP@SGP <- NULL
-# Utah_SGP@Summary <- NULL
-# gc()
 
 ###
-##   2019 Analyses - RISE Assessments only due to data delivery timeframe
-###
-
-# source("SGP_CONFIG/UT_2019.R")
-# source("/Users/avi/Dropbox (SGP)/Github_Repos/Projects/Utah/SGP_CONFIG/UT_2019.R")
-# source("/media/Data/Dropbox (SGP)/Github_Repos/Projects/Utah/sgp_config/UT_2019.R")
-
-# UT_2019.config <- c(
-# 	ELA_2019.config,
-# 	MATHEMATICS_2019.config,
-# 	SCIENCE_2019.config)
-
-setwd("/Users/avi/Data/UT")
-setwd("/media/Data/UT")
-
-# SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.projections.use.only.complete.matrices"]] <- FALSE
-# SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- 2000
-# SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.less.than.sgp.cohort.size.return"]] <- "<2000"
-
-# SGPstateData[["UT"]][["SGP_Configuration"]][["content_area.projection.sequence"]] <- NULL
-# SGPstateData[["UT"]][["SGP_Configuration"]][["grade.projection.sequence"]] <- NULL
-# SGPstateData[["UT"]][["SGP_Configuration"]][["year_lags.projection.sequence"]] <- NULL
-
-
-#####
 ##   Run analyses - add 2019 data through prepareSGP step and
 ##   calculate percentiles and projections through analyzeSGP step
 #####
 
 ##   Set BIOLOGY priors to INVALID (Run EARTH_SCIENCE prior analyses first)
 Utah_SGP_LONG_Data[CONTENT_AREA_ACTUAL == "BIOLOGY", VALID_CASE := "INVALID_CASE"]
+Utah_Data_LONG_2019[CONTENT_AREA == "SEC_MATH_I", VALID_CASE := "INVALID_CASE"]
+
+SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SCIENCE.2014"]][["GRADE_10"]] <- c(840, 865) # CHEMISTRY.2014
 
 Utah_SGP <- abcSGP(
 	state="UT",
 	sgp_object = rbindlist(list(Utah_SGP_LONG_Data, Utah_Data_LONG_2019), fill=TRUE),
-	steps = c("prepareSGP", "analyzeSGP"), # , "combineSGP", "outputSGP"
-	# sgp.config = UT_2019.config,
+	steps = c("prepareSGP", "analyzeSGP"),
 	years='2019',
 	content_areas=c("ELA", "MATHEMATICS", "SCIENCE"),
 	sgp.percentiles = TRUE,
@@ -153,6 +120,8 @@ save(Utah_SGP, file="Data/Utah_SGP.Rdata")
 #####
 
 options(warn=0)
+setwd("/Users/avi/Data/UT")
+
 require(SGP)
 require(data.table)
 
@@ -221,7 +190,7 @@ Utah_SGP <- analyzeSGP(
 	simulate.sgps=FALSE,
 	goodness.of.fit.print=FALSE,
 	parallel.config = list(
-		BACKEND="PARALLEL", WORKERS=list(TAUS=12)))
+		BACKEND="PARALLEL", WORKERS=list(TAUS=12))
 )
 
 table(Utah_SGP@SGP[["SGPercentiles"]][["SCIENCE.2019"]][, PREFERENCE])
@@ -233,6 +202,7 @@ table(grep("2018/EARTH_SCIENCE_9", Utah_SGP@SGP[["SGPercentiles"]][["SCIENCE.201
 
 Utah_SGP@SGP[["SGPercentiles"]][["SCIENCE.2019"]][, SGP_NORM_GROUP := gsub("2018/SCIENCE_9", "2018/BIOLOGY_9", SGP_NORM_GROUP)]
 Utah_SGP@SGP[["SGPercentiles"]][["SCIENCE.2019.EQUATED"]][, SGP_NORM_GROUP_EQUATED := gsub("2018/SCIENCE_9", "2018/BIOLOGY_9", SGP_NORM_GROUP_EQUATED)]
+table(grep("2018/BIOLOGY_9", Utah_SGP@SGP[["SGPercentiles"]][["SCIENCE.2019"]][, SGP_NORM_GROUP], value=TRUE))
 table(grep("2018/SCIENCE_9", Utah_SGP@Data[, SGP_NORM_GROUP], value=TRUE))
 
 ###  Cludge for Leslie
@@ -250,6 +220,7 @@ table(grep("2018/SCIENCE_9", Utah_SGP@Data[, SGP_NORM_GROUP], value=TRUE))
 Utah_SGP@Data[, VALID_CASE := "VALID_CASE"]
 setkeyv(Utah_SGP@Data, SGP:::getKey(Utah_SGP@Data))
 
+# SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <- NULL
 Utah_SGP <- combineSGP(Utah_SGP, years='2019', sgp.percentiles.equated=TRUE) # FALSE for Cludge
 
 table(Utah_SGP@Data[, YEAR, CATCH_UP_KEEP_UP_STATUS_3_YEAR])
@@ -258,8 +229,13 @@ table(Utah_SGP@Data[, YEAR, CATCH_UP_KEEP_UP_STATUS_3_YEAR])
 # setnames(Utah_SGP@Data, c("SGP", "CATCH_UP_KEEP_UP_STATUS_3_YEAR"), c("ORIG", "CUKU_ORIG"))
 # table(Utah_SGP@Data[, CUKU_ORIG, CATCH_UP_KEEP_UP_STATUS_3_YEAR])
 
-save(Utah_SGP, file="Data/Utah_SGP-FINAL.Rdata")
-outputSGP(Utah_SGP, output.type="LONG_FINAL_YEAR_Data")
+save(Utah_SGP, file="Data/Utah_SGP.Rdata")
+outputSGP(Utah_SGP, output.type=c("LONG_Data", "LONG_FINAL_YEAR_Data"))
+
+outputSGP(Utah_SGP, output.type="WIDE_Data")  #  Will need to manually change file to get
+
+
+# Utah_SGP <- combineSGP(Utah_SGP, sgp.percentiles.equated=TRUE, max.sgp.target.years.forward = 1)
 
 Utah_SGP@Data[YEAR=='2019', as.list(summary(SGP)), keyby = c("CONTENT_AREA", "GRADE")]
 
@@ -268,17 +244,49 @@ table(Utah_SGP@Data[YEAR=='2019' & is.na(SGP_TARGET_3_YEAR), CONTENT_AREA, GRADE
 
 table(Utah_SGP@Data[YEAR=='2019', SGP_TARGET_3_YEAR <= SGP, CATCH_UP_KEEP_UP_STATUS_3_YEAR])
 table(Utah_SGP@Data[YEAR=='2019', SGP_TARGET_3_YEAR <= SGP_EQUATED, CATCH_UP_KEEP_UP_STATUS_3_YEAR])
+table(Utah_SGP@Data[YEAR=='2019', SGP_TARGET_1_YEAR <= SGP_EQUATED, CATCH_UP_KEEP_UP_STATUS_3_YEAR])
 table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR > SGP_EQUATED, CATCH_UP_KEEP_UP_STATUS_3_YEAR, GRADE])
 table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR > SGP_EQUATED, CATCH_UP_KEEP_UP_STATUS_3_YEAR, ACHIEVEMENT_LEVEL])
 
-table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR > SGP & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Catch Up: Yes", ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_PRIOR])
-table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR <= SGP & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Keep Up: No", ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_PRIOR])
-table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR > SGP & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Catch Up: Yes", CONTENT_AREA, GRADE])
-table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR <= SGP & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Keep Up: No", CONTENT_AREA, GRADE])
+table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR > SGP_EQUATED & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Catch Up: Yes", ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_PRIOR])
+table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR <= SGP_EQUATED & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Keep Up: No", ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_PRIOR])
+table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR > SGP_EQUATED & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Catch Up: Yes", CONTENT_AREA, GRADE])
+table(Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR <= SGP_EQUATED & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Keep Up: No", CONTENT_AREA, GRADE])
 
-Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR <= SGP & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Keep Up: No", # & CONTENT_AREA == "SCIENCE",
+Utah_SGP@Data[YEAR=='2019' & SGP_TARGET_3_YEAR <= SGP_EQUATED & CATCH_UP_KEEP_UP_STATUS_3_YEAR == "Keep Up: No", # & CONTENT_AREA == "SCIENCE",
 								as.list(summary(SCALE_SCORE)), keyby = c("CONTENT_AREA", "GRADE")]
 
+###
+###
+
+load("/Users/avi/Dropbox (SGP)/SGP/Utah/Data/Utah_SGP_LONG_Data.Rdata")
+require(data.table)
+
+Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL_COMBINED := factor(ACHIEVEMENT_LEVEL,
+			labels = c("Advanced", rep("Below Proficient", 3), "Advanced", rep("Proficient", 2)))]
+
+Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL_COMBINED := factor(ACHIEVEMENT_LEVEL_COMBINED,
+			levels = c("Below Proficient", "Proficient", "Advanced"), ordered=TRUE)]
+
+table(Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_COMBINED])
+
+round(prop.table(table(Utah_SGP_LONG_Data[CONTENT_AREA== "ELA" & GRADE == 10, ACHIEVEMENT_LEVEL_COMBINED, SchoolYear]), 1)*100, 2)
+
+Utah_SGP_LONG_Data[, GRADE := as.numeric(GRADE)]
+
+achlev <- Utah_SGP_LONG_Data[!is.na(ACHIEVEMENT_LEVEL_COMBINED), as.list(round(prop.table(table(ACHIEVEMENT_LEVEL_COMBINED))*100, 2)), keyby = c("CONTENT_AREA", "GRADE", "SchoolYear")]
+achlev[CONTENT_AREA== "ELA" & GRADE == 10]
+achlev[CONTENT_AREA== "SCIENCE" & GRADE == 10]
+achlev[CONTENT_AREA== "ELA" & GRADE %in% 3:8]
+achlev[CONTENT_AREA== "MATHEMATICS" & GRADE %in% 9:10]
+
+cuku <- Utah_SGP_LONG_Data[, as.list(summary(SGP_TARGET_3_YEAR)), keyby = c("CONTENT_AREA", "GRADE", "SchoolYear")]
+cuku[CONTENT_AREA== "ELA" & GRADE == 10]
+
+cuku.c <- Utah_SGP_LONG_Data[, as.list(summary(SGP_TARGET_3_YEAR_CURRENT)), keyby = c("CONTENT_AREA", "GRADE", "SchoolYear")]
+
+musu <- Utah_SGP_LONG_Data[, as.list(summary(SGP_TARGET_MOVE_UP_STAY_UP_3_YEAR)), keyby = c("CONTENT_AREA", "GRADE", "SchoolYear")]
+musu[CONTENT_AREA== "ELA" & GRADE == 10]
 
 ###
 ###   Data for Leslie
@@ -294,5 +302,5 @@ Utah_SGP_LONG_Data_2019[, grep("ORDER", names(Utah_SGP_LONG_Data_2019), value=T)
 
 setnames(Utah_SGP_LONG_Data_2019, c("SGP_EQUATED", "SGP_LEVEL_EQUATED", "SGP_NORM_GROUP_EQUATED"), c("SGP", "SGP_LEVEL", "SGP_NORM_GROUP"))
 
-fwrite(Utah_SGP_LONG_Data_2019, file="./Data/Utah_SGP_LONG_Data_2019-PRELIM_v3.txt", sep="|")#, compress = "gzip")
-zip(zipfile="./Data/Utah_SGP_LONG_Data_2019-PRELIM_v3.txt.zip", files="./Data/Utah_SGP_LONG_Data_2019-PRELIM_v3.txt", flags="-mq")
+fwrite(Utah_SGP_LONG_Data_2019, file="./Data/Utah_SGP_LONG_Data_2019-FINAL_11042019.txt", sep="|")#, compress = "gzip")
+zip(zipfile="./Data/Utah_SGP_LONG_Data_2019-FINAL_v1.txt.zip", files="./Data/Utah_SGP_LONG_Data_2019-FINAL_11042019.txt", flags="-mq")
