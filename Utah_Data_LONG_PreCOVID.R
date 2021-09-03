@@ -14,8 +14,10 @@ require(data.table)
 load("./Data/Archive/Pre_COVID_2019/Utah_SGP_LONG_Data.Rdata")
 
 setnames(Utah_SGP_LONG_Data,
-          c("SchoolYear", "StudentID", "SCALE_SCORE_EQUATED", "SCALE_SCORE", "ACHIEVEMENT_LEVEL_FULL", "ACHIEVEMENT_LEVEL"),
-          c("YEAR", "ID", "SCALE_SCORE", "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL_ORIGINAL", "ACH_LEV_COLLAPSED"))
+          c("SchoolYear", "StudentID", "district_id", "school_number", "district_name", "school_name",
+            "SCALE_SCORE_EQUATED", "SCALE_SCORE", "ACHIEVEMENT_LEVEL_FULL", "ACHIEVEMENT_LEVEL"),
+          c("YEAR", "ID", "DISTRICT_NUMBER", "SCHOOL_NUMBER", "DISTRICT_NAME", "SCHOOL_NAME",
+            "SCALE_SCORE", "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL_ORIGINAL", "ACH_LEV_COLLAPSED"))
 Utah_SGP_LONG_Data[, SCALE_SCORE := round(SCALE_SCORE, 0)]
 
 Utah_SGP_LONG_Data <- Utah_SGP_LONG_Data[YEAR > 2015]
@@ -61,7 +63,8 @@ if (length(tmp.names <- grep("BASELINE|EQUATED", names(Utah_SGP_LONG_Data))) > 0
 
 ###   Create knots/boundaries in SGPstateData to use equated scale scores properly
 ##    Add in 2021 data to avoid LOSS/HOSS issues in 2021 analyses (ELA g 6:8 and SEC_MATH_I)
-Utah_Data_LONG_2021 <- fread("./Data/Base_Files/Long_File_2021v3.txt", colClasses=rep("character", 25), na.strings = "NULL") # Math and ELA (NO science)
+Utah_Data_LONG_2021 <- fread("./Data/Base_Files/Long_File_2021v3.txt", na.strings = "NULL") # Math and ELA (NO science)
+Utah_Data_LONG_2021 <- Utah_Data_LONG_2021[!is.na(SCALE_SCORE)]
 Utah_KB_Data <- rbindlist(list(Utah_SGP_LONG_Data[YEAR %in% 2017:2019], Utah_Data_LONG_2021), fill=TRUE, use.names = TRUE)
 
 UT_Knots_Boundaries <- createKnotsBoundaries(Utah_KB_Data)
@@ -83,7 +86,7 @@ new.name.order <- c(
         'SGP_TARGET_3_YEAR_CURRENT', 'SGP_TARGET_MOVE_UP_STAY_UP_3_YEAR_CURRENT',
         'DISTRICT_NUMBER', 'SCHOOL_NUMBER', 'DISTRICT_NAME', 'SCHOOL_NAME',
         'SCHOOL_ENROLLMENT_STATUS', 'DISTRICT_ENROLLMENT_STATUS', 'STATE_ENROLLMENT_STATUS',
-        'GENDER', 'ETHNICITY', 'FRL_STATUS', 'IEP_STATUS', 'ELL_STATUS', 'ETHNIC_HISPANIC',
+        'gender', 'race_merged', 'FRL_STATUS', 'IEP_STATUS', 'ELL_STATUS', 'ETHNIC_HISPANIC',
         'LAST_NAME', 'FIRST_NAME', 'SSID', 'TestSubjectID', 'TestSubject', 'SubjectArea', 'school_id')
 
 setcolorder(Utah_SGP_LONG_Data_PreCOVID, new.name.order)
