@@ -7,10 +7,10 @@
 ### NOTE: SCALE_SCORE is SCALE_SCORE_EQUATED in this file going forward. SCALE_SCORE_ORIGINAL is the original/actual scale score report on ISTEP+
 
 ### Load necessary packages
-require(SGP)
+require(SGP) # v1.9-9.96 with updated SGPstateData
 require(data.table)
 
-###   Load the results data from the 'official' 2019 SGP analyses
+###   Load the results data created for 2019 BASELINE SGP analyses
 load("Data/Utah_SGP_LONG_Data_PreCOVID.Rdata")
 
 ###   Create a smaller subset of the LONG data to work with.
@@ -45,3 +45,8 @@ UT_Baseline_Matrices <- baselineSGP(
 
 ###   Save results
 save(UT_Baseline_Matrices, file="Data/UT_Baseline_Matrices.Rdata")
+
+###   Add Matrices to `SGPmatrices` package data object
+load("../../Github_Repos/Packages/SGPmatrices/data/SGPmatrices.rda")
+SGPmatrices[["UT_Baseline_Matrices"]][["2021"]] <- UT_Baseline_Matrices
+save(SGPmatrices, file = "../../Github_Repos/Packages/SGPmatrices/data/SGPmatrices.rda")

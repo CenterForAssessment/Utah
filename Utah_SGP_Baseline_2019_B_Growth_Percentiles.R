@@ -7,17 +7,15 @@
 ###   Load packages
 require(SGP)
 require(data.table)
-#require(SGPmatrices)
-#debug(addBaselineMatrices)
+require(SGPmatrices) # version 0.0-0.992 (9-3-2021) contains UT matrices
 
 ###   Load pre-COVID data with equated scores.
 load("Data/Utah_SGP_LONG_Data_PreCOVID.Rdata")
 
-
 ###   Add single-cohort baseline matrices to SGPstateData
-# SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
-load("Data/UT_Baseline_Matrices.Rdata")
-SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]] <- UT_Baseline_Matrices
+SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
+# load("Data/UT_Baseline_Matrices.Rdata")
+# SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]] <- UT_Baseline_Matrices
 
 ### NULL out assessment transition in 2019 (since already dealth with)
 SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <- NULL

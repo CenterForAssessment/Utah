@@ -11,11 +11,11 @@ require(SGP)
 require(data.table)
 
 ###   Load the results data from the 'official' 2019 SGP analyses
-load("Data/Archive/Pre_COVID_2019/Utah_SGP_LONG_Data.Rdata")
-setNamesSGP(Utah_SGP_LONG_Data)
+load("./Data/Archive/Pre_COVID_2019/Utah_SGP_LONG_Data.Rdata")
+
 setnames(Utah_SGP_LONG_Data,
-          c("SCALE_SCORE_EQUATED", "SCALE_SCORE", "ACHIEVEMENT_LEVEL_FULL", "ACHIEVEMENT_LEVEL"),
-          c("SCALE_SCORE", "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL_ORIGINAL", "ACH_LEV_COLLAPSED"))
+          c("SchoolYear", "StudentID", "SCALE_SCORE_EQUATED", "SCALE_SCORE", "ACHIEVEMENT_LEVEL_FULL", "ACHIEVEMENT_LEVEL"),
+          c("YEAR", "ID", "SCALE_SCORE", "SCALE_SCORE_ACTUAL", "ACHIEVEMENT_LEVEL_ORIGINAL", "ACH_LEV_COLLAPSED"))
 Utah_SGP_LONG_Data[, SCALE_SCORE := round(SCALE_SCORE, 0)]
 
 Utah_SGP_LONG_Data <- Utah_SGP_LONG_Data[YEAR > 2015]
@@ -23,13 +23,13 @@ Utah_SGP_LONG_Data <- Utah_SGP_LONG_Data[YEAR > 2015]
 ###  Check for duplicate cases  --  2040 old bio/earth sci duplicates -
 setkeyv(Utah_SGP_LONG_Data, c("VALID_CASE", "CONTENT_AREA", "YEAR", "GRADE", "ID", "SCALE_SCORE"))
 setkeyv(Utah_SGP_LONG_Data, c("VALID_CASE", "CONTENT_AREA", "YEAR", "GRADE", "ID"))
-sum(duplicated(Utah_SGP_LONG_Data[VALID_CASE != "INVALID_CASE"], by=key(Utah_SGP_LONG_Data)))
+sum(duplicated(Utah_SGP_LONG_Data[VALID_CASE != "INVALID_CASE"], by=key(Utah_SGP_LONG_Data))) # 1178
 dups <- data.table(Utah_SGP_LONG_Data[unique(c(which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Data)))-1, which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Data))))), ], key=key(Utah_SGP_LONG_Data))
 Utah_SGP_LONG_Data[which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Data)))-1, VALID_CASE := "INVALID_CASE"]
 
 setkeyv(Utah_SGP_LONG_Data, c("VALID_CASE", "CONTENT_AREA", "YEAR", "ID", "SCALE_SCORE"))
 setkeyv(Utah_SGP_LONG_Data, c("VALID_CASE", "CONTENT_AREA", "YEAR", "ID"))
-sum(duplicated(Utah_SGP_LONG_Data[VALID_CASE != "INVALID_CASE"], by=key(Utah_SGP_LONG_Data))) # 0 duplicates with valid GTIDs - (((take the highest score if any exist)))
+sum(duplicated(Utah_SGP_LONG_Data[VALID_CASE != "INVALID_CASE"], by=key(Utah_SGP_LONG_Data))) # 2079 duplicates with valid IDs - (((take the highest score if any exist)))
 dups <- data.table(Utah_SGP_LONG_Data[unique(c(which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Data)))-1, which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Data))))), ], key=key(Utah_SGP_LONG_Data))
 Utah_SGP_LONG_Data[which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Data)))-1, VALID_CASE := "INVALID_CASE"]
 
@@ -51,8 +51,8 @@ mth.cuts -> SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["MATHEMATICS"]
 SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SEC_MATH_I"]] <- list(GRADE_EOCT=c(478, 535, 591))
 
 Utah_SGP_LONG_Data <- SGP:::getAchievementLevel(Utah_SGP_LONG_Data, state="UT")
-# table(Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_ORIGINAL]) - some 2019 don't match up...
-Utah_SGP_LONG_Data[YEAR == '2019', ACHIEVEMENT_LEVEL := ACHIEVEMENT_LEVEL_ORIGINAL]
+# table(Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_ORIGINAL])
+# Utah_SGP_LONG_Data[YEAR == '2019', ACHIEVEMENT_LEVEL := ACHIEVEMENT_LEVEL_ORIGINAL]
 
 ### Test for BASELINE related variable in LONG data and NULL out if they exist
 if (length(tmp.names <- grep("BASELINE|EQUATED", names(Utah_SGP_LONG_Data))) > 0) {
@@ -60,11 +60,15 @@ if (length(tmp.names <- grep("BASELINE|EQUATED", names(Utah_SGP_LONG_Data))) > 0
 }
 
 ###   Create knots/boundaries in SGPstateData to use equated scale scores properly
-UT_Knots_Boundaries <- createKnotsBoundaries(Utah_SGP_LONG_Data[YEAR %in% 2017:2019])
+##    Add in 2021 data to avoid LOSS/HOSS issues in 2021 analyses (ELA g 6:8 and SEC_MATH_I)
+Utah_Data_LONG_2021 <- fread("./Data/Base_Files/Long_File_2021v3.txt", colClasses=rep("character", 25), na.strings = "NULL") # Math and ELA (NO science)
+Utah_KB_Data <- rbindlist(list(Utah_SGP_LONG_Data[YEAR %in% 2017:2019], Utah_Data_LONG_2021), fill=TRUE, use.names = TRUE)
+
+UT_Knots_Boundaries <- createKnotsBoundaries(Utah_KB_Data)
 SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]] <- NULL
 SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]] <- UT_Knots_Boundaries
 SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- NULL # 2 prior SEC_MATH_I has 2933 kids...
-save(UT_Knots_Boundaries, file="Data/UT_Knots_Boundaries-RISE_UAp.Rdata")
+save(UT_Knots_Boundaries, file="Data/Archive/Pre_COVID_2019/UT_Knots_Boundaries-RISE_UAp.Rdata")
 
 assign("Utah_SGP_LONG_Data_PreCOVID", Utah_SGP_LONG_Data)
 
