@@ -7,22 +7,16 @@
 ###   Load packages
 require(SGP)
 require(data.table)
-# require(SGPmatrices)
+require(SGPmatrices)
 
 ###   Load data
 load("Data/Utah_SGP.Rdata")
 load("Data/Utah_Data_LONG_2021.Rdata")
 
-##    Only run on object from 2019 BASELINE analyses
-# Utah_SGP@SGP$Goodness_of_Fit <- NULL
-# Utah_SGP@Data <- Utah_SGP@Data[CONTENT_AREA %in% grep("ELA|MATHEMATICS", unique(CONTENT_AREA), value=TRUE)]
-# Utah_SGP@Data <- Utah_SGP@Data[-which(CONTENT_AREA %in% c("ELA", "MATHEMATICS") & !GRADE %in% 3:8)]
-# table(Utah_SGP@Data[, GRADE, CONTENT_AREA])
-
 ###   Add Baseline matrices to SGPstateData
-load("Data/UT_Baseline_Matrices.Rdata")
-SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]] <- UT_Baseline_Matrices
-# SGPstateData <- addBaselineMatrices("UT", "2021")
+SGPstateData <- addBaselineMatrices("UT", "2021")
+# load("Data/UT_Baseline_Matrices.Rdata")
+# SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]] <- UT_Baseline_Matrices
 
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2021/PART_A/ELA.R")
