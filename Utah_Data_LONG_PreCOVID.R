@@ -37,24 +37,25 @@ Utah_SGP_LONG_Data[which(duplicated(Utah_SGP_LONG_Data, by=key(Utah_SGP_LONG_Dat
 
 
 ###   Switch to ACHIEVEMENT_LEVEL to new (all Equated) scale
-Utah_SGP_LONG_Data[, ACH_LEV_COLLAPSED := NULL] # SAGE test ACH LEVs collapse to A/P/BP - Keep ACHIEVEMENT_LEVEL_FULL/ORIGINAL
+Utah_SGP_LONG_Data[, ACH_LEV_COLLAPSED := NULL] # SAGE test ACH LEVs collapse to A/P/BP - Keep ACHIEVEMENT_LEVEL_ORIGINAL
 
-SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <- NULL
-SGPstateData[["UT"]][["Assessment_Program_Information"]][["Scale_Change"]] <- NULL
-
-ela.cuts <- SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["ELA.2019"]]
-sci.cuts <- SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SCIENCE.2019"]]
-mth.cuts <- SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["MATHEMATICS.2019"]]
-
-SGPstateData[["UT"]][["Achievement"]][["Cutscores"]] <- NULL
-ela.cuts -> SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["ELA"]]
-sci.cuts -> SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SCIENCE"]]
-mth.cuts -> SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["MATHEMATICS"]]
-SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SEC_MATH_I"]] <- list(GRADE_EOCT=c(478, 535, 591))
+##    Code below Only needed/used with versions of SGPstateData before "Cutscores" update
+# SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <- NULL
+# SGPstateData[["UT"]][["Assessment_Program_Information"]][["Scale_Change"]] <- NULL
+#
+# ela.cuts <- SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["ELA.2019"]]
+# sci.cuts <- SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SCIENCE.2019"]]
+# mth.cuts <- SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["MATHEMATICS.2019"]]
+#
+# SGPstateData[["UT"]][["Achievement"]][["Cutscores"]] <- NULL
+# SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["ELA"]] <- ela.cuts
+# sci.cuts -> SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SCIENCE"]]
+# mth.cuts -> SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["MATHEMATICS"]]
+# SGPstateData[["UT"]][["Achievement"]][["Cutscores"]][["SEC_MATH_I"]] <- list(GRADE_EOCT=c(478, 535, 591))
 
 Utah_SGP_LONG_Data <- SGP:::getAchievementLevel(Utah_SGP_LONG_Data, state="UT")
-# table(Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_ORIGINAL])
-# Utah_SGP_LONG_Data[YEAR == '2019', ACHIEVEMENT_LEVEL := ACHIEVEMENT_LEVEL_ORIGINAL]
+table(Utah_SGP_LONG_Data[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_ORIGINAL])
+Utah_SGP_LONG_Data[YEAR == '2019', ACHIEVEMENT_LEVEL := ACHIEVEMENT_LEVEL_ORIGINAL]
 
 ### Test for BASELINE related variable in LONG data and NULL out if they exist
 if (length(tmp.names <- grep("BASELINE|EQUATED", names(Utah_SGP_LONG_Data))) > 0) {

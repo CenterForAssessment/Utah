@@ -41,7 +41,7 @@ Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := factor(ACHIEVEMENT_LEVEL, levels=0:4,
 	labels=c(NA, "Below", "Approaching", "Proficient", "Highly"), ordered=TRUE)]
 
 ##    Invalidate mismatched Achievement Levels per Aaron B (10/1/19 email)
-##    Checks out fine this year :-)
+##    Only 2 cases (G9 ELA) - we only invalidated grades 3:8 previously, so continue with that.
 # setnames(Utah_Data_LONG_2021, "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_FULL") # Preserve incorrect USBE/Questar Achievement Level var in "FULL" (Historical) variable
 # Utah_Data_LONG_2021 <- SGP:::getAchievementLevel(Utah_Data_LONG_2021, state="UT")
 # Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := factor(ACHIEVEMENT_LEVEL, levels = c("Below", "Approaching", "Proficient", "Highly"), ordered=TRUE)]
@@ -54,6 +54,7 @@ Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)]
 # Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL_FULL := as.character(ACHIEVEMENT_LEVEL_FULL)]
 
 ###  Invalidate mismatched Achievement Levels per Aaron B (10/1/19 email)
+##    Only 2 cases (G9 ELA) - we only invalidated grades 3:8 previously, so continue with that.
 # Utah_Data_LONG_2021[GRADE %in% 3:8 & ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL, VALID_CASE := "INVALID_CASE"]
 round(prop.table(table(Utah_Data_LONG_2021[, VALID_CASE, GRADE]), 1)*100, 2) # snapshop of grade-level participation rates
 

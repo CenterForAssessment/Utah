@@ -31,11 +31,9 @@ UT_Config_2021_PartA <- c(
 )
 
 ###   Parallel Config
+##    Make NULL if using Windows! `parallel.config <- NULL`
 parallel.config <- list(BACKEND="PARALLEL",
-                        WORKERS=list(
-                          PERCENTILES=8, BASELINE_PERCENTILES=8,
-                          PROJECTIONS=8, LAGGED_PROJECTIONS=8,
-                          SGP_SCALE_SCORE_TARGETS=8))
+                        WORKERS=list(PERCENTILES=8, BASELINE_PERCENTILES=8))
 
 #####
 ###   Run updateSGP analysis
@@ -57,8 +55,8 @@ Utah_SGP <- updateSGP(
 )
 
 ### Copy SCALE_SCORE_PRIOR and SCALE_SCORE_PRIOR_STANDARDIZED to BASELINE counter parts
-Utah_SGP@Data[YEAR=="2021", SCALE_SCORE_PRIOR_BASELINE:=SCALE_SCORE_PRIOR]
-Utah_SGP@Data[YEAR=="2021", SCALE_SCORE_PRIOR_STANDARDIZED_BASELINE:=SCALE_SCORE_PRIOR_STANDARDIZED]
+Utah_SGP@Data[YEAR=="2021", SCALE_SCORE_PRIOR_BASELINE := SCALE_SCORE_PRIOR]
+Utah_SGP@Data[YEAR=="2021", SCALE_SCORE_PRIOR_STANDARDIZED_BASELINE := SCALE_SCORE_PRIOR_STANDARDIZED]
 
 ###   Save results
 save(Utah_SGP, file="Data/Utah_SGP.Rdata")
