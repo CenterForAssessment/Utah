@@ -13,12 +13,12 @@ load("Data/Utah_SGP.Rdata")
 
 ###   Load configurations
 source("SGP_CONFIG/2021/PART_B/ELA.R")
-# source("SGP_CONFIG/2021/PART_B/SCIENCE.R")
+source("SGP_CONFIG/2021/PART_B/SCIENCE.R")
 source("SGP_CONFIG/2021/PART_B/MATHEMATICS.R")
 
 UT_Config_2021_PartB <- c(
     ELA_2021.config,
-    # SCIENCE_2021.config,
+    SCIENCE_2021.config,
     MATHEMATICS_2021.config
 )
 
@@ -34,7 +34,7 @@ source("./SGP_CONFIG/2021/PART_B/UT_Straight_Projections_MetaData.R")
 ###   Parallel Config
 ##    Make NULL if using Windows! `parallel.config <- NULL`
 parallel.config <- list(BACKEND="PARALLEL",
-                        WORKERS=list(PROJECTIONS=8, SGP_SCALE_SCORE_TARGETS=8))
+                        WORKERS=list(PROJECTIONS=6, SGP_SCALE_SCORE_TARGETS=6))
 
 ##    Need to add BASELINE straight target variables first (for combineSGP):
 Utah_SGP@Data$SGP_TARGET_BASELINE_3_YEAR <- as.integer(NA)

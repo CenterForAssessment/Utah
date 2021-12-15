@@ -5,7 +5,6 @@
 ################################################################################
 
 ###   Establish required meta-data for LAGGED projection sequences
-SGPstateData[["GA"]][["Growth"]][["System_Type"]] <- "Baseline Referenced"
 
 SGPstateData[["UT"]][["Growth"]][["System_Type"]] <- "Baseline Referenced"
 # SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <- NULL

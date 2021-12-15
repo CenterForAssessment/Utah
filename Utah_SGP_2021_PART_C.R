@@ -13,12 +13,12 @@ load("Data/Utah_SGP.Rdata")
 
 ###   Load configurations
 source("SGP_CONFIG/2021/PART_C/ELA.R")
-# source("SGP_CONFIG/2021/PART_C/SCIENCE.R")
+source("SGP_CONFIG/2021/PART_C/SCIENCE.R")
 source("SGP_CONFIG/2021/PART_C/MATHEMATICS.R")
 
 UT_Config_2021_PartC <- c(
     ELA_2021.config,
-    # SCIENCE_2021.config,
+    SCIENCE_2021.config,
     MATHEMATICS_2021.config
 )
 
@@ -34,7 +34,7 @@ source("./SGP_CONFIG/2021/PART_C/UT_Lagged_Projections_MetaData.R")
 ###   Parallel Config
 ##    Make NULL if using Windows! `parallel.config <- NULL`
 parallel.config <- list(BACKEND="PARALLEL",
-                        WORKERS=list(LAGGED_PROJECTIONS=8, SGP_SCALE_SCORE_TARGETS=8))
+                        WORKERS=list(LAGGED_PROJECTIONS=6, SGP_SCALE_SCORE_TARGETS=6))
 
 Utah_SGP <- abcSGP(
         Utah_SGP,

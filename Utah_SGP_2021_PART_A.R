@@ -20,12 +20,12 @@ SGPstateData <- addBaselineMatrices("UT", "2021")
 
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2021/PART_A/ELA.R")
-# source("SGP_CONFIG/2021/PART_A/SCIENCE.R")
+source("SGP_CONFIG/2021/PART_A/SCIENCE.R")
 source("SGP_CONFIG/2021/PART_A/MATHEMATICS.R")
 
 UT_Config_2021_PartA <- c(
   ELA_2021.config,
-  # SCIENCE_2021.config,
+  SCIENCE_2021.config,
   MATHEMATICS_2021.config,
   SEC_MATH_I_2021.config
 )

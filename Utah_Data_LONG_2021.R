@@ -8,22 +8,26 @@ library(SGP)
 library(data.table)
 
 ###   Read in USBE data files (tab delimited .txt converted directly from .xlsx)
-
-Utah_Data_LONG_2021 <- fread("./Data/Base_Files/Long_File_2021v3.txt", colClasses=rep("character", 25), na.strings = "NULL") # Math and ELA (NO science)
+Utah_Data_LONG_2021 <- fread("./Data/Base_Files/Long File with Enrollment Data v2.csv", colClasses=rep("character", 25), na.strings = "NULL") # Math and ELA (NO science)
 Utah_Data_LONG_2021[, c("YEAR", "ID") := NULL] # duplicated variables (school_year, student_id)
+setnames(Utah_Data_LONG_2021, "IsSpeciealEd", "IsSpecialEd")
 setNamesSGP(Utah_Data_LONG_2021)
+
+###   Fix leading 0s in GRADE
+Utah_Data_LONG_2021[, GRADE := gsub("^0", "", GRADE)]
+
 
 ###   Invalidate duplicates with multiple scores
 Utah_Data_LONG_2021[is.na(SCALE_SCORE), VALID_CASE := "INVALID_CASE"]
 setkeyv(Utah_Data_LONG_2021, c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA", "GRADE", "SCALE_SCORE"))
 setkeyv(Utah_Data_LONG_2021, c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA", "GRADE"))
-sum(duplicated(Utah_Data_LONG_2021[VALID_CASE != "INVALID_CASE"], by=key(Utah_Data_LONG_2021))) # 13210 duplicates - (((take the record with the HIGHEST score)))
+sum(duplicated(Utah_Data_LONG_2021[VALID_CASE != "INVALID_CASE"], by=key(Utah_Data_LONG_2021))) # 20711 duplicates - (((take the record with the HIGHEST score)))
 # dups <- data.table(Utah_Data_LONG_2021[unique(c(which(duplicated(Utah_Data_LONG_2021, by=key(Utah_Data_LONG_2021)))-1, which(duplicated(Utah_Data_LONG_2021, by=key(Utah_Data_LONG_2021))))), ], key=key(Utah_Data_LONG_2021))
 Utah_Data_LONG_2021[which(duplicated(Utah_Data_LONG_2021, by=key(Utah_Data_LONG_2021)))-1, VALID_CASE:="INVALID_CASE"] # Some NA scores as well (move from INVALID_ to DUPLICATE_CASE)
 
 setkeyv(Utah_Data_LONG_2021, c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA", "SCALE_SCORE"))
 setkeyv(Utah_Data_LONG_2021, c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA"))
-sum(duplicated(Utah_Data_LONG_2021[VALID_CASE != "INVALID_CASE"], by=key(Utah_Data_LONG_2021))) # 716 CROSS-GRADE duplicates - (((take the record with the HIGHEST score)))
+sum(duplicated(Utah_Data_LONG_2021[VALID_CASE != "INVALID_CASE"], by=key(Utah_Data_LONG_2021))) # 717 CROSS-GRADE duplicates - (((take the record with the HIGHEST score)))
 # dups <- data.table(Utah_Data_LONG_2021[unique(c(which(duplicated(Utah_Data_LONG_2021, by=key(Utah_Data_LONG_2021)))-1, which(duplicated(Utah_Data_LONG_2021, by=key(Utah_Data_LONG_2021))))), ], key=key(Utah_Data_LONG_2021))
 Utah_Data_LONG_2021[which(duplicated(Utah_Data_LONG_2021, by=key(Utah_Data_LONG_2021)))-1, VALID_CASE:="INVALID_CASE"] # Some NA scores as well (move from INVALID_ to DUPLICATE_CASE)
 
@@ -47,7 +51,8 @@ Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := factor(ACHIEVEMENT_LEVEL, levels=0:4,
 # Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := factor(ACHIEVEMENT_LEVEL, levels = c("Below", "Approaching", "Proficient", "Highly"), ordered=TRUE)]
 # table(Utah_Data_LONG_2021[, VALID_CASE, ACHIEVEMENT_LEVEL_FULL], exclude=NULL)
 # table(Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_FULL], exclude=NULL)
-# Utah_Data_LONG_2021[, as.list(summary(SCALE_SCORE)), keyby=c("CONTENT_AREA", "GRADE", "ACHIEVEMENT_LEVEL")]
+# table(Utah_Data_LONG_2021[as.character(ACHIEVEMENT_LEVEL) != as.character(ACHIEVEMENT_LEVEL_FULL), CONTENT_AREA, GRADE], exclude=NULL)
+# Utah_Data_LONG_2021[!is.na(SCALE_SCORE), as.list(summary(SCALE_SCORE)), keyby=c("CONTENT_AREA", "GRADE", "ACHIEVEMENT_LEVEL")]
 
 ##   Reset the class of the ACHIEVEMENT_LEVEL variables to character
 Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)]
@@ -56,7 +61,7 @@ Utah_Data_LONG_2021[, ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)]
 ###  Invalidate mismatched Achievement Levels per Aaron B (10/1/19 email)
 ##    Only 2 cases (G9 ELA) - we only invalidated grades 3:8 previously, so continue with that.
 # Utah_Data_LONG_2021[GRADE %in% 3:8 & ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL, VALID_CASE := "INVALID_CASE"]
-round(prop.table(table(Utah_Data_LONG_2021[, VALID_CASE, GRADE]), 1)*100, 2) # snapshop of grade-level participation rates
+round(prop.table(table(Utah_Data_LONG_2021[, VALID_CASE, GRADE]), 1)*100, 2) # snapshot of grade-level participation rates
 
 ###   Tidy up Demographic Variables
 table(Utah_Data_LONG_2021[, ETHNICITY])
