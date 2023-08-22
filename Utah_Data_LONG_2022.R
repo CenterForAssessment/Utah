@@ -1,3 +1,4 @@
+#+ include = FALSE, purl = FALSE, eval = FALSE
 ###############################################################################
 ###                                                                         ###
 ###        Code for cleaning and preparation of Utah 2022 LONG data         ###
@@ -19,7 +20,6 @@ setNamesSGP(Utah_Data_LONG_2022)
 ###   Fix leading 0s in GRADE
 # Utah_Data_LONG_2022[, GRADE := gsub("^0", "", GRADE)]
 
-
 ###   Invalidate duplicates with multiple scores
 Utah_Data_LONG_2022[is.na(SCALE_SCORE), VALID_CASE := "INVALID_CASE"]
 # setkeyv(Utah_Data_LONG_2022,
@@ -30,9 +30,11 @@ Utah_Data_LONG_2022[is.na(SCALE_SCORE), VALID_CASE := "INVALID_CASE"]
 #                by = key(Utah_Data_LONG_2022))) # 0 in 2022
 
 setkeyv(Utah_Data_LONG_2022,
-        c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA", "SCALE_SCORE"))
+        c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA", "SCALE_SCORE")
+)
 setkeyv(Utah_Data_LONG_2022,
-        c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA"))
+        c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA")
+)
 dupl <- duplicated(Utah_Data_LONG_2022[VALID_CASE != "INVALID_CASE"],
                    by = key(Utah_Data_LONG_2022)
         )
@@ -238,3 +240,24 @@ UT_Science_Knots_Bounds_2021 <-
 ###   Save updated knots and bounds (move to SGPstateData repo for SGP package)
 save(UT_Science_Knots_Bounds_2021,
      file = "Data/UT_Science_Knots_Bounds_2021.rda")
+
+
+#' ## Data Preparation
+#' 
+#' The data preparation step involves taking data provided by the USBE and
+#' producing a `.Rdata` file that will subsequently be analyzed using the `SGP`
+#' software. This process is carried out annually as new data becomes available.
+#' 
+#' For the 2022 Utah RISE/UA+ data preparation and cleaning, we first modify
+#' values of student demographic and achievement level variables to match with
+#' values and factor levels that have been used in previous years or as
+#' required to conform to the `SGP` package conventions.
+#' 
+#' The data was also examined to identify invalid records. 
+#' Student records were flagged as "invalid" based on the following criteria:
+#'
+#' * Student records with a reported `ACHIEVEMENT_LEVEL` value outside of the
+#'   corresponding scale score range. This issue has been present in previous
+#'   years, but did not impact any student records in 2022.
+#' * Students with duplicate records. In these instances, a student's highest
+#'   scale score is retained as the "valid" case for the SGP analyses.
