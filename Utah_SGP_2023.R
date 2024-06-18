@@ -52,9 +52,9 @@ SGPstateData[["UT"]][["Baseline_splineMatrix"]][[
 load("Data/Utah_Data_LONG_2023.Rdata")
 
 ###   Read in SGP Configuration Scripts and Combine
-# source("SGP_CONFIG/2023/ELA.R")
-# source("SGP_CONFIG/2023/SCIENCE.R")
-# source("SGP_CONFIG/2023/MATHEMATICS.R")
+source("SGP_CONFIG/2023/ELA.R")
+source("SGP_CONFIG/2023/SCIENCE.R")
+source("SGP_CONFIG/2023/MATHEMATICS.R")
 
 UT_Config_2023 <-
     c(ELA.2023.config,
