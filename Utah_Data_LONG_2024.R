@@ -5,21 +5,27 @@
 ###                                                                         ###
 ###############################################################################
 
-library(SGP)
 library(data.table)
+library(SGP)
 
 ###   Read in USBE data file - ELA, Math and Science
 Utah_Data_LONG_2024 <-
     fread("./Data/Base_Files/Utah_Data_LONG_2024.csv",
-          colClasses = rep("character", 25),
+          colClasses = rep("character", 26),
           na.strings = "NULL"
     )
-Utah_Data_LONG_2024[, c("YEAR", "ID") := NULL] # school_year, student_id duplicates
-# setnames(Utah_Data_LONG_2024, "IsSpeciealEd", "IsSpecialEd", skip_absent = TRUE)
+Utah_Data_LONG_2024[,
+    c("YEAR", "ID") := NULL   #   `school_year`, `student_id` duplicates
+]
 setNamesSGP(Utah_Data_LONG_2024)
 
-###   Fix leading 0s in GRADE
-Utah_Data_LONG_2024[, GRADE := gsub("^0", "", GRADE)]
+###   Use `TestGradeLevel` for GRADE  --  See below re: ach lev mismatches
+setnames(
+    Utah_Data_LONG_2024,
+    c("GRADE", "TestGradeLevel"),
+    c("GradeEnrolled", "GRADE")
+)
+Utah_Data_LONG_2024[CONTENT_AREA == "SEC_MATH_I", GRADE := "EOCT"]
 
 ###   Make the SCALE_SCORE variable numeric and invalidate missing scores
 #     table(Utah_Data_LONG_2024[, .(VALID_CASE, GRADE), CONTENT_AREA])
@@ -33,21 +39,25 @@ setkeyv(Utah_Data_LONG_2024, c(sgp.key, "GRADE", "SCALE_SCORE"))
 setkeyv(Utah_Data_LONG_2024, c(sgp.key, "GRADE"))
 dupl <-
     duplicated(Utah_Data_LONG_2024, by = key(Utah_Data_LONG_2024))
-sum(dupl) # 8 CROSS-GRADE duplicates - (take the record with the HIGHEST score)
+sum(dupl) # 0 WITHIN-GRADE duplicates - (take the record with the HIGHEST score)
 Utah_Data_LONG_2024[which(dupl) - 1, VALID_CASE := "INVALID_CASE"]
 
-setkeyv(Utah_Data_LONG_2024, c(sgp.key, "SCALE_SCORE"))
-setkeyv(Utah_Data_LONG_2024, sgp.key)
-dupl <-
-    duplicated(Utah_Data_LONG_2024, by = key(Utah_Data_LONG_2024))
-sum(dupl) # 0 CROSS-GRADE duplicates - (take the record with the HIGHEST score)
-Utah_Data_LONG_2024[which(dupl) - 1, VALID_CASE := "INVALID_CASE"]
+##    No need to INVALIDATE these kids - it will be sorted out through configs.
+##    Good thing to check annually anyway.
+# setkeyv(Utah_Data_LONG_2024, c(sgp.key, "SCALE_SCORE"))
+# setkeyv(Utah_Data_LONG_2024, sgp.key)
+# dupl <-
+#     duplicated(Utah_Data_LONG_2024, by = key(Utah_Data_LONG_2024))
+# sum(dupl) # 8 CROSS-GRADE duplicates - (take the record with the HIGHEST score)
+# Utah_Data_LONG_2024[which(dupl) - 1, VALID_CASE := "INVALID_CASE"]
 
-###   Invalidate out of grade records (2 in 2024)
-Utah_Data_LONG_2024[
-    CONTENT_AREA == "SCIENCE" & GRADE == "3",
-    VALID_CASE := "INVALID_CASE"
-]
+
+##    Invalidate out of grade records (0 in 2024)
+##    Originally 2 in SCIENCE, but issue fixed in v2 data with `TestGradeLevel`
+# Utah_Data_LONG_2024[
+#     CONTENT_AREA == "SCIENCE" & GRADE == "3",
+#     VALID_CASE := "INVALID_CASE"
+# ]
 
 ###
 ##  Tidy up data
@@ -70,50 +80,54 @@ Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL :=
 
 ###   Invalidate mismatched Achievement Levels per Aaron B (10/1/19 email).
 ##
-##    MANY mismatches in 2024 again. Only invalidated grades 3:8 previously, so
-##    continue with that. Preserve incorrect USBE/Questar Achievement Level
-##    var in "*_FULL" (Historical) variable
+##    MANY mismatches in original 2024 again. This time due to students'
+##    GRADE (enrollment) not matching the test administered.  DMackay provided
+##    `TestGradeLevel` to correct. One (1) Grade 10 ELA case found in 2024.
+##    Preserve incorrect USBE/Questar achievement level (Historical) variable.
+##    KEEP and check EACH year for achievement level mismatches !!!
 
-setnames(Utah_Data_LONG_2024, "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_FULL")
-Utah_Data_LONG_2024 <-
-    SGP:::getAchievementLevel(Utah_Data_LONG_2024, state = "UT")
-Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL :=
-    factor(ACHIEVEMENT_LEVEL, ordered = TRUE,
-           levels = c("Below", "Approaching", "Proficient", "Highly")
-    )
-]
+# setnames(Utah_Data_LONG_2024, "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_FULL")
+# Utah_Data_LONG_2024 <-
+#     SGP:::getAchievementLevel(Utah_Data_LONG_2024, state = "UT")
+# Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL :=
+#     factor(ACHIEVEMENT_LEVEL, ordered = TRUE,
+#            levels = c("Below", "Approaching", "Proficient", "Highly")
+#     )
+# ]
 
-##   Reset the class of the ACHIEVEMENT_LEVEL variables to character
-Utah_Data_LONG_2024[,
-    ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)
-][, ACHIEVEMENT_LEVEL_FULL := as.character(ACHIEVEMENT_LEVEL_FULL)
-]
+# ##    Reset the class of the ACHIEVEMENT_LEVEL variables to character
+# Utah_Data_LONG_2024[,
+#     ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)
+# ][, ACHIEVEMENT_LEVEL_FULL := as.character(ACHIEVEMENT_LEVEL_FULL)
+# ]
 
-###   Investigate ACHIEVEMENT_LEVEL mismatches
-table(Utah_Data_LONG_2024[, VALID_CASE, ACHIEVEMENT_LEVEL_FULL])
-table(Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_FULL],
-      exclude = NULL)
-table(Utah_Data_LONG_2024[
-        ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL &
-        VALID_CASE == "VALID_CASE",
-        .(ACHIEVEMENT_LEVEL, CONTENT_AREA), GRADE],
-      exclude = NULL)
-Utah_Data_LONG_2024[
-    !is.na(SCALE_SCORE) &
-    ACHIEVEMENT_LEVEL != ACHIEVEMENT_LEVEL_FULL,
-      as.list(summary(SCALE_SCORE)),
-    keyby =
-      c("CONTENT_AREA", "GRADE", "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_FULL")
-]
+# ##    Investigate ACHIEVEMENT_LEVEL mismatches
+# table(Utah_Data_LONG_2024[, VALID_CASE, ACHIEVEMENT_LEVEL_FULL])
+# table(Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_FULL],
+#       exclude = NULL)
+# table(Utah_Data_LONG_2024[
+#         ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL &
+#         VALID_CASE == "VALID_CASE",
+#         .(ACHIEVEMENT_LEVEL, CONTENT_AREA), GRADE],
+#       exclude = NULL)
+# Utah_Data_LONG_2024[
+#     !is.na(SCALE_SCORE) &
+#     ACHIEVEMENT_LEVEL != ACHIEVEMENT_LEVEL_FULL,
+#       as.list(summary(SCALE_SCORE)),
+#     keyby =
+#       c("CONTENT_AREA", "GRADE", "ACHIEVEMENT_LEVEL", "ACHIEVEMENT_LEVEL_FULL")
+# ]
 
-###   Invalidate ACHIEVEMENT_LEVEL mismatches
-##    We previously only invalidated grades 3:8. Continued in 2024 (CONFIRM).
-Utah_Data_LONG_2024[
-    GRADE %in% 3:8 &
-    ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL,
-        VALID_CASE := "INVALID_CASE"
-]
-# Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL := NULL] # Keep this until decision made on mismatch
+# ###   Invalidate ACHIEVEMENT_LEVEL mismatches
+# ##    We previously only invalidated grades 3:8. Continued in 2024 (CONFIRM).
+# Utah_Data_LONG_2024[
+#     GRADE %in% 3:8 &
+#     ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL,
+#         VALID_CASE := "INVALID_CASE"
+# ]
+
+# ##    Preserve incorrect USBE/Questar achievement level (Historical) variable.
+# Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL := NULL]
 # setnames(Utah_Data_LONG_2024, "ACHIEVEMENT_LEVEL_FULL", "ACHIEVEMENT_LEVEL")
 
 
@@ -214,10 +228,11 @@ save(Utah_Data_LONG_2024, file = "Data/Utah_Data_LONG_2024.Rdata")
 #' Student records were flagged as "invalid" based on the following criteria:
 #'
 #' * Student records with a reported `ACHIEVEMENT_LEVEL` value outside of the
-#'   corresponding scale score range. This issue was found to impact six (6)
-#'   student records
-#'   - Students with duplicate records. In these instances, a student's highest
-#'     scale score is retained as the "valid" case for the SGP analyses.
+#'   corresponding scale score range. This issue was found to impact about 1,000
+#'   student records. However, when the *grade assessed* was substituted for the
+#'   original `GRADE` data, the issue was found to only impact a single student.
+#' * Students with duplicate records. In these instances, a student's highest
+#'   scale score is retained as the "valid" case for the SGP analyses.
 #' * Student records with grade levels matching un-tested grades were
 #'   invalidated. Two (2) students identified as third graders had assessment
 #'   records for science, and science testing does not begin until grade 4.
