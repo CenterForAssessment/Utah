@@ -11,44 +11,17 @@ require(data.table)
 
 ###   Load data
 load("Data/Utah_SGP.Rdata")
+load("Data/Utah_Data_LONG_2024.Rdata")
 
-###   Modifications/Additions to SGPstateData
-
-##  Add baseline matrices to `SGPstateData`
+###   Modifications/Additions to `SGPstateData`
+##    Add baseline matrices
+##    (`SGPmatrices` package modified to remove Grades 4 & 5 Science) 
 SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
 
-#   Remove science matrices with grades 4 and/or 5 - 2021 scale change!
-sci.bsline.mtrx <-
-    names(
-        SGPstateData[["UT"]][["Baseline_splineMatrix"]][[
-            "Coefficient_Matrices"]][["SCIENCE.BASELINE"]]
-    )
-keep.index <- NULL
-for (mtrx in seq(sci.bsline.mtrx)) {
-    if (!any(
-          grepl(5,
-                SGPstateData[["UT"]][["Baseline_splineMatrix"]][[
-                    "Coefficient_Matrices"]][["SCIENCE.BASELINE"]][[
-                        mtrx]]@Grade_Progression[[1]]
-            )
-        )
-    ) {
-        keep.index <- c(keep.index, mtrx)
-    }
-}
-
-SGPstateData[["UT"]][["Baseline_splineMatrix"]][[
-  "Coefficient_Matrices"]][["SCIENCE.BASELINE"]] <-
-    SGPstateData[["UT"]][["Baseline_splineMatrix"]][[
-        "Coefficient_Matrices"]][["SCIENCE.BASELINE"]][keep.index]
-
 
 #####
-###   PART A -- 2024 Cohort SGP Analyses
+###   2024 Cohort and Baseline SGP Analyses
 #####
-
-###   Load data
-load("Data/Utah_Data_LONG_2024.Rdata")
 
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2024/ELA.R")

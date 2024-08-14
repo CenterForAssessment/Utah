@@ -5,6 +5,7 @@
 ###                                                                         ###
 ###############################################################################
 
+###   Load packages
 library(data.table)
 library(SGP)
 
@@ -27,11 +28,20 @@ setnames(
 )
 Utah_Data_LONG_2024[CONTENT_AREA == "SEC_MATH_I", GRADE := "EOCT"]
 
+##    Fix leading 0s in GRADE
+# Utah_Data_LONG_2024[, GRADE := gsub("^0", "", GRADE)]
+
+
 ###   Make the SCALE_SCORE variable numeric and invalidate missing scores
 #     table(Utah_Data_LONG_2024[, .(VALID_CASE, GRADE), CONTENT_AREA])
 #     All 9th and 10th graders
 Utah_Data_LONG_2024[, SCALE_SCORE := as.numeric(SCALE_SCORE)]
-Utah_Data_LONG_2024[is.na(SCALE_SCORE), VALID_CASE := "INVALID_CASE"]
+Utah_Data_LONG_2024[
+    SCALE_SCORE == 0, SCALE_SCORE := NA
+][is.na(SCALE_SCORE), VALID_CASE := "INVALID_CASE"
+]
+# Utah_Data_LONG_2024[SCALE_SCORE == 0, VALID_CASE := "INVALID_CASE"]
+# Utah_Data_LONG_2024[is.na(SCALE_SCORE), VALID_CASE := "INVALID_CASE"]
 
 ###   Invalidate duplicates with multiple scores
 sgp.key <- c("VALID_CASE", "YEAR", "ID", "CONTENT_AREA")
@@ -40,7 +50,7 @@ setkeyv(Utah_Data_LONG_2024, c(sgp.key, "GRADE"))
 dupl <-
     duplicated(Utah_Data_LONG_2024, by = key(Utah_Data_LONG_2024))
 sum(dupl) # 0 WITHIN-GRADE duplicates - (take the record with the HIGHEST score)
-Utah_Data_LONG_2024[which(dupl) - 1, VALID_CASE := "INVALID_CASE"]
+# Utah_Data_LONG_2024[which(dupl) - 1, VALID_CASE := "INVALID_CASE"]
 
 ##    No need to INVALIDATE these kids - it will be sorted out through configs.
 ##    Good thing to check annually anyway.
@@ -70,12 +80,14 @@ table(Utah_Data_LONG_2024[,
       ],
       exclude = NULL
 )
-Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL :=
-    factor(ACHIEVEMENT_LEVEL,
-           ordered = TRUE,
-           levels = 0:4,
-           labels = c(NA, "Below", "Approaching", "Proficient", "Highly")
-    )
+Utah_Data_LONG_2024[,
+    ACHIEVEMENT_LEVEL :=
+        factor(
+            x = ACHIEVEMENT_LEVEL,
+            ordered = TRUE,
+            levels = 0:4,
+            labels = c(NA, "Below", "Approaching", "Proficient", "Highly")
+        ) |> as.character()
 ]
 
 ###   Invalidate mismatched Achievement Levels per Aaron B (10/1/19 email).
@@ -92,17 +104,11 @@ Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL :=
 # Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL :=
 #     factor(ACHIEVEMENT_LEVEL, ordered = TRUE,
 #            levels = c("Below", "Approaching", "Proficient", "Highly")
-#     )
-# ]
-
-# ##    Reset the class of the ACHIEVEMENT_LEVEL variables to character
-# Utah_Data_LONG_2024[,
-#     ACHIEVEMENT_LEVEL := as.character(ACHIEVEMENT_LEVEL)
-# ][, ACHIEVEMENT_LEVEL_FULL := as.character(ACHIEVEMENT_LEVEL_FULL)
+#     ) |> as.character()
 # ]
 
 # ##    Investigate ACHIEVEMENT_LEVEL mismatches
-# table(Utah_Data_LONG_2024[, VALID_CASE, ACHIEVEMENT_LEVEL_FULL])
+# table(Utah_Data_LONG_2024[, VALID_CASE, ACHIEVEMENT_LEVEL_FULL], exclude = NULL)
 # table(Utah_Data_LONG_2024[, ACHIEVEMENT_LEVEL, ACHIEVEMENT_LEVEL_FULL],
 #       exclude = NULL)
 # table(Utah_Data_LONG_2024[
@@ -137,16 +143,33 @@ Utah_Data_LONG_2024[, VALID_CASE, GRADE] |> # .(VALID_CASE, CONTENT_AREA)
          round(5) * 100
 
 
-###   Tidy up Demographic Variables
-table(Utah_Data_LONG_2024[, ETHNICITY], exclude = NULL)
-Utah_Data_LONG_2024[, ETHNICITY :=
-    as.character(
-        factor(ETHNICITY,
-               labels = c("Asian", "AfAm/Black", "White",
-                          "Hispanic/Latino", "American Indian",
-                          "Multiple Races", "Pacific Islander")
-        )
-    )
+###   Tidy up Demographic Variablesß
+Utah_Data_LONG_2024[,
+    ELL_STATUS :=
+      factor(
+            x = ELL_STATUS,
+            levels = 0:1,
+            labels = c("ELL: No", "ELL: Yes")
+      ) |> as.character()
+][, IEP_STATUS :=
+      factor(
+            x = IEP_STATUS,
+            levels = 0:1,
+            labels = c("IEP: No", "IEP: Yes")
+      ) |> as.character()
+][, FRL_STATUS :=
+      factor(
+            x = FRL_STATUS,
+            levels = 0:1,
+            labels = c("Free Reduced Lunch: No", "Free Reduced Lunch: Yes")
+      ) |> as.character()
+][, ETHNICITY :=
+      factor(
+            x = ETHNICITY,
+            labels  = c("Asian", "AfAm/Black", "White",
+                        "Hispanic/Latino", "American Indian",
+                        "Multiple Races", "Pacific Islander")
+      ) |> as.character()
 ]
 # A = "Asian"
 # B = "AfAm/Black"
@@ -155,31 +178,8 @@ Utah_Data_LONG_2024[, ETHNICITY :=
 # I = "American Indian"
 # M = "Multiple Races"
 # P = "Pacific Islander"
+# table(Utah_Data_LONG_2024[, ETHNICITY], exclude = NULL)
 
-Utah_Data_LONG_2024[,
-    ELL_STATUS :=
-    as.character(
-        factor(ELL_STATUS,
-               levels = 0:1,
-               labels = c("ELL: No", "ELL: Yes")
-        )
-    )
-][, IEP_STATUS :=
-    as.character(
-        factor(IEP_STATUS,
-               levels = 0:1,
-               labels = c("IEP: No", "IEP: Yes")
-        )
-    )
-][, FRL_STATUS :=
-    as.character(
-        factor(FRL_STATUS,
-               levels = 0:1,
-               labels = c("Free Reduced Lunch: No",
-                          "Free Reduced Lunch: Yes")
-        )
-    )
-]
 
 
 ###   Ensure that all names are capitalized consistently (camel case)
