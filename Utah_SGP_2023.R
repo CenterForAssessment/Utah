@@ -164,9 +164,8 @@ save(Utah_SGP, file = "Data/Utah_SGP.Rdata")
 #' function to ***a)*** prepare the `Utah_SGP` object saved from the 2022 growth
 #' analyses and add the cleaned and formatted 2023 data (`prepareSGP`), ***b)*** 
 #' calculate 2023 consecutive-year cohort- and baseline-referenced SGP estimates
-#' and growth projections, ***c)*** merge the results into the master longitudinal data set ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.0-0.0/topics/combineSGP)
+#' and growth projections, ***c)*** merge the results into the master longitudinal
+#' data set ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.0-0.0/topics/combineSGP)
 #' step). and ***d)*** save the results in both `.Rdata` and pipe delimited versions
 #' ([`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.0-0.0/topics/outputSGP)
-#'
-#' #### 2023 Analyses, Part B
 #' step).

@@ -58,7 +58,7 @@ sum(dupl) # 0 WITHIN-GRADE duplicates - (take the record with the HIGHEST score)
 # setkeyv(Utah_Data_LONG_2024, sgp.key)
 # dupl <-
 #     duplicated(Utah_Data_LONG_2024, by = key(Utah_Data_LONG_2024))
-# sum(dupl) # 8 CROSS-GRADE duplicates - (take the record with the HIGHEST score)
+# sum(dupl) # 0 CROSS-GRADE duplicates in v2 - (take the record with the HIGHEST score)
 # Utah_Data_LONG_2024[which(dupl) - 1, VALID_CASE := "INVALID_CASE"]
 
 
@@ -125,7 +125,7 @@ Utah_Data_LONG_2024[,
 # ]
 
 # ###   Invalidate ACHIEVEMENT_LEVEL mismatches
-# ##    We previously only invalidated grades 3:8. Continued in 2024 (CONFIRM).
+# ##    We previously only invalidated grades 3:8. Continued in 2024 (FIXED in v2 data).
 # Utah_Data_LONG_2024[
 #     GRADE %in% 3:8 &
 #     ACHIEVEMENT_LEVEL_FULL != ACHIEVEMENT_LEVEL,
@@ -143,7 +143,7 @@ Utah_Data_LONG_2024[, VALID_CASE, GRADE] |> # .(VALID_CASE, CONTENT_AREA)
          round(5) * 100
 
 
-###   Tidy up Demographic Variablesß
+###   Tidy up Demographic Variables
 Utah_Data_LONG_2024[,
     ELL_STATUS :=
       factor(
@@ -234,5 +234,5 @@ save(Utah_Data_LONG_2024, file = "Data/Utah_Data_LONG_2024.Rdata")
 #' * Students with duplicate records. In these instances, a student's highest
 #'   scale score is retained as the "valid" case for the SGP analyses.
 #' * Student records with grade levels matching un-tested grades were
-#'   invalidated. Two (2) students identified as third graders had assessment
-#'   records for science, and science testing does not begin until grade 4.
+#'   invalidated. No such students were found in the final data provided to
+#'   The Center.

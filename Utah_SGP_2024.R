@@ -83,9 +83,8 @@ save(Utah_SGP, file = "Data/Utah_SGP.Rdata")
 #'
 #' All data analysis is conducted using the [`R` Software Environment](http://www.r-project.org/)
 #' in conjunction with the [`SGP` package](http://sgp.io/). Cohort- and
-#' baseline-referenced SGPs were calculated separately for the 2024 Utah
-#' RISE/UA+ growth model analyses. Each part of the 2024 analyses were
-#' completed in these 4 steps:
+#' baseline-referenced SGPs were calculated concurrently for the 2024 Utah
+#' RISE/UA+ growth model analyses following these four steps:
 #'
 #' 1. `prepareSGP`
 #' 2. `analyzeSGP`
@@ -100,10 +99,10 @@ save(Utah_SGP, file = "Data/Utah_SGP.Rdata")
 #'
 #' #### 2024 Growth Analyses
 #'
-#' In the 2024 analyses, we calculated "consecutive-year" cohort-referenced
-#' SGPs concurrently for grades 4 through 10 ELA and mathematics, and
-#' grades 5 through 10 science. Both SGP analysis versions use up to
-#' two prior years' scores (i.e. 2021 and 2022) where available.
+#' "Consecutive-year" growth percentiles were calculated for grades 4 through 10
+#' ELA and mathematics, and grades 5 through 10 science. Both cohort and baseline
+#' referenced growth model versions use up to two prior years' scores (i.e. 2022
+#' and 2023) where available.
 #'
 #' In the calculation workflow, we first add pre-calculated baseline matrices
 #' to the Utah entry in the `SGPstateData` object using the `addBaselineMatrices`
@@ -115,9 +114,8 @@ save(Utah_SGP, file = "Data/Utah_SGP.Rdata")
 #' function to ***a)*** prepare the `Utah_SGP` object saved from the 2023 growth
 #' analyses and add the cleaned and formatted 2024 data (`prepareSGP`), ***b)*** 
 #' calculate 2024 consecutive-year cohort- and baseline-referenced SGP estimates
-#' and growth projections, ***c)*** merge the results into the master longitudinal data set ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.0-0.0/topics/combineSGP)
+#' and growth projections, ***c)*** merge the results into the master longitudinal
+#' data set ([`combineSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.0-0.0/topics/combineSGP)
 #' step). and ***d)*** save the results in both `.Rdata` and pipe delimited versions
 #' ([`outputSGP`](https://www.rdocumentation.org/packages/SGP/versions/2.0-0.0/topics/outputSGP)
-#'
-#' #### 2024 Analyses, Part B
 #' step).
