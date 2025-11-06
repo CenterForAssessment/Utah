@@ -20,31 +20,16 @@ Utah_Data_LONG_2025 <- Utah_Data_LONG_2025[CONTENT_AREA != "SEC_MATH_I"]
 ##    (`SGPmatrices` package modified to remove Grades 4 & 5 Science) 
 SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
 
-##    Remove ELA Baselines. Scale change in '25
+##    Remove ELA Baselines. Scale/Content changes in '25
 SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.BASELINE"]] <-
-    SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.BASELINE"]][17:24]
+    NULL
 
 ##    Add TEMPORARY knots and boundaries for ELA for projections.
 ela.kbs <-
     SGP:::createKnotsBoundaries(
-        Utah_Data_LONG_2025[
-            CONTENT_AREA == "ELA" &
-            GRADE %in% as.character(3:8)
-        ]
+        Utah_Data_LONG_2025[CONTENT_AREA == "ELA"]
     )[["ELA"]]
 SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]] <- ela.kbs
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]][["knots_9"]] <-
-    SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA"]][["knots_9"]]
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]][["boundaries_9"]] <-
-    SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA"]][["boundaries_9"]]
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]][["loss.hoss_9"]] <-
-    SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA"]][["loss.hoss_9"]]
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]][["knots_10"]] <-
-    SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA"]][["knots_10"]]
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]][["boundaries_10"]] <-
-    SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA"]][["boundaries_10"]]
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]][["loss.hoss_10"]] <-
-    SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA"]][["loss.hoss_10"]]
 
 #####
 ###   2025 Cohort and Baseline SGP Analyses
@@ -103,6 +88,7 @@ Utah_SGP <-
     updateSGP(
         what_sgp_object = Utah_SGP,
         with_sgp_data_LONG = Utah_SEC_MATH_2025,
+        overwrite.existing.data = FALSE,
         years = "2025",
         steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
         sgp.config = SecMath_Config_2025,
