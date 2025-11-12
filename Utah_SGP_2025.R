@@ -16,31 +16,12 @@ Utah_Data_ELA_2025 <- Utah_Data_LONG_2025[CONTENT_AREA == "ELA"]
 Utah_SEC_MATH_2025 <- Utah_Data_LONG_2025[CONTENT_AREA == "SEC_MATH_I"]
 Utah_Data_LONG_2025 <- Utah_Data_LONG_2025[!CONTENT_AREA %in% c("ELA", "SEC_MATH_I")]
 
-###   Modifications/Additions to `SGPstateData`
-##    Add baseline matrices
-##    (`SGPmatrices` package modified to remove Grades 4 & 5 Science) 
-SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
-
-##    Remove ELA Baselines. Scale/Content changes in '25
-SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.BASELINE"]] <-
-    NULL
-
-
-###   Read in SGP Configuration Scripts and Combine
+###   Read in SGP configuration scripts used in various steps
 source("SGP_CONFIG/2025/ELA.R")
 source("SGP_CONFIG/2025/SCIENCE.R")
 source("SGP_CONFIG/2025/MATHEMATICS.R")
 
-
-#####
-###   2025 Math and Science Cohort and Baseline SGP Analyses
-#####
-
-UT_Config_2025 <-
-    c(SCIENCE.2025.config,
-      MATHEMATICS.2025.config
-    )
-
+###   Parallel processing for Mac/Linux
 utah.par.config <-
     list(
         BACKEND = "PARALLEL",
@@ -49,66 +30,15 @@ utah.par.config <-
             PROJECTIONS = 8, LAGGED_PROJECTIONS = 8)
     )
 
-###   Run updateSGP analysis
-Utah_SGP <-
-    updateSGP(
-        what_sgp_object = Utah_SGP,
-        with_sgp_data_LONG = Utah_Data_LONG_2025,
-        years = "2025",
-        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
-        sgp.config = UT_Config_2025,
-        simulate.sgps = FALSE,
-        sgp.percentiles = TRUE,
-        sgp.projections = TRUE,
-        sgp.projections.lagged = TRUE,
-        sgp.percentiles.equated = TRUE,
-        sgp.percentiles.equating.method = "equipercentile",
-        sgp.percentiles.baseline = TRUE,
-        sgp.projections.baseline = TRUE,
-        sgp.projections.lagged.baseline = TRUE,
-        sgp.target.scale.scores = TRUE,
-        save.intermediate.results = FALSE,
-        parallel.config = utah.par.config
-    )
-
-
-
-#####
-###   2025 Secondary Math Cohort-Referenced SGP Analyses
-#####
-
-##    SEC_MATH_I Meta-data Changes/Additions
-SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- 1000
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["MATHEMATICS"]][["knots_7"]] <-
-    c(492, 515, 531, 551)
-
-###   Run updateSGP analysis
-Utah_SGP <-
-    updateSGP(
-        what_sgp_object = Utah_SGP,
-        with_sgp_data_LONG = Utah_SEC_MATH_2025,
-        overwrite.existing.data = FALSE,
-        years = "2025",
-        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
-        sgp.config = SEC_MATH_I.2025.config,
-        simulate.sgps = FALSE,
-        sgp.percentiles = TRUE,
-        sgp.projections = FALSE,
-        sgp.projections.lagged = FALSE,
-        sgp.percentiles.baseline = TRUE,
-        sgp.projections.baseline = FALSE,
-        sgp.projections.lagged.baseline = FALSE,
-        save.intermediate.results = FALSE,
-        parallel.config = utah.par.config
-    )
-
 
 #####
 ###   2025 ELA Equated/Cohort-Referenced SGP Analyses
 #####
 
-##    ELA Meta-data Changes/Additions for 2025 Scale and Content Changes
-##    Add TEMPORARY knots and boundaries for ELA for projections.
+###   Modifications/Additions to `SGPstateData` for step 1
+##    Changes/Additions for 2025 Scale and Content Changes
+##    Add TEMPORARY knots/bounds and test "transition" for ELA for projections:
+
 ela.kbs <-
     SGP:::createKnotsBoundaries(
         Utah_Data_ELA_2025
@@ -152,9 +82,8 @@ Utah_SGP <-
     updateSGP(
         what_sgp_object = Utah_SGP,
         with_sgp_data_LONG = Utah_Data_ELA_2025,
-        overwrite.existing.data = FALSE,
         years = "2025",
-        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
         sgp.config = ELA.2025.config,
         simulate.sgps = FALSE,
         sgp.percentiles = TRUE,
@@ -166,10 +95,83 @@ Utah_SGP <-
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
         sgp.target.scale.scores = TRUE,
+        save.intermediate.results = FALSE,
+        parallel.config = utah.par.config
+    )
+
+
+#####
+###   2025 Math and Science Cohort and Baseline SGP Analyses
+#####
+
+###   Modifications/Additions to `SGPstateData` for step 2
+##    Add baseline matrices
+##    (`SGPmatrices` package modified to remove Grades 4 & 5 Science) 
+SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
+
+##    Remove ELA Baselines. Scale/Content changes in '25
+SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.BASELINE"]] <-
+SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <-
+    NULL
+
+UT_Config_2025 <-
+    c(SCIENCE.2025.config,
+      MATHEMATICS.2025.config
+    )
+
+###   Run updateSGP analysis
+Utah_SGP <-
+    updateSGP(
+        what_sgp_object = Utah_SGP,
+        with_sgp_data_LONG = Utah_Data_LONG_2025,
+        overwrite.existing.data = FALSE,
+        years = "2025",
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
+        sgp.config = UT_Config_2025,
+        simulate.sgps = FALSE,
+        sgp.percentiles = TRUE,
+        sgp.projections = TRUE,
+        sgp.projections.lagged = TRUE,
+        sgp.percentiles.baseline = TRUE,
+        sgp.projections.baseline = TRUE,
+        sgp.projections.lagged.baseline = TRUE,
+        sgp.target.scale.scores = TRUE,
+        save.intermediate.results = FALSE,
+        parallel.config = utah.par.config
+    )
+
+
+#####
+###   2025 Secondary Math Cohort-Referenced SGP Analyses
+#####
+
+###   Modifications/Additions to `SGPstateData` for step 3
+##    SEC_MATH_I Meta-data Changes/Additions
+SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- 1000
+SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["MATHEMATICS"]][["knots_7"]] <-
+    c(492, 515, 531, 551)
+
+###   Run updateSGP analysis
+Utah_SGP <-
+    updateSGP(
+        what_sgp_object = Utah_SGP,
+        with_sgp_data_LONG = Utah_SEC_MATH_2025,
+        overwrite.existing.data = FALSE,
+        years = "2025",
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+        sgp.config = SEC_MATH_I.2025.config,
+        simulate.sgps = FALSE,
+        sgp.percentiles = TRUE,
+        sgp.projections = FALSE,
+        sgp.projections.lagged = FALSE,
+        sgp.percentiles.baseline = TRUE,
+        sgp.projections.baseline = FALSE,
+        sgp.projections.lagged.baseline = FALSE,
         outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data"),
         save.intermediate.results = FALSE,
         parallel.config = utah.par.config
     )
+
 
 ###   Add R session info & save results (`cfaDocs` version 0.0-1.12 or later)
 source(

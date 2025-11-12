@@ -107,6 +107,9 @@ setnames(Utah_Data_LONG_2025, "ACHIEVEMENT_LEVEL_ORIGINAL", "ACHIEVEMENT_LEVEL")
 Utah_Data_LONG_2025[
     ACHIEVEMENT_LEVEL == "NA",
     ACHIEVEMENT_LEVEL := NA_character_
+][
+    CONTENT_AREA == "NA",
+    CONTENT_AREA := NA_character_
 ]
 
 
