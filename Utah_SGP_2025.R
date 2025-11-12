@@ -12,8 +12,9 @@ require(data.table)
 ###   Load data
 load("Data/Utah_SGP.Rdata")
 load("Data/Utah_Data_LONG_2025.Rdata")
+Utah_Data_ELA_2025 <- Utah_Data_LONG_2025[CONTENT_AREA == "ELA"]
 Utah_SEC_MATH_2025 <- Utah_Data_LONG_2025[CONTENT_AREA == "SEC_MATH_I"]
-Utah_Data_LONG_2025 <- Utah_Data_LONG_2025[CONTENT_AREA != "SEC_MATH_I"]
+Utah_Data_LONG_2025 <- Utah_Data_LONG_2025[!CONTENT_AREA %in% c("ELA", "SEC_MATH_I")]
 
 ###   Modifications/Additions to `SGPstateData`
 ##    Add baseline matrices
@@ -24,25 +25,19 @@ SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
 SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.BASELINE"]] <-
     NULL
 
-##    Add TEMPORARY knots and boundaries for ELA for projections.
-ela.kbs <-
-    SGP:::createKnotsBoundaries(
-        Utah_Data_LONG_2025[CONTENT_AREA == "ELA"]
-    )[["ELA"]]
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]] <- ela.kbs
-
-#####
-###   2025 Cohort and Baseline SGP Analyses
-#####
 
 ###   Read in SGP Configuration Scripts and Combine
 source("SGP_CONFIG/2025/ELA.R")
 source("SGP_CONFIG/2025/SCIENCE.R")
 source("SGP_CONFIG/2025/MATHEMATICS.R")
 
+
+#####
+###   2025 Math and Science Cohort and Baseline SGP Analyses
+#####
+
 UT_Config_2025 <-
-    c(ELA.2025.config,
-      SCIENCE.2025.config,
+    c(SCIENCE.2025.config,
       MATHEMATICS.2025.config
     )
 
@@ -66,6 +61,8 @@ Utah_SGP <-
         sgp.percentiles = TRUE,
         sgp.projections = TRUE,
         sgp.projections.lagged = TRUE,
+        sgp.percentiles.equated = TRUE,
+        sgp.percentiles.equating.method = "equipercentile",
         sgp.percentiles.baseline = TRUE,
         sgp.projections.baseline = TRUE,
         sgp.projections.lagged.baseline = TRUE,
@@ -75,13 +72,15 @@ Utah_SGP <-
     )
 
 
-##    SEC Math Growth Analyses Investigations
+
+#####
+###   2025 Secondary Math Cohort-Referenced SGP Analyses
+#####
+
+##    SEC_MATH_I Meta-data Changes/Additions
 SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- 1000
 SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["MATHEMATICS"]][["knots_7"]] <-
     c(492, 515, 531, 551)
-
-SecMath_Config_2025 <- SEC_MATH_I.2025.config
-    
 
 ###   Run updateSGP analysis
 Utah_SGP <-
@@ -90,8 +89,8 @@ Utah_SGP <-
         with_sgp_data_LONG = Utah_SEC_MATH_2025,
         overwrite.existing.data = FALSE,
         years = "2025",
-        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
-        sgp.config = SecMath_Config_2025,
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
+        sgp.config = SEC_MATH_I.2025.config,
         simulate.sgps = FALSE,
         sgp.percentiles = TRUE,
         sgp.projections = FALSE,
@@ -99,6 +98,74 @@ Utah_SGP <-
         sgp.percentiles.baseline = TRUE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
+        save.intermediate.results = FALSE,
+        parallel.config = utah.par.config
+    )
+
+
+#####
+###   2025 ELA Equated/Cohort-Referenced SGP Analyses
+#####
+
+##    ELA Meta-data Changes/Additions for 2025 Scale and Content Changes
+##    Add TEMPORARY knots and boundaries for ELA for projections.
+ela.kbs <-
+    SGP:::createKnotsBoundaries(
+        Utah_Data_ELA_2025
+    )[["ELA"]]
+SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]] <- ela.kbs
+
+SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <-
+    list(
+        Achievement_Levels = list(
+            Labels =
+              c("Below", "Approaching", "Proficient", "Highly"),
+            Proficient =
+              c("Not Proficient", "Not Proficient", "Proficient", "Proficient")),
+        Achievement_Levels.2025 = list(
+            Labels =
+              c("Below", "Approaching", "Proficient", "Highly"),
+            Proficient =
+              c("Not Proficient", "Not Proficient", "Proficient", "Proficient")),
+        Achievement_Level_Labels = list(
+            "Below" = "Below",
+            "Approaching" = "Approaching",
+            "Proficient" = "Proficient",
+            "Highly" = "Highly"),
+        Achievement_Level_Labels.2025 = list(
+            "Below" = "Below",
+            "Approaching" = "Approaching",
+            "Proficient" = "Proficient",
+            "Highly" = "Highly"),
+        Content_Areas_Labels = list(ELA = "ELA"), # MATHEMATICS = "Math", SCIENCE = "Science"),
+        Content_Areas_Labels.2025 = list(ELA = "ELA"), # MATHEMATICS = "Math", 
+        Vertical_Scale = "No",
+        Vertical_Scale.2025 = "No",
+        Grades_Tested = 3:10,
+        Grades_Tested.2025 = 3:10,
+        Year = "2025"
+    )
+
+
+###   Run updateSGP analysis
+Utah_SGP <-
+    updateSGP(
+        what_sgp_object = Utah_SGP,
+        with_sgp_data_LONG = Utah_Data_ELA_2025,
+        overwrite.existing.data = FALSE,
+        years = "2025",
+        steps = c("prepareSGP", "analyzeSGP", "combineSGP", "outputSGP"),
+        sgp.config = ELA.2025.config,
+        simulate.sgps = FALSE,
+        sgp.percentiles = TRUE,
+        sgp.projections = TRUE,
+        sgp.projections.lagged = TRUE,
+        sgp.percentiles.equated = TRUE,
+        sgp.percentiles.equating.method = "equipercentile",
+        sgp.percentiles.baseline = FALSE,
+        sgp.projections.baseline = FALSE,
+        sgp.projections.lagged.baseline = FALSE,
+        sgp.target.scale.scores = TRUE,
         outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data"),
         save.intermediate.results = FALSE,
         parallel.config = utah.par.config
