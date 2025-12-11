@@ -12,8 +12,8 @@ require(data.table)
 ###   Load data
 load("Data/Utah_SGP.Rdata")
 load("Data/Utah_Data_LONG_2025.Rdata")
-Utah_Data_ELA_2025 <- Utah_Data_LONG_2025[CONTENT_AREA == "ELA"]
-Utah_SEC_MATH_2025 <- Utah_Data_LONG_2025[CONTENT_AREA == "SEC_MATH_I"]
+Utah_Data_ELA_2025  <- Utah_Data_LONG_2025[CONTENT_AREA == "ELA"]
+Utah_SEC_MATH_2025  <- Utah_Data_LONG_2025[CONTENT_AREA == "SEC_MATH_I"]
 Utah_Data_LONG_2025 <- Utah_Data_LONG_2025[!CONTENT_AREA %in% c("ELA", "SEC_MATH_I")]
 
 ###   Read in SGP configuration scripts used in various steps
@@ -24,7 +24,8 @@ source("SGP_CONFIG/2025/MATHEMATICS.R")
 ###   Parallel processing for Mac/Linux
 utah.par.config <-
     list(
-        BACKEND = "PARALLEL",
+        BACKEND = "FOREACH",
+        TYPE = "doParallel",
         WORKERS = list(
             PERCENTILES = 10, BASELINE_PERCENTILES = 10,
             PROJECTIONS = 8, LAGGED_PROJECTIONS = 8)
@@ -145,7 +146,7 @@ Utah_SGP <-
 ###   2025 Secondary Math Cohort-Referenced SGP Analyses
 #####
 
-###   Modifications/Additions to `SGPstateData` for step 3
+###   Temporary modifications/additions to `SGPstateData` for step 3
 ##    SEC_MATH_I Meta-data Changes/Additions
 SGPstateData[["UT"]][["SGP_Configuration"]][["sgp.cohort.size"]] <- 1000
 SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["MATHEMATICS"]][["knots_7"]] <-
