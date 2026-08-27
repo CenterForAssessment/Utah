@@ -115,10 +115,10 @@ SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.
 SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <-
     NULL
 
-UT_Config_2025 <-
-    c(SCIENCE.2025.config,
-      MATHEMATICS.2025.config
-    )
+# UT_Config_2025 <-
+#     c(SCIENCE.2025.config,
+#       MATHEMATICS.2025.config
+#     )
 
 ###   Run updateSGP analysis
 Utah_SGP <-
@@ -128,7 +128,7 @@ Utah_SGP <-
         overwrite.existing.data = FALSE,
         years = "2025",
         steps = c("prepareSGP", "analyzeSGP", "combineSGP"),
-        sgp.config = UT_Config_2025,
+        sgp.config = c(SCIENCE.2025.config, MATHEMATICS.2025.config),
         simulate.sgps = FALSE,
         sgp.percentiles = TRUE,
         sgp.projections = TRUE,
