@@ -38,7 +38,7 @@ utah.par.config <-
 
 
 #####
-###   2026 ELA Equated/Cohort-Referenced SGP Analyses
+###   2026 ELA, Math and Science Baseline- and Cohort-Referenced SGP Analyses
 #####
 
 ###   Modifications/Additions to `SGPstateData` for step 2
@@ -47,15 +47,8 @@ utah.par.config <-
 SGPstateData <- SGPmatrices::addBaselineMatrices("UT", "2021")
 ##    Remove ELA Baselines. Scale/Content changes in '25
 SGPstateData[["UT"]][["Baseline_splineMatrix"]][["Coefficient_Matrices"]][["ELA.BASELINE"]] <-
-  SGPstateData[["UT"]][["Assessment_Program_Information"]][["Assessment_Transition"]] <-
     NULL
-SGPstateData[["UT"]][["Assessment_Program_Information"]][["Scale_Change"]] <-
-    list(ELA = 2025)
 
-##    Knots and Bounds for ELA post scale changes (ADD to `SGPstateData`)
-load("Data/UT_ELA_2025_KBs.rda")
-SGPstateData[["UT"]][["Achievement"]][["Knots_Boundaries"]][["ELA.2025"]] <-
-    UT_ELA_2025_KBs
 
 ###   Run updateSGP analysis
 Utah_SGP <-
@@ -105,12 +98,11 @@ Utah_SGP <-
         sgp.percentiles = TRUE,
         sgp.projections = FALSE,
         sgp.projections.lagged = FALSE,
-        sgp.percentiles.baseline = TRUE,
+        sgp.percentiles.baseline = FALSE,
         sgp.projections.baseline = FALSE,
         sgp.projections.lagged.baseline = FALSE,
         outputSGP.output.type = c("LONG_Data", "LONG_FINAL_YEAR_Data"),
-        save.intermediate.results = FALSE#,
-        # parallel.config = utah.par.config
+        save.intermediate.results = FALSE
     )
 
 
